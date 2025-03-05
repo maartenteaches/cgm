@@ -1,0 +1,37 @@
+----------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  D:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_dta01.txt
+  log type:  text
+ opened on:   5 Mar 2025, 14:35:06
+
+. 
+. // What this .do file does
+. // Who wrote it
+. 
+. version 18
+
+. clear all
+
+. macro drop _all
+
+. 
+. neps set study SC6
+(preference study(SC6) recorded)
+
+. neps set level D
+(preference level(D) recorded)
+
+. neps set version 15.0.0
+(preference version(15.0.0) recorded)
+
+. neps set directory ../data
+(preference directory(../data) recorded)
+
+. neps : use "pTarget"
+Warning: will read file from temporary copy.
+    Do not use save , replace without a file name afterwards, nor use `c(filename)'!
+(NEPS SUF, SC6 15.0.0 (download); doi:10.5157/NEPS:SC6:15.0.0)
+
+. 
+end of do-file
+
