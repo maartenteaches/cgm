@@ -8,9 +8,12 @@ version 18
 clear all
 macro drop _all
 
-*use ../data/[original_data_file.dta]
+neps set study SC6
+neps set level D
+neps set version 15.0.0
+neps set directory ../data
+neps : use "pTarget"
 
-*rename *, lower
 *keep
 
 // prepare data

@@ -1,0 +1,103 @@
+* 00000003
+*! version 1.0.0
+* Do not erase or edit this file
+* It is used by Stata to track the ado and help
+* files you have installed.
+
+S http://nocrypt.neps-data.de/stata
+N nepstools.pkg
+D  5 Mar 2025
+U 1
+d 'NEPStools': handy tools to work with NEPS Scientific Use Files
+d 
+d NEPStools are a bundle of Stata commands to be used with
+d NEPS (see https://www.neps-data.de/) dataset files.
+d Nonetheless, most of these commands could also be used with
+d other datasets (although NEPS will not give any support for it).
+d 
+d Requires: Stata version 11.2 or newer
+d 
+d Distribution-Date: 20240116
+d 
+d Author: Leibniz Institute for Educational Trajectories (LIfBi) (contact: Daniel Bela)
+d Support: fdz@lifbi.de
+f n\nepstools.sthlp
+f g\gnugpl.sthlp
+f i\infoquery.ado
+f i\infoquery.sthlp
+f n\nepsmiss.ado
+f n\nepsmiss.sthlp
+f n\neps.ado
+f n\neps.sthlp
+f n\neps_query.sthlp
+f n\neps_fileparse.sthlp
+f n\neps_set.sthlp
+f n\neps_clear.sthlp
+f n\nepsuse.ado
+f n\nepsuse.sthlp
+f c\charren.ado
+f c\charren.sthlp
+f c\comp2long.ado
+f c\comp2long.sthlp
+e
+S http://fmwww.bc.edu/repec/bocode/f
+N fre.pkg
+D  5 Mar 2025
+U 2
+d 'FRE': module to display one-way frequency table
+d 
+d   fre displays, for each specified variable, a univariate
+d frequency table containing counts, percent, and cumulative
+d percent. Variables may be string or numeric. Labels, in full
+d length, and values are printed. By default, fre only tabulates
+d the smallest and largest 10 values (along with all missing
+d values), but this can be changed. Furthermore,  values with zero
+d observed frequency may be included in the  tables. The default
+d for fre is to display the frequency  tables in the results
+d window. Alternatively, the tables may be written to a file on
+d disk, either tab-delimited or  LaTeX-formatted.
+d 
+d KW: data management
+d KW: frequencies
+d KW: frequency table
+d KW: tabulation
+d 
+d Requires: Stata version 9.2
+d 
+d Distribution-Date: 20210531
+d 
+d Author: Ben Jann, University of Bern
+d Support: email jann@@soz.unibe.ch
+d 
+f f\fre.ado
+f f\fre.hlp
+e
+S http://fmwww.bc.edu/RePEc/bocode/l
+N lany.pkg
+D  5 Mar 2025
+U 3
+d 'LANY': module to list values of variables for all observations in subsets of the data
+d 
+d  lany lists the values of variables for all observations in
+d subsets defined by the by() option when the if condition is true
+d for at least one observation in a subset. For example, we may
+d have a panel dataset on educational careers of individuals and
+d some individuals report that they went from primary school
+d immediately to university. This seems unlikely, so you want to
+d see the entire educational history of all persons who went to
+d university after primary education to see what is going on.
+d 
+d KW: data preparation
+d KW: list
+d KW: panel data
+d 
+d Requires: Stata version 8.1
+d 
+d Distribution-Date: 20221124
+d 
+d Author: Maarten L. Buis, University of Konstanz
+d Support: email maarten.buis@@uni-konstanz.de
+d 
+f l\lany.ado
+f l\lany.sthlp
+e
