@@ -51,6 +51,7 @@ These .do files require Stata 18 or higher.
 To use these .do files you:
 
 1. fork this repository
-2. Obtain the raw data files starting cohort 6 version 15.0.0 from https://doi.org/10.5157/NEPS:SC6:15.0.0 and save those in the directory `data`
-3. In ana/cgm_main.do change line 7 (`cd ..."`) to where your directory is
-4. run cgm_main.do 
+2. create a directory `cgm\data\`
+3. Obtain the raw data files starting cohort 6 version 15.0.0 from https://doi.org/10.5157/NEPS:SC6:15.0.0 and save those in the directory `data`
+4. In ana/cgm_main.do change line 7 (`cd ..."`) to where your directory is
+5. run cgm_main.do 
