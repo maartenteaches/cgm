@@ -1,0 +1,132 @@
+----------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  D:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_dta02.txt
+  log type:  text
+ opened on:   6 Mar 2025, 17:05:44
+
+. 
+. // explanatory variables
+. // MLB
+. 
+. version 18
+
+. clear all
+
+. macro drop _all
+
+. include cgm_neps.do
+
+. neps set study SC6, replace
+(preference study(SC6) recorded)
+
+. neps set level D, replace
+(preference level(D) recorded)
+
+. neps set version 15.0.0, replace
+(preference version(15.0.0) recorded)
+
+. neps set directory ../data, replace
+(preference directory(../data) recorded)
+
+. neps set language en, replace
+(preference language(en) recorded)
+
+. 
+. 
+. 
+. neps: use pTarget
+Warning: will read file from temporary copy.
+    Do not use save , replace without a file name afterwards, nor use `c(filename)'!
+(NEPS SUF, SC6 15.0.0 (download); doi:10.5157/NEPS:SC6:15.0.0)
+
+. datasignature confirm
+  (data unchanged since 15oct2024 15:47)
+
+. bys ID_t (wave): keep if _n == 1
+(114,973 observations deleted)
+
+. keep ID_t t700001 t70000m t70000y t751001_g1  t731351_g3 t731301_g3 t731301 t731301_ha t731301_v1 t731303 t731303_ha
+>  t731303_v1 t731351_ha t731353_ha t731353 t731353_v1 t400500_g1
+
+. 
+. // drop 1st generation migrants
+. drop if inlist(t400500_g1,1,2) 
+(1,750 observations deleted)
+
+. 
+. // migration status
+. gen byte mig:mig_lb = inlist(t400500_g1, 3,4,5,6) 
+
+. label variable mig "migration status"
+
+. label define mig_lb 1 "2nd generation" 0 "no migration background"
+
+. note mig : based on t400500_g1 in pTarget \ cgm_dta02 \ MLB TS
+
+. 
+. // sex
+. gen byte female:fem_lb = t700001 == 2 if t700001 < .
+
+. label var female "sex"
+
+. label define fem_lb 0 "male" 1 "female"
+
+. note female : based on t700001 in pTarget \ cgm_dta02.do \ MLB TS
+
+. 
+. nepsmiss t751001_g1
+Recoded 13 values in total
+
+. rename t751001_g1 region
+
+. note region: based on t751001_g1 in pTarget \ cgm_dta02.do \ MLB TS
+
+. 
+. rename t70000y byr
+
+. note byr: based on t70000y in pTarget \ cgm_dta02.do \ MLB TS
+
+. 
+. // parent's education
+. gen muni = t731303_ha == 4  if t731303_ha >= -20 & !missing(t731303_ha)
+(1,128 missing values generated)
+
+. gen funi = t731353_ha == 4 if t731353_ha >= -20 & !missing(t731353_ha) 
+(1,238 missing values generated)
+
+. egen byte puni = rowmax(muni funi)
+(406 missing values generated)
+
+. label define puni_lb 0 "no university" 1 "university"
+
+. label values puni puni_lb
+
+. label variable puni "parental education"
+
+. note puni : based on t731303_ha t731353_ha in pT
+
+. 
+. // prepare to save
+. keep ID_t female byr puni mig
+
+. notes : cgm02.dta \ explanatory vars \ trieo-dta02.do \ MLB TS
+
+. 
+. compress
+  (0 bytes saved)
+
+. label data "explanatory variables"
+
+. datasignature set, reset
+  15390:5(92608):2959611458:4114462446       (data signature reset)
+
+. save cgm02.dta, replace
+file cgm02.dta saved
+
+. 
+. log close
+      name:  <unnamed>
+       log:  D:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_dta02.txt
+  log type:  text
+ closed on:   6 Mar 2025, 17:05:46
+----------------------------------------------------------------------------------------------------------------------

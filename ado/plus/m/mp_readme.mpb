@@ -1,0 +1,33 @@
+<header>
+<mkproject> boilerplate
+<version> 2.1.4
+<label> readme.md for when you want to put your project on github or the like
+<description>
+{pstd} 
+This template creates a readme.md file that will be used if you put your project
+on github to introduce your project to people visiting your project page.
+</description>
+</header>
+
+<body> -------------------------------------------------------------------------
+# Title
+
+*Author*
+
+*affiliation*
+
+## Description
+
+These are the replication files for the project [title]. The aim of this project is [something brilliant]. 
+
+## Requirements and use
+
+These .do files require Stata <stata_version> or higher.
+
+To use these .do files you:
+
+1. fork this repository
+2. Obtain the raw data files [name1, name2, ...]  from  https://doi.org/######### and save those in the directory `data`
+3. In ana/<proj_abbrev>_main.do change line 7 (`cd ..."`) to where your directory is
+4. run <proj_abbrev>_main.do 
+</body> ------------------------------------------------------------------------

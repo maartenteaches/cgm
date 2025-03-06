@@ -1,0 +1,36 @@
+<header>
+<mkproject> boilerplate
+<version> 2.1.0
+<label> a smclpres presentation
+<reqs> smclpres
+<description>
+{pstd} 
+This template starts a {help smclpres} presentation.
+</description>
+</header>
+
+<body> -------------------------------------------------------------------------
+//version 4.0.2
+
+//layout toc title(subsection) link(subsection) 
+//layout toc secfont(bold) subsubsecfont(italic) 
+//toctitle [presentation title] 
+
+/*toctxt
+{center:[author]}
+{center:[Institute]}
+
+toctxt*/
+
+
+//slide ------------------------------------------------------------------------
+//title [slide title]
+
+/*txt
+{pstd}
+txt*/
+
+//ex
+//endex
+//endslide ------------------------------------------------------------------------
+</body> ------------------------------------------------------------------------

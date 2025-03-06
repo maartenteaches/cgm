@@ -1,4 +1,4 @@
-* 00000003
+* 00000005
 *! version 1.0.0
 * Do not erase or edit this file
 * It is used by Stata to track the ado and help
@@ -100,4 +100,105 @@ d Support: email maarten.buis@@uni-konstanz.de
 d 
 f l\lany.ado
 f l\lany.sthlp
+e
+S http://fmwww.bc.edu/repec/bocode/m
+N mkproject.pkg
+D  6 Mar 2025
+U 4
+d 'MKPROJECT': module to create a project folder with some boilerplate code and research log
+d 
+d  mkproject creates a new folder for a data analysis project with
+d a structure that is inspired by the book "The Workflow of Data
+d Analysis Using Stata" by J. Scott Long. It contains some .do
+d files with some boilerplate code, and the beginning of a research
+d log.
+d 
+d KW: project management
+d KW: work-flow
+d KW: directory
+d KW: folder
+d KW: boilerplate
+d 
+d Requires: Stata version 15
+d 
+d Distribution-Date: 20250304
+d 
+d Author: Maarten L. Buis, University of Konstanz
+d Support: email maarten.buis@@uni-konstanz.de
+d 
+f m\mkproject.ado
+f m\mkproject.sthlp
+f b\boilerplate.ado
+f b\boilerplate.sthlp
+f b\boilerplate_create.sthlp
+f l\lmkproject.mlib
+f m\mkproject_create.sthlp
+f m\mkproject_work.ado
+f m\mp_ana.mpb
+f m\mp_b_ana.sthlp
+f m\mp_b_dta.sthlp
+f m\mp_b_dta_c.sthlp
+f m\mp_b_excer.sthlp
+f m\mp_b_ignore.sthlp
+f m\mp_b_main.sthlp
+f m\mp_b_readme.sthlp
+f m\mp_b_readme_sp.sthlp
+f m\mp_b_rlog.sthlp
+f m\mp_b_rlogc.sthlp
+f m\mp_b_smclpres.sthlp
+f m\mp_course.mpp
+f m\mp_defaults.mpd
+f m\mp_dta.mpb
+f m\mp_dta_c.mpb
+f m\mp_excer.mpb
+f m\mp_excer.mpp
+f m\mp_ignore.mpb
+f m\mp_long.mpp
+f m\mp_longt.mpp
+f m\mp_main.mpb
+f m\mp_p_course.sthlp
+f m\mp_p_excer.sthlp
+f m\mp_p_long.sthlp
+f m\mp_p_longt.sthlp
+f m\mp_p_research_git.sthlp
+f m\mp_p_researcht_git.sthlp
+f m\mp_p_smclpres.sthlp
+f m\mp_readme.mpb
+f m\mp_readme_sp.mpb
+f m\mp_research_git.mpp
+f m\mp_researcht_git.mpp
+f m\mp_rlog.mpb
+f m\mp_rlogc.mpb
+f m\mp_smclpres.mpb
+f m\mp_smclpres.mpp
+f m\mp_b_dta_g.sthlp
+f m\mp_dta_g.mpb
+f m\mp_main_g.mpb
+f m\mp_b_main_g.sthlp
+e
+S http://fmwww.bc.edu/repec/bocode/l
+N lookfor2.pkg
+D  6 Mar 2025
+U 5
+d 'LOOKFOR2': module to search for string in variable names, variable labels, value labels, and notes
+d 
+d  lookfor2 helps you find variables by searching for string  among
+d all variable names, variable labels, value labels, and notes that
+d  are attached to variables.
+d 
+d KW: variable
+d KW: search
+d KW: data management
+d 
+d Requires: Stata version 10.1
+d 
+d Distribution-Date: 20220602
+d 
+d Author: Maarten L. Buis, University of Konstanz
+d Support: email maarten.buis@@uni-konstanz.de
+d 
+f l\lookfor2.ado
+f c\closedesc.ado
+f l\lookfor2.sthlp
+f c\closedesc.sthlp
 e

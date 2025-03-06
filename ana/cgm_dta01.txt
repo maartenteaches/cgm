@@ -2,7 +2,7 @@
       name:  <unnamed>
        log:  D:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_dta01.txt
   log type:  text
- opened on:   5 Mar 2025, 14:35:06
+ opened on:   6 Mar 2025, 15:45:28
 
 . 
 . // What this .do file does
@@ -14,7 +14,8 @@
 
 . macro drop _all
 
-. 
+. include cgm_neps.do
+
 . neps set study SC6
 (preference study(SC6) recorded)
 
@@ -27,11 +28,566 @@
 . neps set directory ../data
 (preference directory(../data) recorded)
 
-. neps : use "pTarget"
+. neps set language en
+(preference language(en) recorded)
+
+. 
+. 
+. **# base list of spells
+. 
+. neps : use "Biography"
 Warning: will read file from temporary copy.
     Do not use save , replace without a file name afterwards, nor use `c(filename)'!
 (NEPS SUF, SC6 15.0.0 (download); doi:10.5157/NEPS:SC6:15.0.0)
 
-. 
-end of do-file
+. datasignature confirm, strict
+  (data unchanged since 15oct2024 15:47)
 
+. 
+. 
+. // keep only educational spells 
+. // i.e. exclude employment, military, etc. spells
+. keep if sptype < 25
+(148,820 observations deleted)
+
+. tempfile tofill
+
+. save `tofill', replace
+(file C:\Users\Admin\AppData\Local\Temp\ST_3064_000001.tmp not found)
+file C:\Users\Admin\AppData\Local\Temp\ST_3064_000001.tmp saved as .dta format
+
+. 
+. **# merge in the generated educational spells
+. neps : use Education
+Warning: will read file from temporary copy.
+    Do not use save , replace without a file name afterwards, nor use `c(filename)'!
+(NEPS SUF, SC6 15.0.0 (download); doi:10.5157/NEPS:SC6:15.0.0)
+
+. drop if missing(splink)
+(852 observations deleted)
+
+. merge 1:1 ID_t splink using `tofill'
+(label enext1 already defined)
+(label deext1 already defined)
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                        25,117
+        from master                        11  (_merge==1)
+        from using                     25,106  (_merge==2)
+
+    Matched                            52,706  (_merge==3)
+    -----------------------------------------
+
+. drop _merge 
+
+. 
+. 
+. notes : cgm01.dta \ merged in generated educational spells from SC6_Education_D_15-0-0.dta \ cgm-dta01.do \ MLB TS  
+>        
+
+. 
+. save `tofill', replace
+file C:\Users\Admin\AppData\Local\Temp\ST_3064_000001.tmp saved as .dta format
+
+. 
+. **# primary and general secondary
+. neps: use spSchool
+Warning: will read file from temporary copy.
+    Do not use save , replace without a file name afterwards, nor use `c(filename)'!
+(NEPS SUF, SC6 15.0.0 (download); doi:10.5157/NEPS:SC6:15.0.0)
+
+. datasignature confirm
+  (data unchanged since 15oct2024 15:51)
+
+. keep ID_t splink subspell         ///
+>     ts11204 ts11204_ha ts11204_v1 ///
+>         ts11209 ts11210 ts11211
+
+. 
+.         
+. label define edlevs 0  "drop out"                  ///
+>                     1  "enter Grund- Volksschule"  /// 
+>                     2  "enter Hauptschule"         ///
+>                     3  "enter Realschule"          ///
+>                                         4  "enter Gymnasium"           ///
+>                                         5  "enter Gesamtschule"        ///
+>                                         6  "enter pre-vocational"      ///
+>                                         7  "enter vocational"          ///
+>                                         8  "enter Fachhochschule"      ///
+>                                         9  "enter Hochschule"          ///
+>                                         10 "finish Grundschule"        ///
+>                                         11 "finish Hauptschule"        ///
+>                     12 "finish Realschule"         ///
+>                                         13 "finish Fachabitur"         ///
+>                                         14 "finish Abitur"             ///
+>                                         15 "finish pre-vocational"     ///
+>                                         16 "finish vocational"         ///
+>                                         17 "finish Fachhochschule"     ///
+>                                         18 "finish Hochschule"     
+
+. 
+. recode ts11209 ( -21 -20 6 7    =  0  ) /// andere Abschluss & sonderschulabslus & nich in liste == drop-out
+>                (  .             = 10  ) ///
+>                (  1  2          = 11  ) ///
+>                            (  3             = 12  ) ///
+>                            (  4             = 13  ) ///
+>                            (  5             = 14  ) ///
+>                            ( else           = .   ) ///
+>                            , generate(finish)   
+(38,489 differences between ts11209 and finish)
+
+. replace finish = . if finish == 10 & ts11204_ha != 1
+(131 real changes made, 131 to missing)
+
+. label value finish edlevs               
+
+. label variable finish "end of spell"                                    
+
+. note finish: based on ts11209 ts11204_ha in spSchool \ cgm_dta01.do \ MLB TS    
+
+.         
+. recode ts11204    ( 1 3 2          = 1 ) ///
+>                   ( 4              = 2 ) ///
+>                                   ( 5 7            = 3 ) ///
+>                                   ( 6 10 11 12 14  = 5 ) /// Waldorf, sonderschule, andere schule = gesamtschule
+>                                   ( 8 9            = 4 ) ///
+>                                   ( 13             = 7 ) ///
+>                                   ( else           = . ) ///
+>                                   , generate(start)
+(30,878 differences between ts11204 and start)
+
+. replace start = 1 if start == . & ts11204_v1 == 1       
+(6,057 real changes made)
+
+. replace start = 2 if start == . & ts11204_v1 == 2
+(1,803 real changes made)
+
+. replace start = 3 if start == . & ts11204_v1 == 3
+(2,934 real changes made)
+
+. replace start = 4 if start == . & ts11204_v1 == 6
+(2,977 real changes made)
+
+. replace start = 5 if start == . & inlist(ts11204_v1, 4, 5, 8, 9)
+(1,058 real changes made)
+
+. replace start = 7 if start == . & ts11204_v1 == 7 
+(1,303 real changes made)
+
+. replace start = 4 if start == . & ts11204_ha == 5                                 
+(0 real changes made)
+
+. label value start edlevs
+
+. label variable start "begin of spell"
+
+. note start: based on ts11204_v1 ts11204_ha ts11204 in spSchool \ cgm_dta01.do \ MLB TS  
+
+. 
+. // missing values in start correspond to missing values on all school variables
+. assert (ts11204    < 0 | missing(ts11204   ) ) & /// 
+>            (ts11204_v1 < 0 | missing(ts11204_v1) ) & ///
+>            (ts11204_ha < 0 | missing(ts11204_ha) ) if start == .
+
+.            
+. keep if subspell == 0
+(147 observations deleted)
+
+.  
+. keep ID_t splink finish start ts11209 
+
+. 
+. merge 1:1 ID_t splink using `tofill', update
+(label deext1 already defined)
+(label enext1 already defined)
+(label en1874ext2 already defined)
+(label en1874ext1 already defined)
+(label en1873ext1 already defined)
+(label en1871ext1 already defined)
+(label de1874ext2 already defined)
+(label de1874ext1 already defined)
+(label de1873ext1 already defined)
+(label de1871ext1 already defined)
+(label en177 already defined)
+(label de177 already defined)
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                        39,733
+        from master                       126  (_merge==1)
+        from using                     39,607  (_merge==2)
+
+    Matched                            38,216
+        not updated                    38,216  (_merge==3)
+        missing updated                     0  (_merge==4)
+        nonmissing conflict                 0  (_merge==5)
+    -----------------------------------------
+
+. 
+. replace finish =  0 if tx28101 == 0 & finish == .
+(59 real changes made)
+
+. replace finish = 11 if inlist(tx28101, 1,2) & finish == .
+(4,646 real changes made)
+
+. replace finish = 12 if inlist(tx28101, 3,4) & finish == .
+(7,307 real changes made)
+
+. replace finish = 14 if tx28101 == 5 & finish == .
+(4 real changes made)
+
+. replace finish = 10 if start == 1 & finish == .
+(1 real change made)
+
+. 
+. drop _merge ts11209
+
+. 
+. notes : cgm01.dta \ meged in primary and general secondary from spSchool \ cgm-dta01.do \ MLB TS 
+
+. save `tofill', replace
+file C:\Users\Admin\AppData\Local\Temp\ST_3064_000001.tmp saved as .dta format
+
+. 
+. 
+. tab start finish, miss
+
+                      |                                 end of spell
+       begin of spell |  drop out  finish Gr  finish Ha  finish Re  finish Fa  finish Ab          . |     Total
+----------------------+-----------------------------------------------------------------------------+----------
+enter Grund- Volkssch |     2,077     10,656      1,584        110          3         27          0 |    14,457 
+    enter Hauptschule |       735          0      2,790        340          6          5          0 |     3,876 
+     enter Realschule |       800          0        372      5,439         19         42          3 |     6,675 
+      enter Gymnasium |     1,033          0         33        660        246      4,354          4 |     6,330 
+   enter Gesamtschule |       872          0        282      1,063        234        359         34 |     2,844 
+     enter vocational |       474          0         65        706        707        405         23 |     2,380 
+                    . |       682          0      5,035      7,679         41        320     27,630 |    41,387 
+----------------------+-----------------------------------------------------------------------------+----------
+                Total |     6,673     10,656     10,161     15,997      1,256      5,512     27,694 |    77,949 
+
+.            
+. **# pre-voc
+. neps: use spVocPrep
+Warning: will read file from temporary copy.
+    Do not use save , replace without a file name afterwards, nor use `c(filename)'!
+(NEPS SUF, SC6 15.0.0 (download); doi:10.5157/NEPS:SC6:15.0.0)
+
+. datasignature confirm
+  (data unchanged since 15oct2024 15:51)
+
+. 
+. keep if subspell == 0
+(37 observations deleted)
+
+. keep ID_t splink ts13201 ts13201_v1
+
+. 
+. gen start = 6
+
+. label variable start "begin of spell"
+
+. note start: based on existence in spVocPrep \ cgm_dta01.do \ MLB TS
+
+. label value start edlevs
+
+. 
+. recode ts13201_v1 ( 1 2  = 0  ) ///
+>                   ( 3    = 15 ) ///
+>                           ( else = .  ) ///
+>                           , generate(finish)
+(1,414 differences between ts13201_v1 and finish)
+
+. replace finish = 0  if finish == . & ts13201 == 1
+(65 real changes made)
+
+. replace finish = 15 if finish == . & ts13201 == 2
+(400 real changes made)
+
+. label value finish edlevs
+
+. label variable finish "end of spell"
+
+. note finish: based on ts13201 ts13201_v1 in spVocPrep \ cgm_dta01.do \ MLB TS
+
+. 
+. keep ID_t splink finish start ts13201 
+
+. 
+. merge 1:1 ID_t splink using `tofill', update
+(label en1874ext2 already defined)
+(label en1874ext1 already defined)
+(label de1874ext2 already defined)
+(label de1874ext1 already defined)
+(label enext1 already defined)
+(label deext1 already defined)
+(label en1873ext1 already defined)
+(label de1873ext1 already defined)
+(label en1871ext1 already defined)
+(label de1871ext1 already defined)
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                        76,557
+        from master                        14  (_merge==1)
+        from using                     76,543  (_merge==2)
+
+    Matched                             1,406
+        not updated                     1,355  (_merge==3)
+        missing updated                     0  (_merge==4)
+        nonmissing conflict                51  (_merge==5)
+    -----------------------------------------
+
+. drop _merge ts13201
+
+. 
+. notes: cgm01.dta \ merged in pre-vocational from spVocPrep.dta \ cgm_dta01.do #4 \ MLB TS 
+
+. 
+. save `tofill', replace
+file C:\Users\Admin\AppData\Local\Temp\ST_3064_000001.tmp saved as .dta format
+
+. 
+. tab start finish, miss
+
+                      |                                 end of spell
+       begin of spell |  drop out  finish Gr  finish Ha  finish Re  finish Fa  finish Ab  finish pr |     Total
+----------------------+-----------------------------------------------------------------------------+----------
+enter Grund- Volkssch |     2,077     10,656      1,584        110          3         27          0 |    14,457 
+    enter Hauptschule |       735          0      2,790        340          6          5          0 |     3,876 
+     enter Realschule |       800          0        372      5,439         19         42          0 |     6,675 
+      enter Gymnasium |     1,033          0         33        660        246      4,354          0 |     6,330 
+   enter Gesamtschule |       872          0        282      1,063        234        359          0 |     2,844 
+ enter pre-vocational |       173          0          0          0          0          0      1,237 |     1,420 
+     enter vocational |       474          0         65        706        707        405          0 |     2,380 
+                    . |       631          0      5,035      7,679         41        320          0 |    39,981 
+----------------------+-----------------------------------------------------------------------------+----------
+                Total |     6,795     10,656     10,161     15,997      1,256      5,512      1,237 |    77,963 
+
+
+                      |   end of
+                      |   spell
+       begin of spell |         . |     Total
+----------------------+-----------+----------
+enter Grund- Volkssch |         0 |    14,457 
+    enter Hauptschule |         0 |     3,876 
+     enter Realschule |         3 |     6,675 
+      enter Gymnasium |         4 |     6,330 
+   enter Gesamtschule |        34 |     2,844 
+ enter pre-vocational |        10 |     1,420 
+     enter vocational |        23 |     2,380 
+                    . |    26,275 |    39,981 
+----------------------+-----------+----------
+                Total |    26,349 |    77,963 
+
+. 
+. **# voc and tertiary
+. neps : use spVocTrain
+Warning: will read file from temporary copy.
+    Do not use save , replace without a file name afterwards, nor use `c(filename)'!
+(NEPS SUF, SC6 15.0.0 (download); doi:10.5157/NEPS:SC6:15.0.0)
+
+. datasignature confirm
+  (data unchanged since 15oct2024 15:51)
+
+. keep ID_t splink subspell /// 
+>          ts15201 ts15201_v1 ts15202_O ///
+>          ts15216 ts15217 ts15218 ts15218_v1 ///
+>          ts15219 ts15219_v1 ts15219_ha ts15220_O
+
+.          
+. recode  ts15201_v1 ( 1 2 3 4 = 7 ) ///
+>                    ( 5 6     = 8 ) ///
+>                                    ( 7       = 9 ) /// 
+>                                    ( else    = . ) ///
+>                                   , generate(start)
+(45,626 differences between ts15201_v1 and start)
+
+. replace start = 7 if inlist(ts15201, 1, 2, 3, 4, 5)
+(13,053 real changes made)
+
+. replace start = 8 if inlist(ts15201, 6, 7, 8, 9)
+(3,038 real changes made)
+
+. replace start = 9 if ts15201 == 10
+(4,891 real changes made)
+
+. label value start edlevs        
+
+. label variable start "begin of spell"
+
+. note start : based on ts15201 ts15201_v1 in spVocTrain \ cgm_dta01.do \MLB TS
+
+. 
+. // not relevant education
+. gen byte tobedropped = start == . & ts15201 > 0
+
+. 
+. recode ts15219_ha ( -20        =  0 ) ///
+>                   (  1 2 3 4 5 = 16 ) ///
+>                                   (  6 7       = 17 ) ///
+>                                   (  8         = 18 ) ///
+>                                   ( else       = .  ) ///
+>                   , generate(finish)                              
+(31,214 differences between ts15219_ha and finish)
+
+. replace finish = 0 if  ts15218  == 2
+(3,883 real changes made)
+
+. replace finish = 18 if inlist(ts15219_ha, 9,10) & tobedropped == 0
+(90 real changes made)
+
+. label value finish      edlevs
+
+. label variable finish "end of spell"
+
+. 
+. // copy finish from subspell if mainspell finish is missing
+. bys ID_t splink : egen maxfinish = max(finish)
+(15,357 missing values generated)
+
+. fre maxfinish if finish == . & subspell ==0
+
+maxfinish
+-----------------------------------------------------------
+              |      Freq.    Percent      Valid       Cum.
+--------------+--------------------------------------------
+Valid   0     |          5       0.04      29.41      29.41
+        16    |          5       0.04      29.41      58.82
+        17    |          2       0.02      11.76      70.59
+        18    |          5       0.04      29.41     100.00
+        Total |         17       0.13     100.00           
+Missing .     |      12622      99.87                      
+Total         |      12639     100.00                      
+-----------------------------------------------------------
+
+. replace finish = maxfinish if finish == . & subspell == 0
+(17 real changes made)
+
+. drop maxfinish
+
+.                         
+. keep if subspell == 0
+(7,209 observations deleted)
+
+.                         
+. keep ID_t splink finish start ts15219_ha ts15218 tobedropped
+
+. merge 1:1 ID_t splink using `tofill', update
+(variable start was byte, now float to accommodate using data's values)
+(label en1874ext2 already defined)
+(label en1874ext1 already defined)
+(label de1874ext2 already defined)
+(label de1874ext1 already defined)
+(label enext1 already defined)
+(label deext1 already defined)
+(label en1873ext1 already defined)
+(label de1873ext1 already defined)
+(label en1871ext1 already defined)
+(label de1871ext1 already defined)
+(label en177 already defined)
+(label de177 already defined)
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                        39,978
+        from master                       216  (_merge==1)
+        from using                     39,762  (_merge==2)
+
+    Matched                            38,201
+        not updated                    26,249  (_merge==3)
+        missing updated                   569  (_merge==4)
+        nonmissing conflict            11,383  (_merge==5)
+    -----------------------------------------
+
+. 
+. replace finish = 16 if ts15219_ha == 17 & inlist(tx28101, 2, 4, 6) & missing(finish)
+(80 real changes made)
+
+. replace finish = 17 if ts15219_ha == 17 & tx28101 == 7 & missing(finish)
+(12 real changes made)
+
+. replace finish = 18 if ts15219_ha == 17 & tx28101 == 8 & missing(finish)
+(14 real changes made)
+
+. replace start = 7 if finish == 16 & start == .
+(469 real changes made)
+
+. replace start = 8 if finish == 17 & start == .
+(22 real changes made)
+
+. replace start = 9 if finish == 18 & start == .
+(91 real changes made)
+
+. replace finish = 0 if inlist(ts15219, 16, 17) // other abschluss and IHK is drop-out
+(3,807 real changes made)
+
+. 
+. drop if tobedropped == 1
+(8,466 observations deleted)
+
+. drop tobedropped
+
+. 
+. tab start finish, miss
+
+                      |                                 end of spell
+       begin of spell |  drop out  finish Gr  finish Ha  finish Re  finish Fa  finish Ab  finish pr |     Total
+----------------------+-----------------------------------------------------------------------------+----------
+enter Grund- Volkssch |     2,077     10,656      1,584        110          3         27          0 |    14,457 
+    enter Hauptschule |       735          0      2,790        340          6          5          0 |     3,876 
+     enter Realschule |       800          0        372      5,439         19         42          0 |     6,675 
+      enter Gymnasium |     1,033          0         33        660        246      4,354          0 |     6,330 
+   enter Gesamtschule |       872          0        282      1,063        234        359          0 |     2,844 
+ enter pre-vocational |       173          0          0          0          0          0      1,237 |     1,420 
+     enter vocational |     2,205          0        139        910        707        405          0 |    20,904 
+ enter Fachhochschule |       517          0          1         10          0          0          0 |     3,105 
+     enter Hochschule |     1,450          0          0          0          0          0          0 |     5,055 
+                    . |       649          0        393        375         41        320          0 |     5,047 
+----------------------+-----------------------------------------------------------------------------+----------
+                Total |    10,511     10,656      5,594      8,907      1,256      5,512      1,237 |    69,713 
+
+
+                      |                end of spell
+       begin of spell | finish vo  finish Fa  finish Ho          . |     Total
+----------------------+--------------------------------------------+----------
+enter Grund- Volkssch |         0          0          0          0 |    14,457 
+    enter Hauptschule |         0          0          0          0 |     3,876 
+     enter Realschule |         0          0          0          3 |     6,675 
+      enter Gymnasium |         0          0          0          4 |     6,330 
+   enter Gesamtschule |         0          0          0         34 |     2,844 
+ enter pre-vocational |         0          0          0         10 |     1,420 
+     enter vocational |    15,834         18         33        653 |    20,904 
+ enter Fachhochschule |       175      2,117         74        211 |     3,105 
+     enter Hochschule |         8         75      3,249        273 |     5,055 
+                    . |         0          0          0      3,269 |     5,047 
+----------------------+--------------------------------------------+----------
+                Total |    16,017      2,210      3,356      4,457 |    69,713 
+
+. 
+. drop _merge ts15219_ha ts15218 
+
+. 
+. notes : cgm01.dta \ merged in vocational and tertiary from spVocTrain \ cgm_dta01.do \ MLB TS 
+
+. 
+. compress
+  variable start was float now byte
+  (209,139 bytes saved)
+
+. datasignature set, reset
+  69713:21(105664):3659313426:3365472832       (data signature reset)
+
+. label data "raw educational spells from NEPS"
+
+. save cgm01.dta, replace
+(file cgm01.dta not found)
+file cgm01.dta saved
+
+. 
+. log close 
+      name:  <unnamed>
+       log:  D:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_dta01.txt
+  log type:  text
+ closed on:   6 Mar 2025, 15:45:30
+----------------------------------------------------------------------------------------------------------------------

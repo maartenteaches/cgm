@@ -13,7 +13,7 @@ mata: mata mlib index
 // set the working directory
 cd ana
 
-do cgm_dta01.do // some comment
-do cgm_ana01.do // some comment
-
+do cgm_dta01.do // merge educational trajectories
+do cgm_dta02.do // explanatory variables
+do cgm_ana01.do // 
 exit
