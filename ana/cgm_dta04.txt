@@ -2,7 +2,7 @@
       name:  <unnamed>
        log:  D:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_dta04.txt
   log type:  text
- opened on:   7 Mar 2025, 17:31:55
+ opened on:   7 Mar 2025, 18:04:01
 
 . 
 . // make consistent spells
@@ -1838,26 +1838,367 @@ Valid   1     |      17074      29.62      29.62      29.62
 (115 observations deleted)
 
 . 
+. 
+. //----------------------------------------------------------------------- 
+. **# move general secondary before vocational
+. gen byte voc = start == 7
+
+. bys ID_t voc (sort) : gen place2 = sort[1] if voc == 1
+(41,913 missing values generated)
+
+. bys ID_t (sort) : egen place = min(place2)
+(14,626 missing values generated)
+
+. drop place2
+
+. bys ID_t (sort) : replace voc = sum(voc)
+(3,395 real changes made)
+
+. assert voc <=4
+
+. gen toberesorted = voc >= 1 & inlist(finish,11, 12, 14)
+
+. tab toberesorted
+
+toberesorte |
+          d |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |     53,442       96.30       96.30
+          1 |      2,052        3.70      100.00
+------------+-----------------------------------
+      Total |     55,494      100.00
+
+. 
+. bys ID_t (sort) : replace toberesorted = sum(toberesorted) if toberesorted == 1
+(155 real changes made)
+
+. replace sort = place - 1 + ( toberesorted / 4) if toberesorted > 0 & toberesorted < 3
+(2,051 real changes made)
+
+. bys ID_t (sort) : replace sort = _n
+(3,018 real changes made)
+
+. 
+. //----------------------------------------------------------------------- 
+. **# some corrections
+. // drop duplicate gen sec diplomas after Abi
+. drop tobedropped
+
+. bys ID_t (sort) : gen byte tobedropped = finish[_n-1] == 14
+
+. bys ID_t (sort) : replace tobedropped = sum(tobedropped)
+(1,125 real changes made)
+
+. replace tobedropped = tobedropped == 1 & inlist(finish,11,12,14)
+(7,101 real changes made)
+
+. drop if tobedropped
+(64 observations deleted)
+
+. 
+. // drop duplicate haupt & real diplomas after real
+. bys ID_t (sort) : replace tobedropped = finish[_n-1] == 12
+(7,718 real changes made)
+
+. bys ID_t (sort) : replace tobedropped = sum(tobedropped)
+(3,208 real changes made)
+
+. replace tobedropped = tobedropped == 1 & inlist(finish,11,12)
+(10,840 real changes made)
+
+. drop if tobedropped
+(47 observations deleted)
+
+. 
+. bys ID_t (sort) : replace sort = _n
+(129 real changes made)
+
+. 
+. //------------------------------------------------------------------------ #3
+. // store highest general secondary diploma
+. gen haupt = finish == 11
+
+. gen real  = finish == 12
+
+. gen abi   = finish == 14
+
+. bys ID_t (sort) : replace haupt = sum(haupt)
+(7,132 real changes made)
+
+. bys ID_t (sort) : replace real  = sum(real)
+(10,840 real changes made)
+
+. bys ID_t (sort) : replace abi   = sum(abi)
+(7,101 real changes made)
+
+. 
+. // create new education system
+. clonevar start2 = start
+
+. replace start2 = .  if start >  5
+(18,235 real changes made, 18,235 to missing)
+
+. bys ID_t (sort) : replace start2 = 5  if start == 7 & finish[_n-1] == 11 & inlist(finish,12,14)
+(769 real changes made)
+
+. bys ID_t (sort) : replace start2 = 6  if start == 7 & finish[_n-1] == 12 & inlist(finish,12,14)
+(1,097 real changes made)
+
+. replace start2 = 7  if start == 7 & real == 0 & abi == 0 & !inlist(finish,12,14)
+(3,498 real changes made)
+
+. replace start2 = 8  if start == 7 & real == 1 & abi == 0 & !inlist(finish,12,14)
+(5,299 real changes made)
+
+. replace start2 = 9  if start == 7 & abi  == 1 & !inlist(finish,12,14)
+(2,814 real changes made)
+
+. replace start2 = 10 if start == 8
+(0 real changes made)
+
+. replace start2 = 11 if start == 9
+(4,758 real changes made)
+
+. 
+. clonevar finish2 = finish
+
+. replace finish2 = .
+(55,383 real changes made, 55,383 to missing)
+
+. replace finish2 = 0  if finish ==  0
+(3,182 real changes made)
+
+. replace finish2 = 12 if finish == 10
+(14,966 real changes made)
+
+. replace finish2 = 13 if finish == 11
+(5,814 real changes made)
+
+. replace finish2 = 14 if finish == 12
+(8,365 real changes made)
+
+. replace finish2 = 15 if finish == 14
+(6,699 real changes made)
+
+. replace finish2 = 16 if finish == 16 & start2 == 7
+(3,498 real changes made)
+
+. replace finish2 = 17 if finish == 16 & start2 == 8
+(5,290 real changes made)
+
+. replace finish2 = 18 if finish == 16 & start2 == 9
+(2,811 real changes made)
+
+. replace finish2 = 19 if finish == 17
+(0 real changes made)
+
+. replace finish2 = 20 if finish == 18
+(4,758 real changes made)
+
+. 
+. 
+. // new educational "system"
+. label define edlevs2 0  "done" ///
+>                     1  "enter Grundschule" ///
+>                     2  "enter Hauptschule" ///
+>                     3  "enter Realschule" ///
+>                     4  "enter Gymnasium" ///
+>                     5  "enter vocational, gen. sec., Haupt" ///
+>                     6  "enter vocational, gen. sec., Real" ///
+>                     7  "enter vocational, Hauptschule" ///
+>                     8  "enter vocational, Realschule" ///
+>                     9  "enter vocational, Abitur" ///
+>                     10 "enter Fachhochschule" ///
+>                     11 "enter University" ///
+>                     12 "finish Grundschule" ///
+>                     13 "finish Hauptschule" /// 
+>                                         14 "finish Realschule" ///
+>                     15 "finish Abitur" ///
+>                     16 "finish vocational, Hauptschule" /// 
+>                                         17 "finish vocational, Realschule" /// 
+>                                         18 "finish vocational, Abitur" /// 
+>                                         19 "finish Fachhochschule" /// 
+>                                         20 "finish University" /// 
+>        , replace
+
+. 
+. label value start2 finish2 edlevs2
+
+. 
+. // check the new variables
+. 
+. tab start start2
+
+                      |                                begin of spell
+       begin of spell | enter Gru  enter Hau  enter Rea  enter Gym  enter voc  enter voc  enter voc |     Total
+----------------------+-----------------------------------------------------------------------------+----------
+enter Grund- Volkssch |    17,074          0          0          0          0          0          0 |    17,074 
+    enter Hauptschule |         0      4,523          0          0          0          0          0 |     4,523 
+     enter Realschule |         0          0      8,924          0          0          0          0 |     8,924 
+      enter Gymnasium |         0          0          0      6,627          0          0          0 |     6,627 
+     enter vocational |         0          0          0          0        769      1,097      3,498 |    13,477 
+     enter Hochschule |         0          0          0          0          0          0          0 |     4,758 
+----------------------+-----------------------------------------------------------------------------+----------
+                Total |    17,074      4,523      8,924      6,627        769      1,097      3,498 |    55,383 
+
+
+                      |          begin of spell
+       begin of spell | enter voc  enter voc  enter Uni |     Total
+----------------------+---------------------------------+----------
+enter Grund- Volkssch |         0          0          0 |    17,074 
+    enter Hauptschule |         0          0          0 |     4,523 
+     enter Realschule |         0          0          0 |     8,924 
+      enter Gymnasium |         0          0          0 |     6,627 
+     enter vocational |     5,299      2,814          0 |    13,477 
+     enter Hochschule |         0          0      4,758 |     4,758 
+----------------------+---------------------------------+----------
+                Total |     5,299      2,814      4,758 |    55,383 
+
+. tab finish finish2
+
+                      |                                 end of spell
+         end of spell |      done  finish Gr  finish Ha  finish Re  finish Ab  finish vo  finish vo |     Total
+----------------------+-----------------------------------------------------------------------------+----------
+             drop out |     3,182          0          0          0          0          0          0 |     3,182 
+   finish Grundschule |         0     14,966          0          0          0          0          0 |    14,966 
+   finish Hauptschule |         0          0      5,814          0          0          0          0 |     5,814 
+    finish Realschule |         0          0          0      8,365          0          0          0 |     8,365 
+        finish Abitur |         0          0          0          0      6,699          0          0 |     6,699 
+    finish vocational |         0          0          0          0          0      3,498      5,290 |    11,599 
+    finish Hochschule |         0          0          0          0          0          0          0 |     4,758 
+----------------------+-----------------------------------------------------------------------------+----------
+                Total |     3,182     14,966      5,814      8,365      6,699      3,498      5,290 |    55,383 
+
+
+                      |     end of spell
+         end of spell | finish vo  finish Un |     Total
+----------------------+----------------------+----------
+             drop out |         0          0 |     3,182 
+   finish Grundschule |         0          0 |    14,966 
+   finish Hauptschule |         0          0 |     5,814 
+    finish Realschule |         0          0 |     8,365 
+        finish Abitur |         0          0 |     6,699 
+    finish vocational |     2,811          0 |    11,599 
+    finish Hochschule |         0      4,758 |     4,758 
+----------------------+----------------------+----------
+                Total |     2,811      4,758 |    55,383 
+
+. 
+. // replace the new variables with the old variables
+. replace start = start2
+(14,737 real changes made)
+
+. replace finish = finish2
+(48,703 real changes made)
+
+. label copy edlevs2 edlevs, replace
+
+. 
+. // admire the result
+. tab start finish
+
+                      |                                 end of spell
+       begin of spell |      done  finish Gr  finish Ha  finish Re  finish Ab  finish vo  finish vo |     Total
+----------------------+-----------------------------------------------------------------------------+----------
+    enter Grundschule |         0     14,966      2,108          0          0          0          0 |    17,074 
+    enter Hauptschule |       817          0      3,706          0          0          0          0 |     4,523 
+     enter Realschule |     1,181          0          0      7,743          0          0          0 |     8,924 
+      enter Gymnasium |     1,172          0          0          0      5,455          0          0 |     6,627 
+enter vocational, gen |         0          0          0        622        147          0          0 |       769 
+enter vocational, gen |         0          0          0          0      1,097          0          0 |     1,097 
+enter vocational, Hau |         0          0          0          0          0      3,498          0 |     3,498 
+enter vocational, Rea |         9          0          0          0          0          0      5,290 |     5,299 
+enter vocational, Abi |         3          0          0          0          0          0          0 |     2,814 
+     enter University |         0          0          0          0          0          0          0 |     4,758 
+----------------------+-----------------------------------------------------------------------------+----------
+                Total |     3,182     14,966      5,814      8,365      6,699      3,498      5,290 |    55,383 
+
+
+                      |     end of spell
+       begin of spell | finish vo  finish Un |     Total
+----------------------+----------------------+----------
+    enter Grundschule |         0          0 |    17,074 
+    enter Hauptschule |         0          0 |     4,523 
+     enter Realschule |         0          0 |     8,924 
+      enter Gymnasium |         0          0 |     6,627 
+enter vocational, gen |         0          0 |       769 
+enter vocational, gen |         0          0 |     1,097 
+enter vocational, Hau |         0          0 |     3,498 
+enter vocational, Rea |         0          0 |     5,299 
+enter vocational, Abi |     2,811          0 |     2,814 
+     enter University |         0      4,758 |     4,758 
+----------------------+----------------------+----------
+                Total |     2,811      4,758 |    55,383 
+
+. 
+. //-----------------------------------------------------------
+. // some corrections
+. 
+. // haupt --> enter gymnasium
+. // haupt --> enter Real --> finish real --> enter Gym
+. bys ID_t (sort) : gen n = (finish == 13 & start[_n+1]==4) + 1
+
+. expand n, gen(added)
+(190 observations created)
+
+. replace start = 3 if added
+(190 real changes made)
+
+. replace finish = 14 if added
+(190 real changes made)
+
+. replace sort = sort + .5 if added
+(190 real changes made)
+
+. bys ID_t (sort) : replace sort = _n
+(613 real changes made)
+
+. drop n added
+
+. 
+. 
+. // EVgensecH --> FA
+. // EVgensecH --> FRe --> EVgensecR --> FA
+. bys ID_t (sort) : gen n = (finish == 15 & start==5) + 1
+
+. expand n, gen(added)
+(147 observations created)
+
+. replace finish = 14 if finish == 15 & start==5 & !added
+(147 real changes made)
+
+. replace start = 6 if added
+(147 real changes made)
+
+. replace sort = sort + .5 if added
+(147 real changes made)
+
+. bys ID_t (sort) : replace sort = _n
+(334 real changes made)
+
+. drop n added
+
+. 
+. 
 . // clean up
 . keep ID_t sort start finish 
 
 . bys ID_t (sort) : replace sort = _n
-(1 real change made)
+(0 real changes made)
 
 . 
 . compress
   variable sort was float now byte
-  (166,482 bytes saved)
+  (167,160 bytes saved)
 
 . note: cgm04.dta \ cleaned spelss \ cgm_dta04.do \ MLB TS 
 
 . label data "cleaned spells"
 
 . datasignature set, reset
-  55494:4(70326):340838596:939010798       (data signature reset)
+  55720:4(70326):2828898657:1719128532       (data signature reset)
 
 . save cgm04.dta, replace
-(file cgm04.dta not found)
 file cgm04.dta saved
 
 . 
@@ -1865,5 +2206,5 @@ file cgm04.dta saved
       name:  <unnamed>
        log:  D:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_dta04.txt
   log type:  text
- closed on:   7 Mar 2025, 17:32:03
+ closed on:   7 Mar 2025, 18:04:10
 ----------------------------------------------------------------------------------------------------------------------

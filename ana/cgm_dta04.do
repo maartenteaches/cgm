@@ -780,6 +780,136 @@ drop if tobedropped
 // drop duplicate spell
 bys ID_t (sort) : drop if start == start[_n-1] & finish == finish[_n-1]
 
+
+//----------------------------------------------------------------------- 
+**# move general secondary before vocational
+gen byte voc = start == 7
+bys ID_t voc (sort) : gen place2 = sort[1] if voc == 1
+bys ID_t (sort) : egen place = min(place2)
+drop place2
+bys ID_t (sort) : replace voc = sum(voc)
+assert voc <=4
+gen toberesorted = voc >= 1 & inlist(finish,11, 12, 14)
+tab toberesorted
+
+bys ID_t (sort) : replace toberesorted = sum(toberesorted) if toberesorted == 1
+replace sort = place - 1 + ( toberesorted / 4) if toberesorted > 0 & toberesorted < 3
+bys ID_t (sort) : replace sort = _n
+
+//----------------------------------------------------------------------- 
+**# some corrections
+// drop duplicate gen sec diplomas after Abi
+drop tobedropped
+bys ID_t (sort) : gen byte tobedropped = finish[_n-1] == 14
+bys ID_t (sort) : replace tobedropped = sum(tobedropped)
+replace tobedropped = tobedropped == 1 & inlist(finish,11,12,14)
+drop if tobedropped
+
+// drop duplicate haupt & real diplomas after real
+bys ID_t (sort) : replace tobedropped = finish[_n-1] == 12
+bys ID_t (sort) : replace tobedropped = sum(tobedropped)
+replace tobedropped = tobedropped == 1 & inlist(finish,11,12)
+drop if tobedropped
+
+bys ID_t (sort) : replace sort = _n
+
+//------------------------------------------------------------------------ #3
+// store highest general secondary diploma
+gen haupt = finish == 11
+gen real  = finish == 12
+gen abi   = finish == 14
+bys ID_t (sort) : replace haupt = sum(haupt)
+bys ID_t (sort) : replace real  = sum(real)
+bys ID_t (sort) : replace abi   = sum(abi)
+
+// create new education system
+clonevar start2 = start
+replace start2 = .  if start >  5
+bys ID_t (sort) : replace start2 = 5  if start == 7 & finish[_n-1] == 11 & inlist(finish,12,14)
+bys ID_t (sort) : replace start2 = 6  if start == 7 & finish[_n-1] == 12 & inlist(finish,12,14)
+replace start2 = 7  if start == 7 & real == 0 & abi == 0 & !inlist(finish,12,14)
+replace start2 = 8  if start == 7 & real == 1 & abi == 0 & !inlist(finish,12,14)
+replace start2 = 9  if start == 7 & abi  == 1 & !inlist(finish,12,14)
+replace start2 = 10 if start == 8
+replace start2 = 11 if start == 9
+
+clonevar finish2 = finish
+replace finish2 = .
+replace finish2 = 0  if finish ==  0
+replace finish2 = 12 if finish == 10
+replace finish2 = 13 if finish == 11
+replace finish2 = 14 if finish == 12
+replace finish2 = 15 if finish == 14
+replace finish2 = 16 if finish == 16 & start2 == 7
+replace finish2 = 17 if finish == 16 & start2 == 8
+replace finish2 = 18 if finish == 16 & start2 == 9
+replace finish2 = 19 if finish == 17
+replace finish2 = 20 if finish == 18
+
+
+// new educational "system"
+label define edlevs2 0  "done" ///
+                    1  "enter Grundschule" ///
+                    2  "enter Hauptschule" ///
+                    3  "enter Realschule" ///
+                    4  "enter Gymnasium" ///
+                    5  "enter vocational, gen. sec., Haupt" ///
+                    6  "enter vocational, gen. sec., Real" ///
+                    7  "enter vocational, Hauptschule" ///
+                    8  "enter vocational, Realschule" ///
+                    9  "enter vocational, Abitur" ///
+                    10 "enter Fachhochschule" ///
+                    11 "enter University" ///
+                    12 "finish Grundschule" ///
+                    13 "finish Hauptschule" /// 
+					14 "finish Realschule" ///
+                    15 "finish Abitur" ///
+                    16 "finish vocational, Hauptschule" /// 
+					17 "finish vocational, Realschule" /// 
+					18 "finish vocational, Abitur" /// 
+					19 "finish Fachhochschule" /// 
+					20 "finish University" /// 
+       , replace
+
+label value start2 finish2 edlevs2
+
+// check the new variables
+
+tab start start2
+tab finish finish2
+
+// replace the new variables with the old variables
+replace start = start2
+replace finish = finish2
+label copy edlevs2 edlevs, replace
+
+// admire the result
+tab start finish
+
+//-----------------------------------------------------------
+// some corrections
+
+// haupt --> enter gymnasium
+// haupt --> enter Real --> finish real --> enter Gym
+bys ID_t (sort) : gen n = (finish == 13 & start[_n+1]==4) + 1
+expand n, gen(added)
+replace start = 3 if added
+replace finish = 14 if added
+replace sort = sort + .5 if added
+bys ID_t (sort) : replace sort = _n
+drop n added
+
+
+// EVgensecH --> FA
+// EVgensecH --> FRe --> EVgensecR --> FA
+bys ID_t (sort) : gen n = (finish == 15 & start==5) + 1
+expand n, gen(added)
+replace finish = 14 if finish == 15 & start==5 & !added
+replace start = 6 if added
+replace sort = sort + .5 if added
+bys ID_t (sort) : replace sort = _n
+drop n added
+
 // clean up
 keep ID_t sort start finish 
 bys ID_t (sort) : replace sort = _n
