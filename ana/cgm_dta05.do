@@ -79,26 +79,122 @@ drop if  orig == 8 & dest == 8
 bys ID_t (sort) : replace dest = 11 if dest == 8 & orig == 17 & dest[_n+1] == 11
 drop if orig == 8 & dest == 11
 
+// EvocAbi --> EvocAbi
+drop if orig == 9 & dest == 9
 
+// EvocAbi --> EHoch
+bys ID_t (sort) : replace dest = 11 if orig[_n+1] == 9 & dest[_n+1] == 11 
+drop if orig == 9 & dest == 11
 
+// EvocAbi --> done
+replace dest = 0 if dest[_n+1] == 0 & orig[_n+1] == 9
+drop if dest == 0 & orig == 9
 
+// FGrund --> Euni
+replace exp = (orig == 12 & dest == 11)+1
+expand exp, gen(new)
+replace orig = 4 if new
+replace dest = 15 if new
+replace exp = new +1
+replace sort = sort +0.3 if new
+drop new
+expand exp, gen(new)
+replace orig = 15 if new
+replace dest = 11 if new
+replace sort = sort +0.6 if new
+bys ID_t (sort): replace sort = _n
+drop new exp
+replace dest = 4 if orig == 12 & dest == 11
 
+//FHau --> Euni
+gen exp = (orig == 13 & dest == 11)+1
+replace dest = 3 if orig == 13 & dest == 11
+expand exp, gen(new)
+replace sort = sort +0.2 if new
+replace orig = 3 if new
+replace dest = 14 if new
+replace exp = new +1
+drop new
+expand exp, gen(new)
+replace sort = sort + 0.4 if new
+replace orig = 14 if new
+replace dest = 4 if new
+replace exp = new +1
+drop new
+expand exp, gen(new)
+replace sort = sort +0.6 if new
+replace orig = 4 if new
+replace dest = 15 if new
+replace exp = new +1
+drop new
+expand exp, gen(new)
+replace sort = sort +0.8 if new
+replace orig = 15 if new
+replace dest = 11 if new
+bys ID_t (sort): replace sort = _n
+drop exp new
 
+//FRea --> Euni
+gen exp = (orig== 14 & dest==11) +1
+replace dest = 4 if orig == 14 & dest == 11
+expand exp, gen(new)
+replace sort = sort + 0.3 if new
+replace orig = 4 if new
+replace dest = 15 if new
+replace exp = new +1
+drop new
+expand exp, gen(new)
+replace sort = sort +0.6 if new
+replace orig = 15 if new
+replace dest = 11 if new
+bys ID_t (sort): replace sort = _n
+drop exp new
 
+tab dest if orig == 16
+//FvocHau --> Euni
+gen mark = orig==16 & dest == 11
+gen exp = (orig == 16 & dest == 11)+1
+sort ID_t sort
+lany ID_t sort orig dest if mark, by(ID_t) sepby(ID_t)
+replace dest =  5 if orig[_n+2] == 16 & dest[_n+2] == 11
+lany ID_t sort orig dest if mark, by(ID_t) sepby(ID_t)
+replace orig =  5 if orig[_n+1] == 16 & dest[_n+1] == 11
+replace dest = 14 if orig[_n+1] == 16 & dest[_n+1] == 11
+lany ID_t sort orig dest if mark, by(ID_t) sepby(ID_t)
+replace orig = 14 if orig       == 16 & dest       == 11
+replace dest =  6 if mark
+lany ID_t sort orig dest if mark, by(ID_t) sepby(ID_t)
+expand exp, gen(new)
+replace sort = sort + 0.3 if new
+replace orig = 6 if new
+replace dest = 15 if new
+replace exp = new +1
+lany ID_t sort orig dest if mark, by(ID_t) sepby(ID_t)
+drop new
+expand exp, gen(new)
+replace sort = sort + 0.6 if new
+replace orig = 15 if new
+replace dest = 11 if new
+bys ID_t (sort): replace sort = _n
+lany ID_t sort orig dest if mark, by(ID_t) sepby(ID_t)
+drop exp new mark
 
+// FvocRea --> Euni
+gen mark = orig == 17 & dest == 11
+replace dest =  6 if orig[_n+2] == 17 & dest[_n+2] == 11
+replace orig =  6 if orig[_n+1] == 17 & dest[_n+1] == 11
+replace dest = 15 if orig[_n+1] == 17 & dest[_n+1] == 11
+replace orig = 15 if orig       == 17 & dest       == 11
+replace dest = 11 if mark
+drop mark
 
+bys orig : tab dest
 
-
-// prepare data
-
-*gen some_var = ...
-*note some_var: based on [original vars] \ cgm_dta05.do \ [author] TS
-
-*compress
-*note: cgm##.dta \ [description] \ cgm_dta05.do \ [author] TS 
-*label data [description]
-*datasignature set, reset
-*save cgm##.dta, replace
+compress
+note: cgm05.dta \ clean transitions \ cgm_dta05.do \ MLB TS 
+label data "cleaned transitions"
+datasignature set, reset
+save cgm05.dta, replace
 
 log close
 exit
