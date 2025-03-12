@@ -1,8 +1,8 @@
-----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
        log:  D:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_dta04.txt
   log type:  text
- opened on:   7 Mar 2025, 18:04:01
+ opened on:  11 Mar 2025, 16:06:33
 
 . 
 . // make consistent spells
@@ -19,70 +19,59 @@
 (cleaned spells)
 
 . datasignature confirm
-  (data unchanged since 07mar2025 14:48)
+  (data unchanged since 11mar2025 16:06)
+
+. 
+. **# drop pre-voc
+. drop if start == 6
+(1,117 observations deleted)
 
 . 
 . **# first transition begins with entering Grundschule
 . tab start finish if sort == 1
 
-                      |                                 end of spell
-       begin of spell |  drop out  finish Gr  finish Ha  finish Re  finish Ab  finish pr  finish vo |     Total
-----------------------+-----------------------------------------------------------------------------+----------
-enter Grund- Volkssch |     1,709      9,802      1,472         97         26          0          0 |    13,106 
-    enter Hauptschule |        49          0        747         24          0          0          0 |       820 
-     enter Realschule |       367          0        248      2,066         27          0          0 |     2,708 
-      enter Gymnasium |         8          0          0         12        199          0          0 |       219 
- enter pre-vocational |         0          0          0          0          0         10          0 |        10 
-     enter vocational |        14          0          0          7          4          0         95 |       121 
- enter Fachhochschule |         6          0          0          0          0          0          0 |        19 
-     enter Hochschule |        21          0          0          0          0          0          0 |        71 
-----------------------+-----------------------------------------------------------------------------+----------
-                Total |     2,174      9,802      2,467      2,206        256         10         95 |    17,074 
-
-
-                      |     end of spell
-       begin of spell | finish Fa  finish Ho |     Total
-----------------------+----------------------+----------
-enter Grund- Volkssch |         0          0 |    13,106 
-    enter Hauptschule |         0          0 |       820 
-     enter Realschule |         0          0 |     2,708 
-      enter Gymnasium |         0          0 |       219 
- enter pre-vocational |         0          0 |        10 
-     enter vocational |         0          1 |       121 
- enter Fachhochschule |        12          1 |        19 
-     enter Hochschule |         0         50 |        71 
-----------------------+----------------------+----------
-                Total |        12         52 |    17,074 
+                      |                                      end of spell
+       begin of spell |  drop out  finish Gr  finish Ha  finish Re  finish Ab  finish vo  finish Fa  finish Ho |     Total
+----------------------+----------------------------------------------------------------------------------------+----------
+enter Grund- Volkssch |     1,709      9,802      1,472         97         26          0          0          0 |    13,106 
+    enter Hauptschule |        49          0        747         24          0          0          0          0 |       820 
+     enter Realschule |       367          0        248      2,066         27          0          0          0 |     2,708 
+      enter Gymnasium |         8          0          0         12        199          0          0          0 |       219 
+     enter vocational |        14          0          0          7          4         95          0          1 |       121 
+ enter Fachhochschule |         6          0          0          0          0          0         12          1 |        19 
+     enter Hochschule |        21          0          0          0          0          0          0         50 |        71 
+----------------------+----------------------------------------------------------------------------------------+----------
+                Total |     2,174      9,802      2,467      2,206        256         95         12         52 |    17,064 
 
 . bys ID_t (sort) : gen byte add = ( start != 1 & _n == 1 ) + 1
 
 . expand add, gen(added)
-(3,968 observations created)
+(3,965 observations created)
 
 . 
 . replace sort   = 0  if added 
-(3,968 real changes made)
+(3,965 real changes made)
 
 . replace start  = 1  if added
-(3,968 real changes made)
+(3,965 real changes made)
 
 . replace finish = 10 if added
-(3,968 real changes made)
+(3,965 real changes made)
 
 . replace startm = .  if added
-(3,968 real changes made, 3,968 to missing)
+(3,965 real changes made, 3,965 to missing)
 
 . replace starty = .  if added
-(3,968 real changes made, 3,968 to missing)
+(3,965 real changes made, 3,965 to missing)
 
 . replace endm   = .  if added
-(3,968 real changes made, 3,968 to missing)
+(3,965 real changes made, 3,965 to missing)
 
 . replace endy   = .  if added
-(3,968 real changes made, 3,968 to missing)
+(3,965 real changes made, 3,965 to missing)
 
 . bys ID_t (sort) : replace sort = _n
-(13,529 real changes made)
+(14,298 real changes made)
 
 . drop add added
 
@@ -106,7 +95,7 @@ enter Grund- Volkssch |         0          0 |    13,106
 . 
 . // clean sort
 . bys ID_t (sort) : replace sort = _n
-(1,172 real changes made)
+(1,091 real changes made)
 
 . 
 . tab start finish if sort == 1
@@ -114,9 +103,9 @@ enter Grund- Volkssch |         0          0 |    13,106
                       |     end of spell
        begin of spell | finish Gr  finish Ha |     Total
 ----------------------+----------------------+----------
-enter Grund- Volkssch |    15,479      1,595 |    17,074 
+enter Grund- Volkssch |    15,476      1,595 |    17,071 
 ----------------------+----------------------+----------
-                Total |    15,479      1,595 |    17,074 
+                Total |    15,476      1,595 |    17,071 
 
 . 
 . // -------------------------------------------------------------- 
@@ -130,23 +119,23 @@ Panel variable: ID_t (unbalanced)
          Delta: 1 unit
 
 . gen lstart = L.start
-(17,074 missing values generated)
+(17,071 missing values generated)
 
 . gen lfinish = L.finish
-(17,074 missing values generated)
+(17,071 missing values generated)
 
 . label val lstart lfinish edlevs
 
 . 
 . tab lfinish start if sort == 2 
 
-                      |                                begin of spell
-              lfinish | enter Hau  enter Rea  enter Gym  enter pre  enter voc  enter Fac  enter Hoc |     Total
-----------------------+-----------------------------------------------------------------------------+----------
-   finish Grundschule |     3,929      6,282      4,507         29        521         22         79 |    15,369 
-   finish Hauptschule |         5        170         57         32      1,235          4         15 |     1,518 
-----------------------+-----------------------------------------------------------------------------+----------
-                Total |     3,934      6,452      4,564         61      1,756         26         94 |    16,887 
+                      |                          begin of spell
+              lfinish | enter Hau  enter Rea  enter Gym  enter voc  enter Fac  enter Hoc |     Total
+----------------------+------------------------------------------------------------------+----------
+   finish Grundschule |     3,932      6,283      4,507        540         23         80 |    15,365 
+   finish Hauptschule |         5        170         57      1,258          4         15 |     1,509 
+----------------------+------------------------------------------------------------------+----------
+                Total |     3,937      6,453      4,564      1,798         27         95 |    16,874 
 
 . 
 . // probably wrong sort
@@ -154,35 +143,20 @@ Panel variable: ID_t (unbalanced)
 . bys ID_t (sort) : gen byte toberecoded = (start[2]==7 & finish[2]== 16) & ///
 >                                          inlist(start[3], 2, 3, 4, 5)
 
-. // reverse sort if 2nd trans pre-voc & 3rd trans general secondary
-.  bys ID_t (sort) : replace toberecoded = (start[2]==6 & finish[2]== 15) & ///
->                                          inlist(start[3], 2, 3, 4, 5) if toberecoded == 0
-(15 real changes made)
-
-. // reverse sort if 2nd trans voc & 3rd trans pre-voc & (only 3 transitions | 4th transition != voc)
-. bys ID_t (sort) : replace toberecoded = (start[2]==7 & finish[2]== 16) & ///
->                                          start[3]==6 & ///
->                                                                                  (_N == 3 | start[4] != 7) if tobere
-> coded == 0
-(5 real changes made)
-
-. recode sort (3=2) (2=3) if toberecoded
-(190 changes made to sort)
-
 . 
 . // voc --> Fachhochschule --> realschule to
 . // realschule --> voc --> fachhochschule                                                                           
 . bys ID_t (sort) : replace toberecoded = start[2] == 7 & start[3] == 8 & start[4] == 3
-(385 real changes made)
+(371 real changes made)
 
 . recode sort (4=2) (2=3) (3=4) if toberecoded
 (3 changes made to sort)
 
 . 
-. // if someone enters (pre-)vocational in second spell, she probably finished 
+. // if someone enters vocational in second spell, she probably finished 
 . // the Volksschule (+/- Realschulabschluss) in first spell
-. bys ID_t (sort) : replace finish = 11 if sort == 1 & inlist(start[_n+1], 6,7) 
-(520 real changes made)
+. bys ID_t (sort) : replace finish = 11 if sort == 1 & inlist(start[_n+1], 7) 
+(540 real changes made)
 
 . 
 . 
@@ -191,33 +165,33 @@ Panel variable: ID_t (unbalanced)
 . bys ID_t (sort) : gen byte add = (start == 8 & sort == 2) + 1
 
 . expand add, gen(added)
-(26 observations created)
+(27 observations created)
 
 . 
 . replace sort   = 1.5 if added
 variable sort was byte now float
-(26 real changes made)
+(27 real changes made)
 
 . replace start  = 3   if added
-(26 real changes made)
+(27 real changes made)
 
 . replace finish = 12  if added
-(26 real changes made)
+(27 real changes made)
 
 . replace startm = .   if added
-(26 real changes made, 26 to missing)
+(27 real changes made, 27 to missing)
 
 . replace starty = .   if added
-(26 real changes made, 26 to missing)
+(27 real changes made, 27 to missing)
 
 . replace endm   = .   if added
-(26 real changes made, 26 to missing)
+(27 real changes made, 27 to missing)
 
 . replace endy   = .   if added
-(26 real changes made, 26 to missing)
+(27 real changes made, 27 to missing)
 
 . bys ID_t (sort) : replace sort = _n
-(62 real changes made)
+(64 real changes made)
 
 . drop add added
 
@@ -227,32 +201,32 @@ variable sort was byte now float
 . bys ID_t (sort) : gen byte add = (start == 9 & sort == 2) + 1
 
 . expand add, gen(added)
-(94 observations created)
+(95 observations created)
 
 . 
 . replace sort   = 1.5 if added
-(94 real changes made)
+(95 real changes made)
 
 . replace start  = 4   if added
-(94 real changes made)
+(95 real changes made)
 
 . replace finish = 14  if added
-(94 real changes made)
+(95 real changes made)
 
 . replace startm = .   if added
-(94 real changes made, 94 to missing)
+(95 real changes made, 95 to missing)
 
 . replace starty = .   if added
-(94 real changes made, 94 to missing)
+(95 real changes made, 95 to missing)
 
 . replace endm   = .   if added
-(94 real changes made, 94 to missing)
+(95 real changes made, 95 to missing)
 
 . replace endy   = .   if added
-(94 real changes made, 94 to missing)
+(95 real changes made, 95 to missing)
 
 . bys ID_t (sort) : replace sort = _n
-(219 real changes made)
+(220 real changes made)
 
 . drop add added
 
@@ -260,7 +234,7 @@ variable sort was byte now float
 . // finish hauptschule --> enter hauptschule to 
 . // finish grundschule --> enter hauptschule
 . bys ID_t (sort) : replace finish = 10 if sort == 1 & finish == 11 & start[_n+1] == 2
-(7 real changes made)
+(5 real changes made)
 
 . 
 . // return table of lfinish start for research log
@@ -272,20 +246,20 @@ Panel variable: ID_t (unbalanced)
          Delta: 1 unit
 
 . replace lstart = L.start
-(372 real changes made)
+(124 real changes made)
 
 . replace lfinish = L.finish
-(895 real changes made)
+(669 real changes made)
 
 . tab lfinish start if sort == 2 
 
-                      |                     begin of spell
-              lfinish | enter Hau  enter Rea  enter Gym  enter pre  enter voc |     Total
-----------------------+-------------------------------------------------------+----------
-   finish Grundschule |     3,941      6,321      4,594          0          0 |    14,856 
-   finish Hauptschule |         0        225         84         59      1,663 |     2,031 
-----------------------+-------------------------------------------------------+----------
-                Total |     3,941      6,546      4,678         59      1,663 |    16,887 
+                      |               begin of spell
+              lfinish | enter Hau  enter Rea  enter Gym  enter voc |     Total
+----------------------+--------------------------------------------+----------
+   finish Grundschule |     3,937      6,306      4,587          0 |    14,830 
+   finish Hauptschule |         0        175         72      1,797 |     2,044 
+----------------------+--------------------------------------------+----------
+                Total |     3,937      6,481      4,659      1,797 |    16,874 
 
 . 
 . // -------------------------------------------------------------- 
@@ -307,17 +281,16 @@ Panel variable: ID_t (unbalanced)
 
 . tab lfinish start if sort == 3 
 
-                      |                                begin of spell
-              lfinish | enter Hau  enter Rea  enter Gym  enter pre  enter voc  enter Fac  enter Hoc |     Total
-----------------------+-----------------------------------------------------------------------------+----------
-             drop out |       202        918        506         58        278          5          6 |     1,973 
-   finish Hauptschule |        22        367        103        292      2,371         15         28 |     3,198 
-    finish Realschule |         9         97        797        256      4,658         95         55 |     5,967 
-        finish Abitur |         2         28          2         48        898        423      2,009 |     3,410 
-finish pre-vocational |         0          0          0          0         39          1          1 |        41 
-    finish vocational |         0          0          0          1        105         20         12 |       138 
-----------------------+-----------------------------------------------------------------------------+----------
-                Total |       235      1,410      1,408        655      8,349        559      2,111 |    14,727 
+                      |                          begin of spell
+              lfinish | enter Hau  enter Rea  enter Gym  enter voc  enter Fac  enter Hoc |     Total
+----------------------+------------------------------------------------------------------+----------
+             drop out |       203        919        506        310          5          6 |     1,949 
+   finish Hauptschule |        22        374        103      2,622         15         28 |     3,164 
+    finish Realschule |         9        103        798      4,836         97         55 |     5,898 
+        finish Abitur |         2         28          3        908        430      2,021 |     3,392 
+    finish vocational |         5         66         22        110         21         12 |       236 
+----------------------+------------------------------------------------------------------+----------
+                Total |       241      1,490      1,432      8,786        568      2,122 |    14,639 
 
 . 
 . // finish hauptschule in 2nd spell, enter Hauptschule, finish Real in 3rd spell, 
@@ -341,7 +314,7 @@ finish pre-vocational |         0          0          0          0         39   
 . // drop spells when 2nd spell finish realschule, 3rd spell enter enter realschule 
 . // and finish drop-out
 . bys ID_t (sort) : drop if sort == 3 & start == 3 & finish[_n-1] == 12 & inlist(finish,0, 12)
-(94 observations deleted)
+(100 observations deleted)
 
 . 
 . // change dropout to finish voc in 2nd spell if 2nd spell starts with voc and 
@@ -399,7 +372,7 @@ finish pre-vocational |         0          0          0          0         39   
 (28 real changes made, 28 to missing)
 
 . bys ID_t (sort) : replace sort = _n
-(194 real changes made)
+(187 real changes made)
 
 . drop add
 
@@ -439,38 +412,9 @@ finish pre-vocational |         0          0          0          0         39   
 . drop add added
 
 . 
-. // realschule --> hochschule to realschule --> gym --> hochschule
-. bys ID_t (sort) : gen byte add = ( sort == 3 & finish[_n-1] == 12 & start == 9) + 1
-
-. expand add, gen(added)
-(55 observations created)
-
-. 
-. replace sort   = 2.5  if added 
-(55 real changes made)
-
-. replace start  = 4  if added
-(55 real changes made)
-
-. replace finish = 14 if added
-(55 real changes made)
-
-. replace startm = .  if added
-(55 real changes made, 55 to missing)
-
-. replace starty = .  if added
-(55 real changes made, 55 to missing)
-
-. replace endm   = .  if added
-(55 real changes made, 55 to missing)
-
-. replace endy   = .  if added
-(55 real changes made, 55 to missing)
-
-. bys ID_t (sort) : replace sort = _n
-(127 real changes made)
-
-. drop add added
+. // realschule --> hochschule to realschule --> Fachhochschule
+. bys ID_t (sort) : replace start = 8 if start == 9 & finish[_n-1] == 12
+(67 real changes made)
 
 . 
 . // change real --> abi --> gym to real --> finish real --> gym
@@ -480,49 +424,9 @@ finish pre-vocational |         0          0          0          0         39   
 . 
 . //drop duplicate spells
 . bys ID_t (sort) : drop if start == start[_n-1] & finish == finish[_n-1]
-(80 observations deleted)
+(100 observations deleted)
 
 . 
-. 
-. // pre-voc --> fachhochschule to pre-voc --> voc --> fachhochschule
-. bys ID_t (sort) : gen byte add = ( sort == 3 & finish[_n-1] == 15 & start == 8) + 1
-
-. expand add, gen(added)
-(1 observation created)
-
-. 
-. replace sort   = 2.5  if added 
-(1 real change made)
-
-. replace start  = 7  if added
-(1 real change made)
-
-. replace finish = 16 if added
-(1 real change made)
-
-. replace startm = .  if added
-(1 real change made, 1 to missing)
-
-. replace starty = .  if added
-(1 real change made, 1 to missing)
-
-. replace endm   = .  if added
-(1 real change made, 1 to missing)
-
-. replace endy   = .  if added
-(1 real change made, 1 to missing)
-
-. bys ID_t (sort) : replace sort = _n
-(120 real changes made)
-
-. drop add added
-
-. 
-. 
-. // drop finish voc --> pre-voc
-. bys ID_t (sort) : drop if finish[_n-1] == 16 & start ==6 & sort == 3
-(1 observation deleted)
-
 . 
 . // voc --> hochschule to voc --> abi --> hochschule
 . bys ID_t (sort) : gen byte add = ( sort == 3 & finish[_n-1] == 16 & start == 9) + 1
@@ -553,7 +457,7 @@ finish pre-vocational |         0          0          0          0         39   
 (12 real changes made, 12 to missing)
 
 . bys ID_t (sort) : replace sort = _n
-(26 real changes made)
+(132 real changes made)
 
 . drop add added
 
@@ -614,20 +518,20 @@ finish pre-vocational |         0          0          0          0         39   
 . gen tochange = sort == 2 & start == 6 & finish == 15 & start[_n+1] == 9
 
 . replace start = 7 if tochange
-(1 real change made)
+(0 real changes made)
 
 . replace finish = 14 if tochange
-(1 real change made)
+(0 real changes made)
 
 . drop tochange
 
 . 
 . // drop duplicate spell
 . bys ID_t (sort) : drop if start == start[_n-1] & finish == finish[_n-1]
-(3 observations deleted)
+(2 observations deleted)
 
 . bys ID_t (sort) : replace sort = _n
-(61 real changes made)
+(57 real changes made)
 
 . 
 . // return table of lfinish start for research log
@@ -639,24 +543,23 @@ Panel variable: ID_t (unbalanced)
          Delta: 1 unit
 
 . replace lstart = L.start
-(173 real changes made)
+(139 real changes made)
 
 . replace lfinish = L.finish
-(265 real changes made)
+(211 real changes made)
 
 . tab lfinish start if sort == 3 
 
-                      |                                begin of spell
-              lfinish | enter Hau  enter Rea  enter Gym  enter pre  enter voc  enter Fac  enter Hoc |     Total
-----------------------+-----------------------------------------------------------------------------+----------
-             drop out |       207        903        508         60        284          0          0 |     1,962 
-   finish Hauptschule |         0        414        103        294      2,374          0          0 |     3,185 
-    finish Realschule |         0          0        862        268      4,722        117          0 |     5,969 
-        finish Abitur |         0          1          0         51        911        423      2,027 |     3,413 
-finish pre-vocational |         0          0          0          0         40          0          0 |        40 
-    finish vocational |         0          0          0          0        117         22          0 |       139 
-----------------------+-----------------------------------------------------------------------------+----------
-                Total |       207      1,318      1,473        673      8,448        562      2,027 |    14,708 
+                      |                          begin of spell
+              lfinish | enter Hau  enter Rea  enter Gym  enter voc  enter Fac  enter Hoc |     Total
+----------------------+------------------------------------------------------------------+----------
+             drop out |       208        904        508        318          0          0 |     1,938 
+   finish Hauptschule |         0        421        103      2,627          0          0 |     3,151 
+    finish Realschule |         0          0        808      4,917        174          0 |     5,899 
+        finish Abitur |         0          1          0        924        433      2,036 |     3,394 
+    finish vocational |         5         66         22        121         23          0 |       237 
+----------------------+------------------------------------------------------------------+----------
+                Total |       213      1,392      1,441      8,907        630      2,036 |    14,619 
 
 . 
 . // --------------------------------------------------------------- 
@@ -681,19 +584,18 @@ Panel variable: ID_t (unbalanced)
 
 . tab lfinish start if sort == 4 
 
-                      |                                begin of spell
-              lfinish | enter Hau  enter Rea  enter Gym  enter pre  enter voc  enter Fac  enter Hoc |     Total
-----------------------+-----------------------------------------------------------------------------+----------
-             drop out |        53         80         43         63        415        114         74 |       842 
-   finish Hauptschule |         4         20          3         14        126          0          0 |       167 
-    finish Realschule |         0         27        212         66      1,124         13          5 |     1,447 
-        finish Abitur |         1         14          1         14        607        274        636 |     1,547 
-finish pre-vocational |         2         14          2         13        525          8         10 |       574 
-    finish vocational |         6        106        182         53        592        498        287 |     1,724 
-finish Fachhochschule |         0          0          0          5         16          4         46 |        71 
-    finish Hochschule |         0          1          0         13         54         31         69 |       168 
-----------------------+-----------------------------------------------------------------------------+----------
-                Total |        66        262        443        241      3,459        942      1,127 |     6,540 
+                      |                          begin of spell
+              lfinish | enter Hau  enter Rea  enter Gym  enter voc  enter Fac  enter Hoc |     Total
+----------------------+------------------------------------------------------------------+----------
+             drop out |        53         87         47        427        119         75 |       808 
+   finish Hauptschule |         4         20          3        141          0          0 |       168 
+    finish Realschule |         0         34        221      1,241         26          0 |     1,522 
+        finish Abitur |         1         15          1        623        286        587 |     1,513 
+    finish vocational |         7        105        182        626        499        286 |     1,705 
+finish Fachhochschule |         0          0          0         17          4         46 |        67 
+    finish Hochschule |         0          1          0         59         34         70 |       164 
+----------------------+------------------------------------------------------------------+----------
+                Total |        65        262        454      3,134        968      1,064 |     5,947 
 
 . 
 . 
@@ -706,50 +608,27 @@ finish Fachhochschule |         0          0          0          5         16   
 . 
 . // spell start real then drop-out adds nothing if previous spell finished real
 . bys ID_t (sort) : drop if finish[_n-1] == 12 & start == 3 & finish == 0 & sort == 4
-(27 observations deleted)
-
-. 
-. // after finish pre-voc no need to enter pre-voc
-. bys ID_t (sort) : replace sort = _n
-(45 real changes made)
-
-. bys ID_t (sort) : drop if finish[_n-1] == 15 & start == 6 & sort == 4
-(13 observations deleted)
-
-. // repeat
-. bys ID_t (sort) : replace sort = _n
-(18 real changes made)
-
-. bys ID_t (sort) : drop if finish[_n-1] == 15 & start == 6 & sort == 4
-(3 observations deleted)
+(32 observations deleted)
 
 .         
 . // after vocational no need to enter hauptschule        
 . bys ID_t (sort) : drop if finish[_n-1] == 16 & start == 2 & sort == 4
-(6 observations deleted)
-
-.         
-. // after vocational no need to enter pre-voc
-. bys ID_t (sort) : replace sort = _n
-(8 real changes made)
-
-. bys ID_t (sort) : drop if finish[_n-1] == 16 & start == 6 & sort == 4
-(53 observations deleted)
+(7 observations deleted)
 
 .         
 . // after fachhochschule no need to enter pre-voc, voc, or fachhochschule
 . bys ID_t (sort) : replace sort = _n
-(26 real changes made)
+(55 real changes made)
 
-. bys ID_t (sort) : drop if finish[_n-1] == 17 & inlist(start, 6, 7,8) & sort == 4
-(25 observations deleted)
+. bys ID_t (sort) : drop if finish[_n-1] == 17 & inlist(start, 7,8) & sort == 4
+(21 observations deleted)
 
 . // repeat
 . bys ID_t (sort) : replace sort = _n
-(3 real changes made)
+(2 real changes made)
 
-. bys ID_t (sort) : drop if finish[_n-1] == 17 & inlist(start, 6, 7,8) & sort == 4
-(1 observation deleted)
+. bys ID_t (sort) : drop if finish[_n-1] == 17 & inlist(start, 7,8) & sort == 4
+(0 observations deleted)
 
 . 
 . // after hochschule you are done
@@ -759,7 +638,7 @@ finish Fachhochschule |         0          0          0          5         16   
 . bys ID_t (sort) : gen byte hoch = finish[_n-1] == 18
 
 . bys ID_t (sort) : replace hoch = sum(hoch)
-(53 real changes made)
+(51 real changes made)
 
 . fre hoch
 
@@ -767,14 +646,14 @@ hoch
 -----------------------------------------------------------
               |      Freq.    Percent      Valid       Cum.
 --------------+--------------------------------------------
-Valid   0     |      58356      99.41      99.41      99.41
-        1     |        345       0.59       0.59      99.99
+Valid   0     |      57252      99.44      99.44      99.44
+        1     |        319       0.55       0.55      99.99
         2     |          3       0.01       0.01     100.00
-        Total |      58704     100.00     100.00           
+        Total |      57574     100.00     100.00           
 -----------------------------------------------------------
 
 . drop if hoch
-(348 observations deleted)
+(322 observations deleted)
 
 . drop hoch
 
@@ -784,12 +663,12 @@ Valid   0     |      58356      99.41      99.41      99.41
 (0 real changes made)
 
 . bys ID_t (sort) : drop if finish[_n-1] == 14 & start < 6 
-(29 observations deleted)
+(30 observations deleted)
 
 . 
 . // drop duplicate spell
 . bys ID_t (sort) : drop if start == start[_n-1] & finish == finish[_n-1]
-(17 observations deleted)
+(4 observations deleted)
 
 . 
 . 
@@ -801,32 +680,31 @@ Panel variable: ID_t (unbalanced)
          Delta: 1 unit
 
 . replace lstart = L.start
-(38 real changes made, 20 to missing)
+(33 real changes made, 19 to missing)
 
 . replace lfinish = L.finish
-(63 real changes made, 20 to missing)
+(53 real changes made, 19 to missing)
 
 . tab lfinish start if sort == 4 
 
-                      |                                begin of spell
-              lfinish | enter Hau  enter Rea  enter Gym  enter pre  enter voc  enter Fac  enter Hoc |     Total
-----------------------+-----------------------------------------------------------------------------+----------
-             drop out |        53         80         43         63        415        114         74 |       842 
-   finish Hauptschule |         0         24          3         14        126          0          0 |       167 
-    finish Realschule |         0          0        212         68      1,145         15          5 |     1,445 
-        finish Abitur |         0          0          0         14        607        274        636 |     1,531 
-finish pre-vocational |         2         14          2          0        536          8         10 |       572 
-    finish vocational |         0        107        182          0        594        501        288 |     1,672 
-finish Fachhochschule |         0          0          1          0          0          0         47 |        48 
-----------------------+-----------------------------------------------------------------------------+----------
-                Total |        55        225        443        159      3,423        912      1,060 |     6,277 
+                      |                          begin of spell
+              lfinish | enter Hau  enter Rea  enter Gym  enter voc  enter Fac  enter Hoc |     Total
+----------------------+------------------------------------------------------------------+----------
+             drop out |        53         87         47        427        119         75 |       808 
+   finish Hauptschule |         0         24          3        141          0          0 |       168 
+    finish Realschule |         0          2        221      1,267         29          0 |     1,519 
+        finish Abitur |         0          0          0        623        286        587 |     1,496 
+    finish vocational |         0        106        182        627        499        286 |     1,700 
+finish Fachhochschule |         0          0          1          0          0         47 |        48 
+----------------------+------------------------------------------------------------------+----------
+                Total |        53        219        454      3,085        933        995 |     5,739 
 
 . 
 . 
 . // --------------------------------------------------------------- 
 . **# Fifth spell
 . bys ID_t (sort) : replace sort = _n
-(29 real changes made)
+(26 real changes made)
 
 . 
 . // before cleaning
@@ -837,25 +715,24 @@ Panel variable: ID_t (unbalanced)
          Delta: 1 unit
 
 . replace lstart = L.start
-(20 real changes made)
+(19 real changes made)
 
 . replace lfinish = L.finish
-(20 real changes made)
+(19 real changes made)
 
 . tab lfinish start if sort == 5 
 
-                      |                                begin of spell
-              lfinish | enter Hau  enter Rea  enter Gym  enter pre  enter voc  enter Fac  enter Hoc |     Total
-----------------------+-----------------------------------------------------------------------------+----------
-             drop out |         7         15         16         37        251         77         39 |       442 
-   finish Hauptschule |         0          2          0          3         41          0          0 |        46 
-    finish Realschule |         0          8         31         14        201         21          0 |       275 
-        finish Abitur |         0          0          0         10        193        281        230 |       714 
-finish pre-vocational |         0          2          1          2        109          0          3 |       117 
-    finish vocational |         3         26         59         17        251        182        114 |       652 
-finish Fachhochschule |         0          0          1          1         30         11         51 |        94 
-----------------------+-----------------------------------------------------------------------------+----------
-                Total |        10         53        108         84      1,076        572        437 |     2,340 
+                      |                          begin of spell
+              lfinish | enter Hau  enter Rea  enter Gym  enter voc  enter Fac  enter Hoc |     Total
+----------------------+------------------------------------------------------------------+----------
+             drop out |         7         10         15        243         73         38 |       386 
+   finish Hauptschule |         0          3          0         41          0          0 |        44 
+    finish Realschule |         0          8         33        187         19          0 |       247 
+        finish Abitur |         0          0          0        205        298        235 |       738 
+    finish vocational |         2         24         49        233        173        116 |       597 
+finish Fachhochschule |         0          1          1         32         11         52 |        97 
+----------------------+------------------------------------------------------------------+----------
+                Total |         9         46         98        941        574        441 |     2,109 
 
 . 
 . // no need to enter realschule or gesamtschule after abi
@@ -865,40 +742,32 @@ finish Fachhochschule |         0          0          1          1         30   
 . 
 . // no need to enter realschule after realschule
 . bys ID_t (sort) : drop if finish[_n-1] == 12 & start == 3
-(10 observations deleted)
+(11 observations deleted)
 
 . 
 . // no need to enter hauptschule after finish voc
 . bys ID_t (sort) : drop if finish[_n-1]==16 & start == 2
-(3 observations deleted)
-
-. 
-. // no need to enter pre-vocational if finish voc
-. bys ID_t (sort) : replace sort = _n
-(16 real changes made)
-
-. bys ID_t (sort) : drop if finish[_n-1]==16 & start == 6 & sort == 5
-(17 observations deleted)
+(7 observations deleted)
 
 . 
 . // no need to enter pre-voc, voc, real or fachhochschule after finish fachhochschule
 . bys ID_t (sort) : replace sort = _n
-(10 real changes made)
+(15 real changes made)
 
-. bys ID_t (sort) : drop if finish[_n-1]==17 & inlist(start, 3,6,7,8) & sort == 5
-(42 observations deleted)
+. bys ID_t (sort) : drop if finish[_n-1]==17 & inlist(start, 3,7,8) & sort == 5
+(44 observations deleted)
 
 . //repeat
 . bys ID_t (sort) : replace sort = _n
 (6 real changes made)
 
-. bys ID_t (sort) : drop if finish[_n-1]==17 & inlist(start, 3,6,7,8) & sort == 5
+. bys ID_t (sort) : drop if finish[_n-1]==17 & inlist(start, 3,7,8) & sort == 5
 (2 observations deleted)
 
 . 
 . // drop duplicate spell
 . bys ID_t (sort) : drop if start == start[_n-1] & finish == finish[_n-1]
-(7 observations deleted)
+(2 observations deleted)
 
 . 
 . // after cleaning
@@ -909,31 +778,30 @@ Panel variable: ID_t (unbalanced)
          Delta: 1 unit
 
 . replace lstart = L.start
-(11 real changes made, 4 to missing)
+(7 real changes made, 3 to missing)
 
 . replace lfinish = L.finish
-(17 real changes made, 4 to missing)
+(15 real changes made, 3 to missing)
 
 . tab lfinish start if sort == 5 
 
-                      |                                begin of spell
-              lfinish | enter Hau  enter Rea  enter Gym  enter pre  enter voc  enter Fac  enter Hoc |     Total
-----------------------+-----------------------------------------------------------------------------+----------
-             drop out |         7         15         16         37        250         77         39 |       441 
-   finish Hauptschule |         0          2          0          3         41          0          0 |        46 
-    finish Realschule |         0          0         31         15        204         21          0 |       271 
-        finish Abitur |         0          0          0         10        193        281        230 |       714 
-finish pre-vocational |         0          2          1          2        109          0          3 |       117 
-    finish vocational |         0         26         59          0        253        182        114 |       634 
-finish Fachhochschule |         0          0          1          0          0          0         53 |        54 
-----------------------+-----------------------------------------------------------------------------+----------
-                Total |         7         45        108         67      1,050        561        439 |     2,277 
+                      |                          begin of spell
+              lfinish | enter Hau  enter Rea  enter Gym  enter voc  enter Fac  enter Hoc |     Total
+----------------------+------------------------------------------------------------------+----------
+             drop out |         7         10         15        242         73         38 |       385 
+   finish Hauptschule |         0          3          0         41          0          0 |        44 
+    finish Realschule |         0          0         33        191         19          0 |       243 
+        finish Abitur |         0          0          0        205        297        234 |       736 
+    finish vocational |         0         24         48        233        173        116 |       594 
+finish Fachhochschule |         0          0          1          0          0         54 |        55 
+----------------------+------------------------------------------------------------------+----------
+                Total |         7         37         97        912        562        442 |     2,057 
 
 . 
 . // --------------------------------------------------------------- 
 . **# Sixth spell
 . bys ID_t (sort) : replace sort = _n
-(4 real changes made)
+(3 real changes made)
 
 . 
 . // before cleaning
@@ -944,48 +812,39 @@ Panel variable: ID_t (unbalanced)
          Delta: 1 unit
 
 . replace lstart = L.start
-(4 real changes made)
+(3 real changes made)
 
 . replace lfinish = L.finish
-(4 real changes made)
+(3 real changes made)
 
 . tab lfinish start if sort == 6 
 
-                      |                          begin of spell
-              lfinish | enter Rea  enter Gym  enter pre  enter voc  enter Fac  enter Hoc |     Total
-----------------------+------------------------------------------------------------------+----------
-             drop out |         4          6          9         93         26          8 |       146 
-   finish Hauptschule |         2          0          1          3          0          0 |         6 
-    finish Realschule |         0          4          4         32          6          1 |        47 
-        finish Abitur |         0          0          2         46        149         48 |       245 
-finish pre-vocational |         1          0          0         36          1          2 |        40 
-    finish vocational |         6         14          4         63         54         26 |       167 
-finish Fachhochschule |         1          0          3         12          9         41 |        66 
-----------------------+------------------------------------------------------------------+----------
-                Total |        14         24         23        285        245        126 |       717 
-
-. 
-. // no need to enter pre-voc after finishing voc
-. bys ID_t (sort) : replace sort = _n
-(0 real changes made)
-
-. bys ID_t (sort) : drop if finish[_n-1]==16 & start == 6 & sort == 6
-(4 observations deleted)
+                      |                     begin of spell
+              lfinish | enter Rea  enter Gym  enter voc  enter Fac  enter Hoc |     Total
+----------------------+-------------------------------------------------------+----------
+             drop out |         3          5         89         25          9 |       131 
+   finish Hauptschule |         2          0          4          0          0 |         6 
+    finish Realschule |         0          2         24          7          0 |        33 
+        finish Abitur |         0          0         36        133         45 |       214 
+    finish vocational |         4         15         45         56         22 |       142 
+finish Fachhochschule |         0          0         13          9         40 |        62 
+----------------------+-------------------------------------------------------+----------
+                Total |         9         22        211        230        116 |       588 
 
 . 
 . // no need to enter real pre-voc, voc or fachhochschule after finish fachhochschule
 . bys ID_t (sort) : replace sort = _n
-(1 real change made)
+(0 real changes made)
 
-. bys ID_t (sort) : drop if finish[_n-1]==17 & inlist(start, 3,6,7,8) & sort == 6
-(25 observations deleted)
+. bys ID_t (sort) : drop if finish[_n-1]==17 & inlist(start, 3,7,8) & sort == 6
+(22 observations deleted)
 
 . //repeat
 . bys ID_t (sort) : replace sort = _n
-(4 real changes made)
+(3 real changes made)
 
-. bys ID_t (sort) : drop if finish[_n-1]==17 & inlist(start, 3,6,7,8) & sort == 6
-(3 observations deleted)
+. bys ID_t (sort) : drop if finish[_n-1]==17 & inlist(start, 3,7,8) & sort == 6
+(2 observations deleted)
 
 . 
 . // drop duplicate spell
@@ -1001,25 +860,24 @@ Panel variable: ID_t (unbalanced)
          Delta: 1 unit
 
 . replace lstart = L.start
-(2 real changes made)
+(1 real change made)
 
 . replace lfinish = L.finish
-(2 real changes made)
+(1 real change made)
 
 . tab lfinish start if sort == 6 
 
-                      |                          begin of spell
-              lfinish | enter Rea  enter Gym  enter pre  enter voc  enter Fac  enter Hoc |     Total
-----------------------+------------------------------------------------------------------+----------
-             drop out |         4          6          9         93         26          8 |       146 
-   finish Hauptschule |         2          0          1          3          0          0 |         6 
-    finish Realschule |         0          4          4         32          6          1 |        47 
-        finish Abitur |         0          0          2         46        149         48 |       245 
-finish pre-vocational |         1          0          0         36          1          2 |        40 
-    finish vocational |         7         14          0         63         54         26 |       164 
-finish Fachhochschule |         0          0          0          0          0         42 |        42 
-----------------------+------------------------------------------------------------------+----------
-                Total |        14         24         16        273        236        127 |       690 
+                      |                     begin of spell
+              lfinish | enter Rea  enter Gym  enter voc  enter Fac  enter Hoc |     Total
+----------------------+-------------------------------------------------------+----------
+             drop out |         3          5         89         25          9 |       131 
+   finish Hauptschule |         2          0          4          0          0 |         6 
+    finish Realschule |         0          2         24          7          0 |        33 
+        finish Abitur |         0          0         36        133         45 |       214 
+    finish vocational |         4         15         45         56         22 |       142 
+finish Fachhochschule |         0          0          0          0         41 |        41 
+----------------------+-------------------------------------------------------+----------
+                Total |         9         22        198        221        117 |       567 
 
 . 
 . // --------------------------------------------------------------- 
@@ -1040,31 +898,30 @@ Panel variable: ID_t (unbalanced)
 
 . tab lfinish start if sort == 7 
 
-                      |                          begin of spell
-              lfinish | enter Rea  enter Gym  enter pre  enter voc  enter Fac  enter Hoc |     Total
-----------------------+------------------------------------------------------------------+----------
-             drop out |         0          1          4         38          7          7 |        57 
-    finish Realschule |         0          2          0         10          3          0 |        15 
-        finish Abitur |         0          0          1          8         20         14 |        43 
-finish pre-vocational |         0          1          0          8          0          0 |         9 
-    finish vocational |         2          2          3         16         14          5 |        42 
-finish Fachhochschule |         0          0          1          6          4          8 |        19 
-----------------------+------------------------------------------------------------------+----------
-                Total |         2          6          9         86         48         34 |       185 
+                      |                     begin of spell
+              lfinish | enter Rea  enter Gym  enter voc  enter Fac  enter Hoc |     Total
+----------------------+-------------------------------------------------------+----------
+             drop out |         0          1         31          7          4 |        43 
+    finish Realschule |         0          2          3          3          0 |         8 
+        finish Abitur |         0          0          8         19         12 |        39 
+    finish vocational |         2          1         12         10          6 |        31 
+finish Fachhochschule |         0          0          5          4          9 |        18 
+----------------------+-------------------------------------------------------+----------
+                Total |         2          4         59         43         31 |       139 
 
 .         
 . // no need to enter pre-voc, voc or fachhochschule after finish fachhochschule
 . bys ID_t (sort) : replace sort = _n
 (0 real changes made)
 
-. bys ID_t (sort) : drop if finish[_n-1]==17 & inlist(start, 6,7,8) & sort == 7
-(11 observations deleted)
+. bys ID_t (sort) : drop if finish[_n-1]==17 & inlist(start, 7,8) & sort == 7
+(9 observations deleted)
 
 . //repeat
 . bys ID_t (sort) : replace sort = _n
 (1 real change made)
 
-. bys ID_t (sort) : drop if finish[_n-1]==17 & inlist(start, 6,7,8) & sort == 7
+. bys ID_t (sort) : drop if finish[_n-1]==17 & inlist(start, 7,8) & sort == 7
 (0 observations deleted)
 
 . 
@@ -1088,17 +945,16 @@ Panel variable: ID_t (unbalanced)
 
 . tab lfinish start if sort == 7 
 
-                      |                          begin of spell
-              lfinish | enter Rea  enter Gym  enter pre  enter voc  enter Fac  enter Hoc |     Total
-----------------------+------------------------------------------------------------------+----------
-             drop out |         0          1          4         38          7          7 |        57 
-    finish Realschule |         0          2          0         10          3          0 |        15 
-        finish Abitur |         0          0          1          8         20         14 |        43 
-finish pre-vocational |         0          1          0          8          0          0 |         9 
-    finish vocational |         2          2          3         16         14          5 |        42 
-finish Fachhochschule |         0          0          0          0          0          9 |         9 
-----------------------+------------------------------------------------------------------+----------
-                Total |         2          6          8         80         44         35 |       175 
+                      |                     begin of spell
+              lfinish | enter Rea  enter Gym  enter voc  enter Fac  enter Hoc |     Total
+----------------------+-------------------------------------------------------+----------
+             drop out |         0          1         31          7          4 |        43 
+    finish Realschule |         0          2          3          3          0 |         8 
+        finish Abitur |         0          0          8         19         12 |        39 
+    finish vocational |         2          1         12         10          6 |        31 
+finish Fachhochschule |         0          0          0          0         10 |        10 
+----------------------+-------------------------------------------------------+----------
+                Total |         2          4         54         39         32 |       131 
 
 . 
 . // --------------------------------------------------------------- 
@@ -1119,36 +975,30 @@ Panel variable: ID_t (unbalanced)
 
 . tab lfinish start if sort == 8 
 
-                      |                          begin of spell
-              lfinish | enter Rea  enter Gym  enter pre  enter voc  enter Fac  enter Hoc |     Total
-----------------------+------------------------------------------------------------------+----------
-             drop out |         0          1          1         13          2          1 |        18 
-    finish Realschule |         0          0          0          2          0          0 |         2 
-        finish Abitur |         0          0          0          2          6          1 |         9 
-finish pre-vocational |         0          0          1          4          0          0 |         5 
-    finish vocational |         0          1          1          6          3          2 |        13 
-finish Fachhochschule |         1          0          1          3          0          3 |         8 
-----------------------+------------------------------------------------------------------+----------
-                Total |         1          2          4         30         11          7 |        55 
+                      |                     begin of spell
+              lfinish | enter Rea  enter Gym  enter voc  enter Fac  enter Hoc |     Total
+----------------------+-------------------------------------------------------+----------
+             drop out |         0          1          9          2          2 |        14 
+    finish Realschule |         0          0          3          0          0 |         3 
+        finish Abitur |         0          0          2          3          1 |         6 
+    finish vocational |         0          1          3          4          1 |         9 
+finish Fachhochschule |         1          0          2          0          3 |         6 
+----------------------+-------------------------------------------------------+----------
+                Total |         1          2         19          9          7 |        38 
 
 .         
-. // no need to enter pre-voc if finished voc
-. bys ID_t (sort) : drop if finish[_n-1]==16 & start==6 & sort == 8
-(1 observation deleted)
-
-. 
 . // no need to enter pre-voc, voc, real or fachhochschule after finish fachhochschule
 . bys ID_t (sort) : replace sort = _n
 (0 real changes made)
 
-. bys ID_t (sort) : drop if finish[_n-1]==17 & inlist(start, 3,6,7,8) & sort == 8
-(5 observations deleted)
+. bys ID_t (sort) : drop if finish[_n-1]==17 & inlist(start, 3,7,8) & sort == 8
+(3 observations deleted)
 
 . //repeat
 . bys ID_t (sort) : replace sort = _n
 (1 real change made)
 
-. bys ID_t (sort) : drop if finish[_n-1]==17 & inlist(start, 3,6,7,8) & sort == 8
+. bys ID_t (sort) : drop if finish[_n-1]==17 & inlist(start, 3,7,8) & sort == 8
 (1 observation deleted)
 
 . 
@@ -1172,17 +1022,16 @@ Panel variable: ID_t (unbalanced)
 
 . tab lfinish start if sort == 8 
 
-                      |                     begin of spell
-              lfinish | enter Gym  enter pre  enter voc  enter Fac  enter Hoc |     Total
-----------------------+-------------------------------------------------------+----------
-             drop out |         1          1         13          2          1 |        18 
-    finish Realschule |         0          0          2          0          0 |         2 
-        finish Abitur |         0          0          2          6          1 |         9 
-finish pre-vocational |         0          1          4          0          0 |         5 
-    finish vocational |         1          0          6          3          2 |        12 
-finish Fachhochschule |         0          0          0          0          3 |         3 
-----------------------+-------------------------------------------------------+----------
-                Total |         2          2         27         11          7 |        49 
+                      |               begin of spell
+              lfinish | enter Gym  enter voc  enter Fac  enter Hoc |     Total
+----------------------+--------------------------------------------+----------
+             drop out |         1          9          2          2 |        14 
+    finish Realschule |         0          3          0          0 |         3 
+        finish Abitur |         0          2          3          1 |         6 
+    finish vocational |         1          3          4          1 |         9 
+finish Fachhochschule |         0          0          0          3 |         3 
+----------------------+--------------------------------------------+----------
+                Total |         2         17          9          7 |        35 
 
 . 
 . // --------------------------------------------------------------- 
@@ -1204,20 +1053,14 @@ Panel variable: ID_t (unbalanced)
 . tab lfinish start if sort == 9 
 
                       |               begin of spell
-              lfinish | enter pre  enter voc  enter Fac  enter Hoc |     Total
+              lfinish | enter Rea  enter voc  enter Fac  enter Hoc |     Total
 ----------------------+--------------------------------------------+----------
-             drop out |         0          2          1          1 |         4 
-    finish Realschule |         0          1          0          1 |         2 
-        finish Abitur |         0          1          2          1 |         4 
-    finish vocational |         1          2          3          1 |         7 
-finish Fachhochschule |         0          0          0          1 |         1 
+             drop out |         1          1          2          0 |         4 
+    finish Realschule |         0          0          1          0 |         1 
+        finish Abitur |         0          0          1          1 |         2 
+    finish vocational |         0          1          2          1 |         4 
 ----------------------+--------------------------------------------+----------
-                Total |         1          6          6          5 |        18 
-
-.         
-. // no need to enter pre-voc if finished voc
-. bys ID_t (sort) : drop if finish[_n-1]==16 & start==6 & sort == 9
-(1 observation deleted)
+                Total |         1          2          6          2 |        11 
 
 . 
 . // drop duplicate spell
@@ -1240,16 +1083,15 @@ Panel variable: ID_t (unbalanced)
 
 . tab lfinish start if sort == 9 
 
-                      |          begin of spell
-              lfinish | enter voc  enter Fac  enter Hoc |     Total
-----------------------+---------------------------------+----------
-             drop out |         2          1          1 |         4 
-    finish Realschule |         1          0          1 |         2 
-        finish Abitur |         1          2          1 |         4 
-    finish vocational |         2          3          1 |         6 
-finish Fachhochschule |         0          0          1 |         1 
-----------------------+---------------------------------+----------
-                Total |         6          6          5 |        17 
+                      |               begin of spell
+              lfinish | enter Rea  enter voc  enter Fac  enter Hoc |     Total
+----------------------+--------------------------------------------+----------
+             drop out |         1          1          2          0 |         4 
+    finish Realschule |         0          0          1          0 |         1 
+        finish Abitur |         0          0          1          1 |         2 
+    finish vocational |         0          1          2          1 |         4 
+----------------------+--------------------------------------------+----------
+                Total |         1          2          6          2 |        11 
 
 . 
 . 
@@ -1271,14 +1113,13 @@ Panel variable: ID_t (unbalanced)
 
 . tab lfinish start if sort == 10 
 
-                      |    begin of spell
-              lfinish | enter Rea  enter Fac |     Total
-----------------------+----------------------+----------
-             drop out |         1          2 |         3 
-    finish vocational |         0          1 |         1 
-finish Fachhochschule |         0          1 |         1 
-----------------------+----------------------+----------
-                Total |         1          4 |         5 
+                      |  begin of
+                      |   spell
+              lfinish | enter Fac |     Total
+----------------------+-----------+----------
+finish Fachhochschule |         1 |         1 
+----------------------+-----------+----------
+                Total |         1 |         1 
 
 .         
 . // no need to enter Fachhochschule if finished Fachhochschule
@@ -1298,7 +1139,7 @@ finish Fachhochschule |         0          1 |         1
 . tsset ID_t sort
 
 Panel variable: ID_t (unbalanced)
- Time variable: sort, 1 to 10
+ Time variable: sort, 1 to 9
          Delta: 1 unit
 
 . replace lstart = L.start
@@ -1308,14 +1149,7 @@ Panel variable: ID_t (unbalanced)
 (0 real changes made)
 
 . tab lfinish start if sort == 10
-
-                      |    begin of spell
-              lfinish | enter Rea  enter Fac |     Total
-----------------------+----------------------+----------
-             drop out |         1          2 |         3 
-    finish vocational |         0          1 |         1 
-----------------------+----------------------+----------
-                Total |         1          3 |         4 
+no observations
 
 . 
 . // --------------------------------------------------------------------------
@@ -1345,80 +1179,66 @@ Panel variable: ID_t (unbalanced)
 (11 observations deleted)
 
 . 
-. // no hauptschule or pre-vocational after vocational
+. // no hauptschule after vocational
 . // no vocational diploma after vocational
 . bys ID_t (sort) : replace tobedropped = finish[_n-1]== 16
-(2,673 real changes made)
+(2,712 real changes made)
 
 . bys ID_t (sort) : replace  tobedropped = sum(tobedropped)
-(1,214 real changes made)
+(1,242 real changes made)
 
-. replace tobedropped = 0 if !(inlist(start,2,6) | finish == 16)
-(3,508 real changes made)
-
-. drop if tobedropped
-(327 observations deleted)
-
-. 
-. // no pre-voc after pre-voc
-. bys ID_t (sort) : replace tobedropped = finish[_n-1] == 15
-(773 real changes made)
-
-. bys ID_t (sort) : replace tobedropped = sum(tobedropped)
-(332 real changes made)
-
-. replace tobedropped = 0 if start != 6
-(1,077 real changes made)
+. replace tobedropped = 0 if !(inlist(start,2) | finish == 16)
+(3,587 real changes made)
 
 . drop if tobedropped
-(19 observations deleted)
+(313 observations deleted)
 
 . 
 . // no general secondary education after finishing Abi
 . bys ID_t (sort) : replace tobedropped = finish[_n-1] == 14
-(5,897 real changes made)
+(5,829 real changes made)
 
 . bys ID_t (sort) : replace tobedropped = sum(tobedropped)
-(1,599 real changes made)
+(1,499 real changes made)
 
 . replace tobedropped = ( tobedropped >= 1 & tobedropped < .) & ( inlist(finish,11,12,14) | inrange(start,1,5) )
-(7,429 real changes made)
+(7,265 real changes made)
 
 . drop if tobedropped
-(48 observations deleted)
+(45 observations deleted)
 
 . 
 . // no diploma realschule after realschule
 . // no enter hauptschule after realschule
 . bys ID_t (sort) : replace tobedropped = finish[_n-1] == 12
-(7,688 real changes made)
+(7,638 real changes made)
 
 . bys ID_t (sort) : replace tobedropped = sum(tobedropped)
-(4,376 real changes made)
+(3,892 real changes made)
 
 . replace tobedropped = 0 if !(finish == 12 | start == 2 | finish == 11)
-(11,890 real changes made)
+(11,361 real changes made)
 
 . drop if tobedropped
-(117 observations deleted)
+(115 observations deleted)
 
 . 
 . // no finish hauptschule after hauptschule
 . bys ID_t (sort) : replace tobedropped = finish[_n-1] == 11
-(5,431 real changes made)
+(5,407 real changes made)
 
 . bys ID_t (sort) : replace tobedropped = sum(tobedropped)
-(2,884 real changes made)
+(2,505 real changes made)
 
 . replace tobedropped = 0 if finish != 11 
-(8,293 real changes made)
+(7,892 real changes made)
 
 . drop if tobedropped
-(12 observations deleted)
+(11 observations deleted)
 
 . 
 . bys ID_t (sort) : replace sort = _n
-(182 real changes made)
+(154 real changes made)
 
 . fre sort
 
@@ -1426,23 +1246,17 @@ sort
 -----------------------------------------------------------
               |      Freq.    Percent      Valid       Cum.
 --------------+--------------------------------------------
-Valid   1     |      17074      29.62      29.62      29.62
-        2     |      16887      29.30      29.30      58.92
-        3     |      14703      25.51      25.51      84.43
-        4     |       6222      10.79      10.79      95.22
-        5     |       2049       3.55       3.55      98.78
-        6     |        559       0.97       0.97      99.74
-        7     |        113       0.20       0.20      99.94
-        8     |         29       0.05       0.05      99.99
-        9     |          5       0.01       0.01     100.00
-        Total |      57641     100.00     100.00           
+Valid   1     |      17071      30.15      30.15      30.15
+        2     |      16874      29.80      29.80      59.96
+        3     |      14602      25.79      25.79      85.75
+        4     |       5659      10.00      10.00      95.74
+        5     |       1848       3.26       3.26      99.01
+        6     |        455       0.80       0.80      99.81
+        7     |         89       0.16       0.16      99.97
+        8     |         17       0.03       0.03     100.00
+        9     |          2       0.00       0.00     100.00
+        Total |      56617     100.00     100.00           
 -----------------------------------------------------------
-
-. 
-. //--------------------------------------------------------------------------
-. // get rid of pre-vocational
-. drop if start == 6
-(940 observations deleted)
 
 . 
 . //--------------------------------------------------------------------------
@@ -1477,14 +1291,14 @@ Valid   1     |      17074      29.62      29.62      29.62
 . // fachhochschule --> drop out --> hochschule/voc to
 . //  --> hochschule/voc
 . bys ID_t (sort) : drop if start == 8 & finish == 0 & inlist(start[_n+1],9,7)
-(129 observations deleted)
+(131 observations deleted)
 
 .         
 . //-------------------------------------------------------------------------
 . // hochschule --> drop out --> voc/fach/gym to
 . // voc/fach/gym
 . bys ID_t (sort) : drop if start == 9 & finish == 0 & inlist(start[_n+1],7,8,4)
-(376 observations deleted)
+(370 observations deleted)
 
 . 
 . drop if start == 7 & finish == 11
@@ -1492,14 +1306,14 @@ Valid   1     |      17074      29.62      29.62      29.62
 
 . 
 . bys ID_t (sort) : replace sort = _n     
-(1,817 real changes made)
+(749 real changes made)
 
 . 
 . //-------------------------------------------------------------------------
 . // finish voc --> enter gen sec
 . // finish voc --> enter voc --> finish gen sec
 . bys ID_t (sort) : replace start = 7 if inlist(start,3, 4, 5) & finish[_n-1] == 16
-(379 real changes made)
+(451 real changes made)
 
 . drop if start == 7 & finish == 11
 (1 observation deleted)
@@ -1507,9 +1321,16 @@ Valid   1     |      17074      29.62      29.62      29.62
 . 
 . //------------------------------------------------------------------------
 . // finish Real enter Hochschule to
-. // finish Abi enter hochschule
-. bys ID_t (sort) : replace finish = 14 if finish == 12 & start[_n+1]== 9
-(10 real changes made)
+. // finish Real enter Fachhochschule
+. bys ID_t (sort) : gen byte tochange = finish[_n-1] == 12 & start== 9
+
+. replace start = 8 if tochange
+(5 real changes made)
+
+. replace finish = 17 if tochange
+(5 real changes made)
+
+. drop tochange
 
 . 
 . //-------------------------------------------------------------------------
@@ -1525,19 +1346,16 @@ Valid   1     |      17074      29.62      29.62      29.62
 . // voc --> drop out --> enter Fach to
 . // enter Fac
 . bys ID_t (sort) : drop if start == 7 & finish == 0 & start[_n+1] == 8
-(4 observations deleted)
+(3 observations deleted)
 
 . 
 . //-------------------------------------------------------------------------
-. // drop gym --> fach
-. bys ID_t (sort) : drop if start[_n+1] == 8 & start == 4 & finish==0
-(5 observations deleted)
+. // Egym --> drop-out --> enter fach
+. // Egym --> FRe --> enter Fach
+. bys ID_t (sort) : replace finish = 12 if start[_n+1] == 8 & start == 4 & finish==0
+(5 real changes made)
 
 . 
-. // drop gesamt --> fach
-. bys ID_t (sort) : drop if start[_n+1] == 8 & start == 5 & finish==0
-(0 observations deleted)
-
 . 
 . // gym --> hoch
 . // gym --> Abi --> hoch
@@ -1547,14 +1365,14 @@ Valid   1     |      17074      29.62      29.62      29.62
 . 
 . // drop unfinished university
 . drop if start == 9 & finish == 0
-(448 observations deleted)
+(440 observations deleted)
 
 . 
 . //--------------------------------------------------------------------------
 . // gym --> haupt to
 . // gym --> real --> haupt
 . bys ID_t (sort) : replace sort = _n     
-(44 real changes made)
+(38 real changes made)
 
 . bys ID_t (sort) : gen byte add = (start == 4 & finish == 0 & start[_n+1] == 2) + 1
 
@@ -1623,7 +1441,7 @@ Valid   1     |      17074      29.62      29.62      29.62
 (98 real changes made, 98 to missing)
 
 . bys ID_t (sort) : replace sort = _n
-(346 real changes made)
+(347 real changes made)
 
 . drop add added
 
@@ -1635,22 +1453,22 @@ Valid   1     |      17074      29.62      29.62      29.62
 (74 real changes made)
 
 . bys ID_t (sort) : replace finish = 12 if start == 3 & finish == 0 & start[_n+1] ==7
-(248 real changes made)
+(241 real changes made)
 
 . bys ID_t (sort) : replace finish = 14 if start == 4 & finish == 0 & start[_n+1] ==7
-(146 real changes made)
+(145 real changes made)
 
 . 
 . //--------------------------------------------------------------------------
 . // no enter XX --> drop out --> enter XX again
 . bys ID_t (sort) : replace tobedropped = start == start[_n+1] & finish == 0
-(327 real changes made)
+(321 real changes made)
 
 . drop if tobedropped
-(327 observations deleted)
+(321 observations deleted)
 
 . bys ID_t (sort) : replace sort = _n
-(613 real changes made)
+(608 real changes made)
 
 . 
 . // enter Gym --> finish Real
@@ -1658,19 +1476,19 @@ Valid   1     |      17074      29.62      29.62      29.62
 . gen add = (start == 4 & finish == 12) + 1
 
 . expand add, gen(added)
-(624 observations created)
+(628 observations created)
 
 . replace sort = sort + .5 if added
-(624 real changes made)
+(628 real changes made)
 
 . replace finish = 0 if start == 4 & finish == 12 & added == 0
-(624 real changes made)
+(628 real changes made)
 
 . replace start = 3 if added == 1
-(624 real changes made)
+(628 real changes made)
 
 . bys ID_t (sort) : replace sort = _n
-(1,554 real changes made)
+(1,556 real changes made)
 
 . drop add added
 
@@ -1702,19 +1520,19 @@ Valid   1     |      17074      29.62      29.62      29.62
 . gen add = (start == 3 & finish == 14) + 1
 
 . expand add, gen(added)
-(57 observations created)
+(50 observations created)
 
 . replace sort = sort + .5 if added
-(57 real changes made)
+(50 real changes made)
 
 . replace finish = 0 if start == 3 & finish == 14 & added == 0
-(57 real changes made)
+(50 real changes made)
 
 . replace start = 4 if added == 1
-(57 real changes made)
+(50 real changes made)
 
 . bys ID_t (sort) : replace sort = _n
-(121 real changes made)
+(108 real changes made)
 
 . drop add added
 
@@ -1736,26 +1554,25 @@ Valid   1     |      17074      29.62      29.62      29.62
 (306 real changes made)
 
 . bys ID_t (sort) : replace sort = _n
-(700 real changes made)
+(699 real changes made)
 
 . drop add added
 
 . 
 . // Fachhochschule = hochschule
 . replace start = 9 if start == 8
-(2,194 real changes made)
+(2,260 real changes made)
 
 . replace finish = 18 if finish ==17
-(1,916 real changes made)
+(1,921 real changes made)
 
-. 
 . 
 . //drop  finish real --> enter real 
 . bys ID_t (sort) : drop if start == 3 & finish[_n-1] == 12
-(5 observations deleted)
+(0 observations deleted)
 
 . bys ID_t (sort) : replace sort = _n
-(4 real changes made)
+(0 real changes made)
 
 . 
 . // enter real --> drop out --> enter uni
@@ -1764,27 +1581,6 @@ Valid   1     |      17074      29.62      29.62      29.62
 (0 real changes made)
 
 . 
-. // finish real --> enter uni
-. // finish real --> enter Gym --> finish Abi --> enter uni
-. bys ID_t (sort) : gen n = (finish == 12 & start[_n+1] == 9)+1
-
-. expand n , gen(added)
-(150 observations created)
-
-. replace start = 4 if added 
-(150 real changes made)
-
-. replace finish = 14 if added
-(150 real changes made)
-
-. replace sort = sort + .5 if added
-(150 real changes made)
-
-. bys ID_t (sort) : replace sort = _n
-(306 real changes made)
-
-. drop n added
-
 . 
 . // EHo --> drop --> Eho --> finish
 . // Eho -- Finish
@@ -1795,7 +1591,7 @@ Valid   1     |      17074      29.62      29.62      29.62
 . // Eho --> Fvo 
 . // Evo --> Fvo
 . bys ID_t (sort) : replace start = 7 if start == 9 & finish == 16
-(3 real changes made)
+(2 real changes made)
 
 . 
 . // EVo --> Fho 
@@ -1804,7 +1600,7 @@ Valid   1     |      17074      29.62      29.62      29.62
 . bys ID_t (sort) : gen abi = inlist(finish,12,14)
 
 . bys ID_t (sort) : replace abi = sum(abi)
-(15,880 real changes made)
+(15,599 real changes made)
 
 . bys ID_t (sort) : replace start  =  9 if start == 7 & finish == 18 & abi
 (23 real changes made)
@@ -1820,17 +1616,17 @@ Valid   1     |      17074      29.62      29.62      29.62
 . gen rsort = -sort
 
 . replace tobedropped = (finish == 0)
-(4,483 real changes made)
+(4,487 real changes made)
 
 . 
 . bys ID_t (rsort) : replace tobedropped = sum(tobedropped)
-(6,371 real changes made)
+(6,373 real changes made)
 
 . bys ID_t (rsort) : replace tobedropped = tobedropped == _n
-(8,964 real changes made)
+(8,960 real changes made)
 
 . drop if tobedropped
-(1,301 observations deleted)
+(1,309 observations deleted)
 
 . 
 . // drop duplicate spell
@@ -1844,15 +1640,15 @@ Valid   1     |      17074      29.62      29.62      29.62
 . gen byte voc = start == 7
 
 . bys ID_t voc (sort) : gen place2 = sort[1] if voc == 1
-(41,913 missing values generated)
+(41,629 missing values generated)
 
 . bys ID_t (sort) : egen place = min(place2)
-(14,626 missing values generated)
+(14,456 missing values generated)
 
 . drop place2
 
 . bys ID_t (sort) : replace voc = sum(voc)
-(3,395 real changes made)
+(3,451 real changes made)
 
 . assert voc <=4
 
@@ -1863,20 +1659,20 @@ Valid   1     |      17074      29.62      29.62      29.62
 toberesorte |
           d |      Freq.     Percent        Cum.
 ------------+-----------------------------------
-          0 |     53,442       96.30       96.30
-          1 |      2,052        3.70      100.00
+          0 |     53,169       96.18       96.18
+          1 |      2,109        3.82      100.00
 ------------+-----------------------------------
-      Total |     55,494      100.00
+      Total |     55,278      100.00
 
 . 
 . bys ID_t (sort) : replace toberesorted = sum(toberesorted) if toberesorted == 1
-(155 real changes made)
+(151 real changes made)
 
 . replace sort = place - 1 + ( toberesorted / 4) if toberesorted > 0 & toberesorted < 3
-(2,051 real changes made)
+(2,108 real changes made)
 
 . bys ID_t (sort) : replace sort = _n
-(3,018 real changes made)
+(3,138 real changes made)
 
 . 
 . //----------------------------------------------------------------------- 
@@ -1887,31 +1683,31 @@ toberesorte |
 . bys ID_t (sort) : gen byte tobedropped = finish[_n-1] == 14
 
 . bys ID_t (sort) : replace tobedropped = sum(tobedropped)
-(1,125 real changes made)
+(1,102 real changes made)
 
 . replace tobedropped = tobedropped == 1 & inlist(finish,11,12,14)
-(7,101 real changes made)
+(6,877 real changes made)
 
 . drop if tobedropped
-(64 observations deleted)
+(63 observations deleted)
 
 . 
 . // drop duplicate haupt & real diplomas after real
 . bys ID_t (sort) : replace tobedropped = finish[_n-1] == 12
-(7,718 real changes made)
+(7,717 real changes made)
 
 . bys ID_t (sort) : replace tobedropped = sum(tobedropped)
-(3,208 real changes made)
+(3,020 real changes made)
 
 . replace tobedropped = tobedropped == 1 & inlist(finish,11,12)
-(10,840 real changes made)
+(10,643 real changes made)
 
 . drop if tobedropped
-(47 observations deleted)
+(51 observations deleted)
 
 . 
 . bys ID_t (sort) : replace sort = _n
-(129 real changes made)
+(133 real changes made)
 
 . 
 . //------------------------------------------------------------------------ #3
@@ -1923,77 +1719,77 @@ toberesorte |
 . gen abi   = finish == 14
 
 . bys ID_t (sort) : replace haupt = sum(haupt)
-(7,132 real changes made)
+(7,153 real changes made)
 
 . bys ID_t (sort) : replace real  = sum(real)
-(10,840 real changes made)
+(10,643 real changes made)
 
 . bys ID_t (sort) : replace abi   = sum(abi)
-(7,101 real changes made)
+(6,877 real changes made)
 
 . 
 . // create new education system
 . clonevar start2 = start
 
 . replace start2 = .  if start >  5
-(18,235 real changes made, 18,235 to missing)
+(18,304 real changes made, 18,304 to missing)
 
 . bys ID_t (sort) : replace start2 = 5  if start == 7 & finish[_n-1] == 11 & inlist(finish,12,14)
-(769 real changes made)
+(850 real changes made)
 
 . bys ID_t (sort) : replace start2 = 6  if start == 7 & finish[_n-1] == 12 & inlist(finish,12,14)
-(1,097 real changes made)
+(1,086 real changes made)
 
 . replace start2 = 7  if start == 7 & real == 0 & abi == 0 & !inlist(finish,12,14)
-(3,498 real changes made)
+(3,501 real changes made)
 
 . replace start2 = 8  if start == 7 & real == 1 & abi == 0 & !inlist(finish,12,14)
-(5,299 real changes made)
+(5,321 real changes made)
 
 . replace start2 = 9  if start == 7 & abi  == 1 & !inlist(finish,12,14)
-(2,814 real changes made)
+(2,786 real changes made)
 
 . replace start2 = 10 if start == 8
 (0 real changes made)
 
 . replace start2 = 11 if start == 9
-(4,758 real changes made)
+(4,760 real changes made)
 
 . 
 . clonevar finish2 = finish
 
 . replace finish2 = .
-(55,383 real changes made, 55,383 to missing)
+(55,164 real changes made, 55,164 to missing)
 
 . replace finish2 = 0  if finish ==  0
-(3,182 real changes made)
+(3,178 real changes made)
 
 . replace finish2 = 12 if finish == 10
-(14,966 real changes made)
+(14,941 real changes made)
 
 . replace finish2 = 13 if finish == 11
-(5,814 real changes made)
+(5,832 real changes made)
 
 . replace finish2 = 14 if finish == 12
-(8,365 real changes made)
+(8,374 real changes made)
 
 . replace finish2 = 15 if finish == 14
-(6,699 real changes made)
+(6,482 real changes made)
 
 . replace finish2 = 16 if finish == 16 & start2 == 7
-(3,498 real changes made)
+(3,501 real changes made)
 
 . replace finish2 = 17 if finish == 16 & start2 == 8
-(5,290 real changes made)
+(5,313 real changes made)
 
 . replace finish2 = 18 if finish == 16 & start2 == 9
-(2,811 real changes made)
+(2,783 real changes made)
 
 . replace finish2 = 19 if finish == 17
 (0 real changes made)
 
 . replace finish2 = 20 if finish == 18
-(4,758 real changes made)
+(4,760 real changes made)
 
 . 
 . 
@@ -2029,67 +1825,40 @@ toberesorte |
 . 
 . tab start start2
 
-                      |                                begin of spell
-       begin of spell | enter Gru  enter Hau  enter Rea  enter Gym  enter voc  enter voc  enter voc |     Total
-----------------------+-----------------------------------------------------------------------------+----------
-enter Grund- Volkssch |    17,074          0          0          0          0          0          0 |    17,074 
-    enter Hauptschule |         0      4,523          0          0          0          0          0 |     4,523 
-     enter Realschule |         0          0      8,924          0          0          0          0 |     8,924 
-      enter Gymnasium |         0          0          0      6,627          0          0          0 |     6,627 
-     enter vocational |         0          0          0          0        769      1,097      3,498 |    13,477 
-     enter Hochschule |         0          0          0          0          0          0          0 |     4,758 
-----------------------+-----------------------------------------------------------------------------+----------
-                Total |    17,074      4,523      8,924      6,627        769      1,097      3,498 |    55,383 
-
-
-                      |          begin of spell
-       begin of spell | enter voc  enter voc  enter Uni |     Total
-----------------------+---------------------------------+----------
-enter Grund- Volkssch |         0          0          0 |    17,074 
-    enter Hauptschule |         0          0          0 |     4,523 
-     enter Realschule |         0          0          0 |     8,924 
-      enter Gymnasium |         0          0          0 |     6,627 
-     enter vocational |     5,299      2,814          0 |    13,477 
-     enter Hochschule |         0          0      4,758 |     4,758 
-----------------------+---------------------------------+----------
-                Total |     5,299      2,814      4,758 |    55,383 
+                      |                                                begin of spell
+       begin of spell | enter Gru  enter Hau  enter Rea  enter Gym  enter voc  enter voc  enter voc  enter voc  enter voc  enter Uni |     Total
+----------------------+--------------------------------------------------------------------------------------------------------------+----------
+enter Grund- Volkssch |    17,071          0          0          0          0          0          0          0          0          0 |    17,071 
+    enter Hauptschule |         0      4,519          0          0          0          0          0          0          0          0 |     4,519 
+     enter Realschule |         0          0      8,860          0          0          0          0          0          0          0 |     8,860 
+      enter Gymnasium |         0          0          0      6,410          0          0          0          0          0          0 |     6,410 
+     enter vocational |         0          0          0          0        850      1,086      3,501      5,321      2,786          0 |    13,544 
+     enter Hochschule |         0          0          0          0          0          0          0          0          0      4,760 |     4,760 
+----------------------+--------------------------------------------------------------------------------------------------------------+----------
+                Total |    17,071      4,519      8,860      6,410        850      1,086      3,501      5,321      2,786      4,760 |    55,164 
 
 . tab finish finish2
 
-                      |                                 end of spell
-         end of spell |      done  finish Gr  finish Ha  finish Re  finish Ab  finish vo  finish vo |     Total
-----------------------+-----------------------------------------------------------------------------+----------
-             drop out |     3,182          0          0          0          0          0          0 |     3,182 
-   finish Grundschule |         0     14,966          0          0          0          0          0 |    14,966 
-   finish Hauptschule |         0          0      5,814          0          0          0          0 |     5,814 
-    finish Realschule |         0          0          0      8,365          0          0          0 |     8,365 
-        finish Abitur |         0          0          0          0      6,699          0          0 |     6,699 
-    finish vocational |         0          0          0          0          0      3,498      5,290 |    11,599 
-    finish Hochschule |         0          0          0          0          0          0          0 |     4,758 
-----------------------+-----------------------------------------------------------------------------+----------
-                Total |     3,182     14,966      5,814      8,365      6,699      3,498      5,290 |    55,383 
-
-
-                      |     end of spell
-         end of spell | finish vo  finish Un |     Total
-----------------------+----------------------+----------
-             drop out |         0          0 |     3,182 
-   finish Grundschule |         0          0 |    14,966 
-   finish Hauptschule |         0          0 |     5,814 
-    finish Realschule |         0          0 |     8,365 
-        finish Abitur |         0          0 |     6,699 
-    finish vocational |     2,811          0 |    11,599 
-    finish Hochschule |         0      4,758 |     4,758 
-----------------------+----------------------+----------
-                Total |     2,811      4,758 |    55,383 
+                      |                                            end of spell
+         end of spell |      done  finish Gr  finish Ha  finish Re  finish Ab  finish vo  finish vo  finish vo  finish Un |     Total
+----------------------+---------------------------------------------------------------------------------------------------+----------
+             drop out |     3,178          0          0          0          0          0          0          0          0 |     3,178 
+   finish Grundschule |         0     14,941          0          0          0          0          0          0          0 |    14,941 
+   finish Hauptschule |         0          0      5,832          0          0          0          0          0          0 |     5,832 
+    finish Realschule |         0          0          0      8,374          0          0          0          0          0 |     8,374 
+        finish Abitur |         0          0          0          0      6,482          0          0          0          0 |     6,482 
+    finish vocational |         0          0          0          0          0      3,501      5,313      2,783          0 |    11,597 
+    finish Hochschule |         0          0          0          0          0          0          0          0      4,760 |     4,760 
+----------------------+---------------------------------------------------------------------------------------------------+----------
+                Total |     3,178     14,941      5,832      8,374      6,482      3,501      5,313      2,783      4,760 |    55,164 
 
 . 
 . // replace the new variables with the old variables
 . replace start = start2
-(14,737 real changes made)
+(14,803 real changes made)
 
 . replace finish = finish2
-(48,703 real changes made)
+(48,485 real changes made)
 
 . label copy edlevs2 edlevs, replace
 
@@ -2097,38 +1866,21 @@ enter Grund- Volkssch |         0          0          0 |    17,074
 . // admire the result
 . tab start finish
 
-                      |                                 end of spell
-       begin of spell |      done  finish Gr  finish Ha  finish Re  finish Ab  finish vo  finish vo |     Total
-----------------------+-----------------------------------------------------------------------------+----------
-    enter Grundschule |         0     14,966      2,108          0          0          0          0 |    17,074 
-    enter Hauptschule |       817          0      3,706          0          0          0          0 |     4,523 
-     enter Realschule |     1,181          0          0      7,743          0          0          0 |     8,924 
-      enter Gymnasium |     1,172          0          0          0      5,455          0          0 |     6,627 
-enter vocational, gen |         0          0          0        622        147          0          0 |       769 
-enter vocational, gen |         0          0          0          0      1,097          0          0 |     1,097 
-enter vocational, Hau |         0          0          0          0          0      3,498          0 |     3,498 
-enter vocational, Rea |         9          0          0          0          0          0      5,290 |     5,299 
-enter vocational, Abi |         3          0          0          0          0          0          0 |     2,814 
-     enter University |         0          0          0          0          0          0          0 |     4,758 
-----------------------+-----------------------------------------------------------------------------+----------
-                Total |     3,182     14,966      5,814      8,365      6,699      3,498      5,290 |    55,383 
-
-
-                      |     end of spell
-       begin of spell | finish vo  finish Un |     Total
-----------------------+----------------------+----------
-    enter Grundschule |         0          0 |    17,074 
-    enter Hauptschule |         0          0 |     4,523 
-     enter Realschule |         0          0 |     8,924 
-      enter Gymnasium |         0          0 |     6,627 
-enter vocational, gen |         0          0 |       769 
-enter vocational, gen |         0          0 |     1,097 
-enter vocational, Hau |         0          0 |     3,498 
-enter vocational, Rea |         0          0 |     5,299 
-enter vocational, Abi |     2,811          0 |     2,814 
-     enter University |         0      4,758 |     4,758 
-----------------------+----------------------+----------
-                Total |     2,811      4,758 |    55,383 
+                      |                                            end of spell
+       begin of spell |      done  finish Gr  finish Ha  finish Re  finish Ab  finish vo  finish vo  finish vo  finish Un |     Total
+----------------------+---------------------------------------------------------------------------------------------------+----------
+    enter Grundschule |         0     14,941      2,130          0          0          0          0          0          0 |    17,071 
+    enter Hauptschule |       817          0      3,702          0          0          0          0          0          0 |     4,519 
+     enter Realschule |     1,174          0          0      7,686          0          0          0          0          0 |     8,860 
+      enter Gymnasium |     1,176          0          0          0      5,234          0          0          0          0 |     6,410 
+enter vocational, gen |         0          0          0        688        162          0          0          0          0 |       850 
+enter vocational, gen |         0          0          0          0      1,086          0          0          0          0 |     1,086 
+enter vocational, Hau |         0          0          0          0          0      3,501          0          0          0 |     3,501 
+enter vocational, Rea |         8          0          0          0          0          0      5,313          0          0 |     5,321 
+enter vocational, Abi |         3          0          0          0          0          0          0      2,783          0 |     2,786 
+     enter University |         0          0          0          0          0          0          0          0      4,760 |     4,760 
+----------------------+---------------------------------------------------------------------------------------------------+----------
+                Total |     3,178     14,941      5,832      8,374      6,482      3,501      5,313      2,783      4,760 |    55,164 
 
 . 
 . //-----------------------------------------------------------
@@ -2139,19 +1891,19 @@ enter vocational, Abi |     2,811          0 |     2,814
 . bys ID_t (sort) : gen n = (finish == 13 & start[_n+1]==4) + 1
 
 . expand n, gen(added)
-(190 observations created)
+(179 observations created)
 
 . replace start = 3 if added
-(190 real changes made)
+(179 real changes made)
 
 . replace finish = 14 if added
-(190 real changes made)
+(179 real changes made)
 
 . replace sort = sort + .5 if added
-(190 real changes made)
+(179 real changes made)
 
 . bys ID_t (sort) : replace sort = _n
-(613 real changes made)
+(573 real changes made)
 
 . drop n added
 
@@ -2162,23 +1914,22 @@ enter vocational, Abi |     2,811          0 |     2,814
 . bys ID_t (sort) : gen n = (finish == 15 & start==5) + 1
 
 . expand n, gen(added)
-(147 observations created)
+(162 observations created)
 
 . replace finish = 14 if finish == 15 & start==5 & !added
-(147 real changes made)
+(162 real changes made)
 
 . replace start = 6 if added
-(147 real changes made)
+(162 real changes made)
 
 . replace sort = sort + .5 if added
-(147 real changes made)
+(162 real changes made)
 
 . bys ID_t (sort) : replace sort = _n
-(334 real changes made)
+(370 real changes made)
 
 . drop n added
 
-. 
 . 
 . // clean up
 . keep ID_t sort start finish 
@@ -2189,14 +1940,14 @@ enter vocational, Abi |     2,811          0 |     2,814
 . 
 . compress
   variable sort was float now byte
-  (167,160 bytes saved)
+  (166,515 bytes saved)
 
 . note: cgm04.dta \ cleaned spelss \ cgm_dta04.do \ MLB TS 
 
 . label data "cleaned spells"
 
 . datasignature set, reset
-  55720:4(70326):2828898657:1719128532       (data signature reset)
+  55505:4(70326):2583077902:1483509282       (data signature reset)
 
 . save cgm04.dta, replace
 file cgm04.dta saved
@@ -2206,5 +1957,5 @@ file cgm04.dta saved
       name:  <unnamed>
        log:  D:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_dta04.txt
   log type:  text
- closed on:   7 Mar 2025, 18:04:10
-----------------------------------------------------------------------------------------------------------------------
+ closed on:  11 Mar 2025, 16:06:43
+----------------------------------------------------------------------------------------------------------------------------------------------------------------

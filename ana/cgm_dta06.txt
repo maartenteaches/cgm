@@ -1,0 +1,71 @@
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  D:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_dta06.txt
+  log type:  text
+ opened on:  11 Mar 2025, 16:06:45
+
+. 
+. // merge explanatory variables into transitions
+. // MLB
+. 
+. version 18
+
+. clear all
+
+. macro drop _all
+
+. 
+. // check files
+. use cgm02
+(explanatory variables)
+
+. datasignature confirm, strict
+  (data unchanged since 11mar2025 16:06)
+
+. use cgm05
+(cleaned transitions)
+
+. datasignature confirm, strict
+  (data unchanged since 11mar2025 16:06)
+
+. 
+. // merge files
+. merge m:1 ID_t using cgm02.dta
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                            69
+        from master                         0  (_merge==1)
+        from using                         69  (_merge==2)
+
+    Matched                            95,005  (_merge==3)
+    -----------------------------------------
+
+. 
+. // remove first generation migrants
+. drop if todrop
+(8,413 observations deleted)
+
+. drop todrop
+
+. 
+. compress
+  (0 bytes saved)
+
+. note: cgm06.dta \ merge explanatory vars & transitions \ cgm_dta06.do \ MLB TS 
+
+. label data "analysis dataset"
+
+. datasignature set, reset
+  86661:13(87594):369529164:4204037934       (data signature reset)
+
+. save cgm06.dta, replace
+file cgm06.dta saved
+
+. 
+. log close
+      name:  <unnamed>
+       log:  D:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_dta06.txt
+  log type:  text
+ closed on:  11 Mar 2025, 16:06:45
+----------------------------------------------------------------------------------------------------------------------------------------------------------------

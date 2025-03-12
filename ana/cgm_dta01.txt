@@ -1,12 +1,12 @@
-----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
        log:  D:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_dta01.txt
   log type:  text
- opened on:   6 Mar 2025, 15:45:28
+ opened on:  11 Mar 2025, 16:06:18
 
 . 
-. // What this .do file does
-. // Who wrote it
+. // merge educational spells 
+. // MLB
 . 
 . version 18
 
@@ -16,19 +16,19 @@
 
 . include cgm_neps.do
 
-. neps set study SC6
+. neps set study SC6, replace
 (preference study(SC6) recorded)
 
-. neps set level D
+. neps set level D, replace
 (preference level(D) recorded)
 
-. neps set version 15.0.0
+. neps set version 15.0.0, replace
 (preference version(15.0.0) recorded)
 
-. neps set directory ../data
+. neps set directory ../data, replace
 (preference directory(../data) recorded)
 
-. neps set language en
+. neps set language en, replace
 (preference language(en) recorded)
 
 . 
@@ -53,8 +53,8 @@ Warning: will read file from temporary copy.
 . tempfile tofill
 
 . save `tofill', replace
-(file C:\Users\Admin\AppData\Local\Temp\ST_3064_000001.tmp not found)
-file C:\Users\Admin\AppData\Local\Temp\ST_3064_000001.tmp saved as .dta format
+(file C:\Users\Admin\AppData\Local\Temp\ST_212c_000001.tmp not found)
+file C:\Users\Admin\AppData\Local\Temp\ST_212c_000001.tmp saved as .dta format
 
 . 
 . **# merge in the generated educational spells
@@ -83,12 +83,11 @@ Warning: will read file from temporary copy.
 
 . 
 . 
-. notes : cgm01.dta \ merged in generated educational spells from SC6_Education_D_15-0-0.dta \ cgm-dta01.do \ MLB TS  
->        
+. notes : cgm01.dta \ merged in generated educational spells from SC6_Education_D_15-0-0.dta \ cgm-dta01.do \ MLB TS         
 
 . 
 . save `tofill', replace
-file C:\Users\Admin\AppData\Local\Temp\ST_3064_000001.tmp saved as .dta format
+file C:\Users\Admin\AppData\Local\Temp\ST_212c_000001.tmp saved as .dta format
 
 . 
 . **# primary and general secondary
@@ -247,7 +246,7 @@ Warning: will read file from temporary copy.
 . notes : cgm01.dta \ meged in primary and general secondary from spSchool \ cgm-dta01.do \ MLB TS 
 
 . save `tofill', replace
-file C:\Users\Admin\AppData\Local\Temp\ST_3064_000001.tmp saved as .dta format
+file C:\Users\Admin\AppData\Local\Temp\ST_212c_000001.tmp saved as .dta format
 
 . 
 . 
@@ -345,40 +344,24 @@ Warning: will read file from temporary copy.
 
 . 
 . save `tofill', replace
-file C:\Users\Admin\AppData\Local\Temp\ST_3064_000001.tmp saved as .dta format
+file C:\Users\Admin\AppData\Local\Temp\ST_212c_000001.tmp saved as .dta format
 
 . 
 . tab start finish, miss
 
-                      |                                 end of spell
-       begin of spell |  drop out  finish Gr  finish Ha  finish Re  finish Fa  finish Ab  finish pr |     Total
-----------------------+-----------------------------------------------------------------------------+----------
-enter Grund- Volkssch |     2,077     10,656      1,584        110          3         27          0 |    14,457 
-    enter Hauptschule |       735          0      2,790        340          6          5          0 |     3,876 
-     enter Realschule |       800          0        372      5,439         19         42          0 |     6,675 
-      enter Gymnasium |     1,033          0         33        660        246      4,354          0 |     6,330 
-   enter Gesamtschule |       872          0        282      1,063        234        359          0 |     2,844 
- enter pre-vocational |       173          0          0          0          0          0      1,237 |     1,420 
-     enter vocational |       474          0         65        706        707        405          0 |     2,380 
-                    . |       631          0      5,035      7,679         41        320          0 |    39,981 
-----------------------+-----------------------------------------------------------------------------+----------
-                Total |     6,795     10,656     10,161     15,997      1,256      5,512      1,237 |    77,963 
-
-
-                      |   end of
-                      |   spell
-       begin of spell |         . |     Total
-----------------------+-----------+----------
-enter Grund- Volkssch |         0 |    14,457 
-    enter Hauptschule |         0 |     3,876 
-     enter Realschule |         3 |     6,675 
-      enter Gymnasium |         4 |     6,330 
-   enter Gesamtschule |        34 |     2,844 
- enter pre-vocational |        10 |     1,420 
-     enter vocational |        23 |     2,380 
-                    . |    26,275 |    39,981 
-----------------------+-----------+----------
-                Total |    26,349 |    77,963 
+                      |                                      end of spell
+       begin of spell |  drop out  finish Gr  finish Ha  finish Re  finish Fa  finish Ab  finish pr          . |     Total
+----------------------+----------------------------------------------------------------------------------------+----------
+enter Grund- Volkssch |     2,077     10,656      1,584        110          3         27          0          0 |    14,457 
+    enter Hauptschule |       735          0      2,790        340          6          5          0          0 |     3,876 
+     enter Realschule |       800          0        372      5,439         19         42          0          3 |     6,675 
+      enter Gymnasium |     1,033          0         33        660        246      4,354          0          4 |     6,330 
+   enter Gesamtschule |       872          0        282      1,063        234        359          0         34 |     2,844 
+ enter pre-vocational |       173          0          0          0          0          0      1,237         10 |     1,420 
+     enter vocational |       474          0         65        706        707        405          0         23 |     2,380 
+                    . |       631          0      5,035      7,679         41        320          0     26,275 |    39,981 
+----------------------+----------------------------------------------------------------------------------------+----------
+                Total |     6,795     10,656     10,161     15,997      1,256      5,512      1,237     26,349 |    77,963 
 
 . 
 . **# voc and tertiary
@@ -531,38 +514,21 @@ Total         |      12639     100.00
 . 
 . tab start finish, miss
 
-                      |                                 end of spell
-       begin of spell |  drop out  finish Gr  finish Ha  finish Re  finish Fa  finish Ab  finish pr |     Total
-----------------------+-----------------------------------------------------------------------------+----------
-enter Grund- Volkssch |     2,077     10,656      1,584        110          3         27          0 |    14,457 
-    enter Hauptschule |       735          0      2,790        340          6          5          0 |     3,876 
-     enter Realschule |       800          0        372      5,439         19         42          0 |     6,675 
-      enter Gymnasium |     1,033          0         33        660        246      4,354          0 |     6,330 
-   enter Gesamtschule |       872          0        282      1,063        234        359          0 |     2,844 
- enter pre-vocational |       173          0          0          0          0          0      1,237 |     1,420 
-     enter vocational |     2,205          0        139        910        707        405          0 |    20,904 
- enter Fachhochschule |       517          0          1         10          0          0          0 |     3,105 
-     enter Hochschule |     1,450          0          0          0          0          0          0 |     5,055 
-                    . |       649          0        393        375         41        320          0 |     5,047 
-----------------------+-----------------------------------------------------------------------------+----------
-                Total |    10,511     10,656      5,594      8,907      1,256      5,512      1,237 |    69,713 
-
-
-                      |                end of spell
-       begin of spell | finish vo  finish Fa  finish Ho          . |     Total
-----------------------+--------------------------------------------+----------
-enter Grund- Volkssch |         0          0          0          0 |    14,457 
-    enter Hauptschule |         0          0          0          0 |     3,876 
-     enter Realschule |         0          0          0          3 |     6,675 
-      enter Gymnasium |         0          0          0          4 |     6,330 
-   enter Gesamtschule |         0          0          0         34 |     2,844 
- enter pre-vocational |         0          0          0         10 |     1,420 
-     enter vocational |    15,834         18         33        653 |    20,904 
- enter Fachhochschule |       175      2,117         74        211 |     3,105 
-     enter Hochschule |         8         75      3,249        273 |     5,055 
-                    . |         0          0          0      3,269 |     5,047 
-----------------------+--------------------------------------------+----------
-                Total |    16,017      2,210      3,356      4,457 |    69,713 
+                      |                                                       end of spell
+       begin of spell |  drop out  finish Gr  finish Ha  finish Re  finish Fa  finish Ab  finish pr  finish vo  finish Fa  finish Ho          . |     Total
+----------------------+-------------------------------------------------------------------------------------------------------------------------+----------
+enter Grund- Volkssch |     2,077     10,656      1,584        110          3         27          0          0          0          0          0 |    14,457 
+    enter Hauptschule |       735          0      2,790        340          6          5          0          0          0          0          0 |     3,876 
+     enter Realschule |       800          0        372      5,439         19         42          0          0          0          0          3 |     6,675 
+      enter Gymnasium |     1,033          0         33        660        246      4,354          0          0          0          0          4 |     6,330 
+   enter Gesamtschule |       872          0        282      1,063        234        359          0          0          0          0         34 |     2,844 
+ enter pre-vocational |       173          0          0          0          0          0      1,237          0          0          0         10 |     1,420 
+     enter vocational |     2,205          0        139        910        707        405          0     15,834         18         33        653 |    20,904 
+ enter Fachhochschule |       517          0          1         10          0          0          0        175      2,117         74        211 |     3,105 
+     enter Hochschule |     1,450          0          0          0          0          0          0          8         75      3,249        273 |     5,055 
+                    . |       649          0        393        375         41        320          0          0          0          0      3,269 |     5,047 
+----------------------+-------------------------------------------------------------------------------------------------------------------------+----------
+                Total |    10,511     10,656      5,594      8,907      1,256      5,512      1,237     16,017      2,210      3,356      4,457 |    69,713 
 
 . 
 . drop _merge ts15219_ha ts15218 
@@ -581,7 +547,6 @@ enter Grund- Volkssch |         0          0          0          0 |    14,457
 . label data "raw educational spells from NEPS"
 
 . save cgm01.dta, replace
-(file cgm01.dta not found)
 file cgm01.dta saved
 
 . 
@@ -589,5 +554,5 @@ file cgm01.dta saved
       name:  <unnamed>
        log:  D:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_dta01.txt
   log type:  text
- closed on:   6 Mar 2025, 15:45:30
-----------------------------------------------------------------------------------------------------------------------
+ closed on:  11 Mar 2025, 16:06:20
+----------------------------------------------------------------------------------------------------------------------------------------------------------------

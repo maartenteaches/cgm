@@ -1,8 +1,8 @@
-----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
        log:  D:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_dta02.txt
   log type:  text
- opened on:   7 Mar 2025, 14:15:37
+ opened on:  11 Mar 2025, 16:06:20
 
 . 
 . // explanatory variables
@@ -43,8 +43,8 @@ Warning: will read file from temporary copy.
   (data unchanged since 15oct2024 15:47)
 
 . 
-. keep ID_t wave t700001 t70000m t70000y t751001_g1  t731351_g3 t731301_g3 t731301 t731301_ha t731301_v1 t731303 t7313
-> 03_ha t731303_v1 t731351_ha t731353_ha t731353 t731353_v1 t400500_g1 t405100_g2 t405070_g2 t731453_g8 t731403_g8
+. keep ID_t wave t700001 t70000m t70000y t751001_g1  t731351_g3 t731301_g3 t731301 t731301_ha t731301_v1 t731303 t731303_ha t731303_v1 t731351_ha t731353_ha t73
+> 1353 t731353_v1 t400500_g1 t405100_g2 t405070_g2 t731453_g8 t731403_g8
 
 . 
 . // these are asked multiple times ---------------------------
@@ -53,8 +53,8 @@ Warning: will read file from temporary copy.
 
 . // the most commonly named gender is the gender
 . bys ID_t : egen female = mode(female2)
-warning: Multiple modes encountered in one or more groups.  Generating missing values for the modes in these groups.
-         Use option minmode, maxmode, or nummode() to select one of the modes.
+warning: Multiple modes encountered in one or more groups.  Generating missing values for the modes in these groups.  Use option minmode, maxmode, or
+         nummode() to select one of the modes.
 (6 missing values generated)
 
 . // but when there are ties, then the first mentioned gender applies
@@ -75,8 +75,8 @@ warning: Multiple modes encountered in one or more groups.  Generating missing v
 . rename t70000y byr2
 
 . bys ID_t : egen byr = mode(byr2)
-warning: Multiple modes encountered in one or more groups.  Generating missing values for the modes in these groups.
-         Use option minmode, maxmode, or nummode() to select one of the modes.
+warning: Multiple modes encountered in one or more groups.  Generating missing values for the modes in these groups.  Use option minmode, maxmode, or
+         nummode() to select one of the modes.
 (50 missing values generated)
 
 . bys ID_t (wave) : replace byr = byr2[1] if byr == .
@@ -84,9 +84,26 @@ warning: Multiple modes encountered in one or more groups.  Generating missing v
 
 . note byr: based on t70000y in pTarget \ cgm_dta02.do \ MLB TS
 
+. label var byr "year of birth"
+
 . 
 . bys ID_t (wave): keep if _n == 1
 (114,973 observations deleted)
+
+. 
+. gen byte coh = cond(byr <= 1955, 1, ///
+>                cond(byr <= 1975, 2, ///
+>                            cond(byr < ., 3, 0))) 
+
+. label define coh 1 "1944-1955" ///
+>                  2 "1956-1975" ///
+>                                  3 "1976-1989"
+
+. label value coh coh     
+
+. label var coh "cohort"
+
+. note coh : based on t70000y in pTarget \ cgm_dta02.do \ MLB TS  
 
 . 
 . 
@@ -94,8 +111,7 @@ warning: Multiple modes encountered in one or more groups.  Generating missing v
 . 
 . // drop 1st generation migrants
 . // it is uncertain where they got their education
-. drop if inlist(t400500_g1,1,2) 
-(1,750 observations deleted)
+. gen byte todrop = inlist(t400500_g1,1,2) 
 
 . 
 . // migration status
@@ -114,13 +130,13 @@ warning: Multiple modes encountered in one or more groups.  Generating missing v
 . 
 . // parent's education
 . gen muni = t731303_ha == 4  if t731303_ha >= -20 & !missing(t731303_ha)
-(1,128 missing values generated)
+(1,242 missing values generated)
 
 . gen funi = t731353_ha == 4 if t731353_ha >= -20 & !missing(t731353_ha) 
-(1,238 missing values generated)
+(1,410 missing values generated)
 
 . egen byte puni = rowmax(muni funi)
-(406 missing values generated)
+(454 missing values generated)
 
 . label define puni_lb 0 "no university" 1 "university"
 
@@ -133,13 +149,13 @@ warning: Multiple modes encountered in one or more groups.  Generating missing v
 . 
 . // parental class
 . recode t731453_g8 (1 2= 1) (3 4 5 6 7 8 = 2) (9 10 11 = 3) (else=.), gen(classf)
-(13,620 differences between t731453_g8 and classf)
+(15,144 differences between t731453_g8 and classf)
 
 . recode t731403_g8 (1 2= 1) (3 4 5 6 7 8 = 2) (9 10 11 = 3) (else=.), gen(classm)
-(12,099 differences between t731403_g8 and classm)
+(13,335 differences between t731403_g8 and classm)
 
 . egen classp = rowmin(classf classm)
-(7,021 missing values generated)
+(7,652 missing values generated)
 
 . label define class 1 "service" 2 "intermediate" 3 "working"
 
@@ -151,19 +167,19 @@ warning: Multiple modes encountered in one or more groups.  Generating missing v
 
 . 
 . // prepare to save
-. keep ID_t female byr puni mig classp
+. keep ID_t female byr coh puni mig classp todrop
 
 . notes : cgm02.dta \ explanatory vars \ trieo-dta02.do \ MLB TS
 
 . 
 . compress
   variable classp was float now byte
-  (46,170 bytes saved)
+  (51,420 bytes saved)
 
 . label data "explanatory variables"
 
 . datasignature set, reset
-  15390:6(123120):3089921538:3705108163       (data signature reset)
+  17140:8(72408):892500176:331384916       (data signature reset)
 
 . save cgm02.dta, replace
 file cgm02.dta saved
@@ -173,5 +189,5 @@ file cgm02.dta saved
       name:  <unnamed>
        log:  D:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_dta02.txt
   log type:  text
- closed on:   7 Mar 2025, 14:15:39
-----------------------------------------------------------------------------------------------------------------------
+ closed on:  11 Mar 2025, 16:06:30
+----------------------------------------------------------------------------------------------------------------------------------------------------------------

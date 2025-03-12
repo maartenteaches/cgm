@@ -1,8 +1,8 @@
-----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
        log:  D:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_dta03.txt
   log type:  text
- opened on:   7 Mar 2025, 14:47:59
+ opened on:  11 Mar 2025, 16:06:30
 
 . 
 . // clean spells
@@ -127,8 +127,7 @@
 . bys ID_t start (sort) : replace endy = endy[_N] if _N > 1 & sort[_N] - sort[1] == _N - 1 & dropout==1
 (1,486 real changes made)
 
-. bys ID_t start (sort) : replace finish = finish[_N] if _N > 1 & sort[_N] - sort[1] == _N - 1 & dropout==1 & finish[_
-> N] < .
+. bys ID_t start (sort) : replace finish = finish[_N] if _N > 1 & sort[_N] - sort[1] == _N - 1 & dropout==1 & finish[_N] < .
 (1,486 real changes made)
 
 . bys ID_t start (sort) : drop if _n > 1 & _N > 1 & sort[_N] - sort[1] == _N-1 & dropout == 1
@@ -251,7 +250,7 @@
 . 
 . // clean up sort
 . bys ID_t (sort) : replace sort = _n
-(1,683 real changes made)
+(1,681 real changes made)
 
 . 
 . compress
@@ -264,10 +263,9 @@
 . label data "cleaned spells"
 
 . datasignature set, reset
-  55324:23(65276):2351815207:3118398927       (data signature reset)
+  55324:23(65276):1421056373:3973176506       (data signature reset)
 
 . save cgm03.dta, replace
-(file cgm03.dta not found)
 file cgm03.dta saved
 
 . 
@@ -275,5 +273,5 @@ file cgm03.dta saved
       name:  <unnamed>
        log:  D:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_dta03.txt
   log type:  text
- closed on:   7 Mar 2025, 14:48:01
-----------------------------------------------------------------------------------------------------------------------
+ closed on:  11 Mar 2025, 16:06:33
+----------------------------------------------------------------------------------------------------------------------------------------------------------------

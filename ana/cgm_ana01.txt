@@ -1,0 +1,373 @@
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  D:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_ana01.txt
+  log type:  text
+ opened on:  11 Mar 2025, 17:41:13
+
+. 
+. // descriptives
+. // MLB
+. 
+. version 18
+
+. clear all
+
+. macro drop _all
+
+. 
+. use cgm06.dta
+(analysis dataset)
+
+. datasignature confirm
+  (data unchanged since 11mar2025 16:06)
+
+. codebook, compact
+
+Variable     Obs Unique      Mean      Min      Max  Label
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+ID_t       86661  15390   8011526  8000215  8025040  ID target
+start      86649     10  6.027132        1       11  begin of spell
+finish     86649      9  15.04875        0       20  end of spell
+sort       86649     14  3.539371        1       14  sort order
+orig       86649     17  10.68272        2       20  origin
+dest       86649     17  8.553024        0       20  destination
+female     86661      2  .4882358        0        1  sex
+byr        86661     45  1963.657     1944     1988  year of birth
+coh        86661      3  1.920402        1        3  cohort
+mig        86661      2  .0858633        0        1  migration status
+puni       84641      2  .1808343        0        1  parental education
+classp     46739      3  1.933567        1        3  dominant occupational class parents
+_merge     86661      2  2.999862        2        3  Matching result from merge
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+. 
+. // Who gets to university directly?
+. 
+. gen uni = orig == 20 & dest == 0
+
+. bys ID_t (sort) : replace uni = uni[_N]
+(24,267 real changes made)
+
+. 
+. gen dir = 0 if uni
+(58,056 missing values generated)
+
+. 
+. replace dir = 1 if sort==1 & orig==12 & dest== 4  & uni
+(2,531 real changes made)
+
+. replace dir = 1 if sort==2 & orig== 4 & dest==15 & uni
+(2,239 real changes made)
+
+. replace dir = 1 if sort==3 & orig==15 & dest==11  & uni
+(1,911 real changes made)
+
+. replace dir = 1 if sort==4 & orig==11 & dest==20 & uni
+(1,973 real changes made)
+
+. replace dir = 1 if sort==5 & orig==20 & dest==0   & uni
+(1,973 real changes made)
+
+. 
+. replace dir = 1 if sort==1 & orig==12 & dest== 3  & uni
+(1,364 real changes made)
+
+. replace dir = 1 if sort==2 & orig== 3 & dest==14 & uni
+(997 real changes made)
+
+. replace dir = 1 if sort==3 & orig==14 & dest==11  & uni
+(62 real changes made)
+
+. replace dir = 1 if sort==4 & orig==11 & dest==20 & uni
+(0 real changes made)
+
+. replace dir = 1 if sort==5 & orig==20 & dest==0   & uni
+(0 real changes made)
+
+. 
+. bys ID_t (dir): replace dir = dir[1] == dir[_N] & dir[1] == 1 if uni
+(3,185 real changes made)
+
+. fre dir if sort == 1
+
+dir
+-----------------------------------------------------------
+              |      Freq.    Percent      Valid       Cum.
+--------------+--------------------------------------------
+Valid   0     |       2365      15.38      54.52      54.52
+        1     |       1973      12.83      45.48     100.00
+        Total |       4338      28.21     100.00           
+Missing .     |      11040      71.79                      
+Total         |      15378     100.00                      
+-----------------------------------------------------------
+
+. 
+. **# percent indirect
+. // create empty file to append results to
+. tempfile tofill
+
+. preserve
+
+. drop _all
+
+. gen labels = ""
+
+. save `tofill', replace
+(dataset contains 0 observations)
+(file C:\Users\Admin\AppData\Local\Temp\ST_212c_000001.tmp not found)
+file C:\Users\Admin\AppData\Local\Temp\ST_212c_000001.tmp saved as .dta format
+
+. restore
+
+. 
+. recode dir (0=1) (1=0) , gen(indir)
+(28,605 differences between dir and indir)
+
+. // fill file with proportions of pineapple by x
+. foreach var of varlist mig female puni {
+  2.         preserve 
+  3.         
+.         // get the proportions
+.         collapse (mean) indir if sort == 1 & !missing(`var') & uni==1, by(coh `var' )
+  4. 
+.         // make a string variable from the variable
+.         decode `var', gen(labels)
+  5.         drop `var'
+  6.         gen var = "`var'"
+  7.         
+.         // add those rows to `tofill'
+.         append using `tofill'
+  8.         save `tofill', replace
+  9.         restore
+ 10. }
+file C:\Users\Admin\AppData\Local\Temp\ST_212c_000001.tmp saved as .dta format
+(variable labels was str6, now str23 to accommodate using data's values)
+(label coh already defined)
+file C:\Users\Admin\AppData\Local\Temp\ST_212c_000001.tmp saved as .dta format
+(variable labels was str13, now str23 to accommodate using data's values)
+(variable var was str4, now str6 to accommodate using data's values)
+(label coh already defined)
+file C:\Users\Admin\AppData\Local\Temp\ST_212c_000001.tmp saved as .dta format
+
+. 
+. preserve
+
+. use `tofill', clear
+(analysis dataset)
+
+. 
+. sort coh var, stable
+
+. l , sepby(coh)
+
+     +---------------------------------------------------------+
+     |       coh      indir                    labels      var |
+     |---------------------------------------------------------|
+  1. | 1944-1955   .6243981                      male   female |
+  2. | 1944-1955   .5121951                    female   female |
+  3. | 1944-1955   .5821545   no migration background      mig |
+  4. | 1944-1955   .5890411            2nd generation      mig |
+  5. | 1944-1955   .6213992             no university     puni |
+  6. | 1944-1955   .4677419                university     puni |
+     |---------------------------------------------------------|
+  7. | 1956-1975   .5865533                      male   female |
+  8. | 1956-1975   .5128449                    female   female |
+  9. | 1956-1975    .552015   no migration background      mig |
+ 10. | 1956-1975   .5687204            2nd generation      mig |
+ 11. | 1956-1975   .5896757             no university     puni |
+ 12. | 1956-1975   .4827161                university     puni |
+     |---------------------------------------------------------|
+ 13. | 1976-1989   .5124283                      male   female |
+ 14. | 1976-1989   .4623431                    female   female |
+ 15. | 1976-1989    .483097   no migration background      mig |
+ 16. | 1976-1989    .547619            2nd generation      mig |
+ 17. | 1976-1989   .5878906             no university     puni |
+ 18. | 1976-1989   .3841336                university     puni |
+     +---------------------------------------------------------+
+
+. // add some blank space between the variables
+. seqvar yaxis = 1 2 4 5 7 8 12 13 15 16 18 19 23 24 26 27 29 30
+
+. labmask yaxis, values(labels)
+
+. 
+. set obs `=_N+1'
+Number of observations (_N) was 18, now 19.
+
+. replace yaxis = 0 in l
+(1 real change made)
+
+. set obs `=_N+1'
+Number of observations (_N) was 19, now 20.
+
+. replace yaxis = 11 in l
+(1 real change made)
+
+. set obs `=_N+1'
+Number of observations (_N) was 20, now 21.
+
+. replace yaxis =  22 in l
+(1 real change made)
+
+. label define yaxis  0 "{bf:1944-1955}" ///
+>                    11 "{bf:1956-1975}" ///
+>                                    22 "{bf:1976-1989}", modify
+
+. 
+. // turn proportions into percentages
+. replace indir = indir * 100
+(18 real changes made)
+
+. 
+. // make the graph
+. twoway scatter indir yaxis ,             ///
+>     recast(dropline) horizontal              ///
+>         ylabel(0 1 2 4 5 7 8 11 12 13 15 16 18 19 22 23 24 26 27 29 30, val noticks nogrid) ///
+>         xlabel(none)                             ///
+>         yscale(reverse) xscale(range(0 60))      ///
+>     mlabel(indir) mlabformat(%9.0f)      ///
+>         mlabcolor("0 154 209") ///
+>         lcolor("0 154 209") mcolor("0 154 209")  ///
+>         xtitle("% of people with university degree" "who got there indirectly")
+
+. graph export ../txt/gr01.emf, replace
+(file ../txt/gr01.emf not found)
+file D:\Mijn documenten\projecten\track_mobility\cgm\ana\../txt/gr01.emf saved as Enhanced Metafile format
+
+. restore 
+
+. 
+. **# percent university
+. // create empty file to append results to
+. tempfile tofill
+
+. preserve
+
+. drop _all
+
+. gen labels = ""
+
+. save `tofill', replace
+(dataset contains 0 observations)
+(file C:\Users\Admin\AppData\Local\Temp\ST_212c_000007.tmp not found)
+file C:\Users\Admin\AppData\Local\Temp\ST_212c_000007.tmp saved as .dta format
+
+. restore
+
+. 
+. // fill file with proportions of pineapple by x
+. foreach var of varlist mig female puni {
+  2.         preserve 
+  3.         
+.         // get the proportions
+.         collapse (mean) uni if sort == 1 & !missing(`var'), by(coh `var' )
+  4. 
+.         // make a string variable from the variable
+.         decode `var', gen(labels)
+  5.         drop `var'
+  6.         gen var = "`var'"
+  7.         
+.         // add those rows to `tofill'
+.         append using `tofill'
+  8.         save `tofill', replace
+  9.         restore
+ 10. }
+file C:\Users\Admin\AppData\Local\Temp\ST_212c_000007.tmp saved as .dta format
+(variable labels was str6, now str23 to accommodate using data's values)
+(label coh already defined)
+file C:\Users\Admin\AppData\Local\Temp\ST_212c_000007.tmp saved as .dta format
+(variable labels was str13, now str23 to accommodate using data's values)
+(variable var was str4, now str6 to accommodate using data's values)
+(label coh already defined)
+file C:\Users\Admin\AppData\Local\Temp\ST_212c_000007.tmp saved as .dta format
+
+. 
+. use `tofill', clear
+(analysis dataset)
+
+. 
+. sort coh var, stable
+
+. l , sepby(coh)
+
+     +---------------------------------------------------------+
+     |       coh        uni                    labels      var |
+     |---------------------------------------------------------|
+  1. | 1944-1955   .2897674                      male   female |
+  2. | 1944-1955   .1912908                    female   female |
+  3. | 1944-1955   .2433148   no migration background      mig |
+  4. | 1944-1955   .2417219            2nd generation      mig |
+  5. | 1944-1955   .2088825             no university     puni |
+  6. | 1944-1955   .5523385                university     puni |
+     |---------------------------------------------------------|
+  7. | 1956-1975   .3171569                      male   female |
+  8. | 1956-1975   .2336075                    female   female |
+  9. | 1956-1975   .2728551   no migration background      mig |
+ 10. | 1956-1975   .2783641            2nd generation      mig |
+ 11. | 1956-1975   .2168173             no university     puni |
+ 12. | 1956-1975   .5798139                university     puni |
+     |---------------------------------------------------------|
+ 13. | 1976-1989   .3683099                      male   female |
+ 14. | 1976-1989   .3676923                    female   female |
+ 15. | 1976-1989   .3735234   no migration background      mig |
+ 16. | 1976-1989   .3169811            2nd generation      mig |
+ 17. | 1976-1989   .2701847             no university     puni |
+ 18. | 1976-1989   .6180645                university     puni |
+     +---------------------------------------------------------+
+
+. // add some blank space between the variables
+. seqvar yaxis = 1 2 4 5 7 8 12 13 15 16 18 19 23 24 26 27 29 30
+
+. labmask yaxis, values(labels)
+
+. 
+. set obs `=_N+1'
+Number of observations (_N) was 18, now 19.
+
+. replace yaxis = 0 in l
+(1 real change made)
+
+. set obs `=_N+1'
+Number of observations (_N) was 19, now 20.
+
+. replace yaxis = 11 in l
+(1 real change made)
+
+. set obs `=_N+1'
+Number of observations (_N) was 20, now 21.
+
+. replace yaxis =  22 in l
+(1 real change made)
+
+. label define yaxis  0 "{bf:1944-1955}" ///
+>                    11 "{bf:1956-1975}" ///
+>                                    22 "{bf:1976-1989}", modify
+
+. 
+. // turn proportions into percentages
+. replace uni = uni * 100
+(18 real changes made)
+
+. 
+. // make the graph
+. twoway scatter uni yaxis ,             ///
+>     recast(dropline) horizontal              ///
+>         ylabel(0 1 2 4 5 7 8 11 12 13 15 16 18 19 22 23 24 26 27 29 30, val noticks nogrid) ///
+>         xlabel(none)                             ///
+>         yscale(reverse) xscale(range(0 60))      ///
+>     mlabel(uni) mlabformat(%9.0f)      ///
+>         mlabcolor("0 154 209") ///
+>         lcolor("0 154 209") mcolor("0 154 209")  ///
+>         xtitle("% with a university degree")
+
+. graph export ../txt/gr02.emf, replace
+(file ../txt/gr02.emf not found)
+file D:\Mijn documenten\projecten\track_mobility\cgm\ana\../txt/gr02.emf saved as Enhanced Metafile format
+
+.   
+. log close
+      name:  <unnamed>
+       log:  D:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_ana01.txt
+  log type:  text
+ closed on:  11 Mar 2025, 17:41:21
+----------------------------------------------------------------------------------------------------------------------------------------------------------------

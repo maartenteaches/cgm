@@ -33,15 +33,26 @@ rename t70000y byr2
 bys ID_t : egen byr = mode(byr2)
 bys ID_t (wave) : replace byr = byr2[1] if byr == .
 note byr: based on t70000y in pTarget \ cgm_dta02.do \ MLB TS
+label var byr "year of birth"
 
 bys ID_t (wave): keep if _n == 1
+
+gen byte coh = cond(byr <= 1955, 1, ///
+               cond(byr <= 1975, 2, ///
+			   cond(byr < ., 3, 0))) 
+label define coh 1 "1944-1955" ///
+                 2 "1956-1975" ///
+				 3 "1976-1989"
+label value coh coh	
+label var coh "cohort"
+note coh : based on t70000y in pTarget \ cgm_dta02.do \ MLB TS	
 
 
 // these are asked only in the first interview -------------
 
 // drop 1st generation migrants
 // it is uncertain where they got their education
-drop if inlist(t400500_g1,1,2) 
+gen byte todrop = inlist(t400500_g1,1,2) 
 
 // migration status
 gen byte mig:mig_lb = inlist(t400500_g1, 3,4,5,6) if t400500_g1 >= 0
@@ -70,7 +81,7 @@ label var classp "dominant occupational class parents"
 note classp : based on t731403_g8 t731453_g8 in pTarget \ cgm_dta02.do \ MLB TS
 
 // prepare to save
-keep ID_t female byr puni mig classp
+keep ID_t female byr coh puni mig classp todrop
 notes : cgm02.dta \ explanatory vars \ trieo-dta02.do \ MLB TS
 
 compress

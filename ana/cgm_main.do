@@ -18,5 +18,6 @@ do cgm_dta02.do // explanatory variables
 do cgm_dta03.do // clean spells
 do cgm_dta04.do // make consistent spells
 do cgm_dta05.do // turns spells into transitions
+do cgm_dta06.do // merge explanatory vars into transitions
 do cgm_ana01.do // 
 exit

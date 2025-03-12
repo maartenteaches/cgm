@@ -1,4 +1,4 @@
-* 00000005
+* 00000006
 *! version 1.0.0
 * Do not erase or edit this file
 * It is used by Stata to track the ado and help
@@ -201,4 +201,18 @@ f l\lookfor2.ado
 f c\closedesc.ado
 f l\lookfor2.sthlp
 f c\closedesc.sthlp
+e
+S http://www.stata-journal.com/software/sj8-2
+N gr0034.pkg
+D 11 Mar 2025
+U 6
+d SJ8-2 gr0034.  Assign values to variables
+d Assign values to variables
+d by Nicholas J. Cox, Durham University, Durham City, UK
+d Support:  n.j.cox@@durham.ac.uk
+d After installation, type help ^labmask^ and ^seqvar^
+f l\labmask.ado
+f l\labmask.hlp
+f s\seqvar.ado
+f s\seqvar.hlp
 e

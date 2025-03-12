@@ -1,4 +1,4 @@
-* 00000004
+* 00000005
 *! version 1.0.0
 * Do not erase or edit this file
 * It is used by Stata to track the ado and help
@@ -175,4 +175,30 @@ f m\mp_b_dta_g.sthlp
 f m\mp_dta_g.mpb
 f m\mp_main_g.mpb
 f m\mp_b_main_g.sthlp
+e
+S http://fmwww.bc.edu/repec/bocode/l
+N lookfor2.pkg
+D  6 Mar 2025
+U 5
+d 'LOOKFOR2': module to search for string in variable names, variable labels, value labels, and notes
+d 
+d  lookfor2 helps you find variables by searching for string  among
+d all variable names, variable labels, value labels, and notes that
+d  are attached to variables.
+d 
+d KW: variable
+d KW: search
+d KW: data management
+d 
+d Requires: Stata version 10.1
+d 
+d Distribution-Date: 20220602
+d 
+d Author: Maarten L. Buis, University of Konstanz
+d Support: email maarten.buis@@uni-konstanz.de
+d 
+f l\lookfor2.ado
+f c\closedesc.ado
+f l\lookfor2.sthlp
+f c\closedesc.sthlp
 e
