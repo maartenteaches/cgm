@@ -1,8 +1,8 @@
-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
        log:  D:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_dta02.txt
   log type:  text
- opened on:  11 Mar 2025, 16:06:20
+ opened on:  13 Mar 2025, 11:09:37
 
 . 
 . // explanatory variables
@@ -43,151 +43,70 @@ Warning: will read file from temporary copy.
   (data unchanged since 15oct2024 15:47)
 
 . 
-. keep ID_t wave t700001 t70000m t70000y t751001_g1  t731351_g3 t731301_g3 t731301 t731301_ha t731301_v1 t731303 t731303_ha t731303_v1 t731351_ha t731353_ha t73
-> 1353 t731353_v1 t400500_g1 t405100_g2 t405070_g2 t731453_g8 t731403_g8
+. keep ID_t wave t700001 t70000m t70000y t751001_g1  t731351_g3 t731301_g3 t731301 t731301_ha t731301_v1 t731303 t7313
+> 03_ha t731303_v1 t731351_ha t731353_ha t731353 t731353_v1 t400500_g1 t405100_g2 t405070_g2 t731453_g8 t731403_g8
 
 . 
-. // these are asked multiple times ---------------------------
-. // sex
-. gen byte female2 = t700001 == 2 if t700001 < .
+end of do-file
 
-. // the most commonly named gender is the gender
-. bys ID_t : egen female = mode(female2)
-warning: Multiple modes encountered in one or more groups.  Generating missing values for the modes in these groups.  Use option minmode, maxmode, or
-         nummode() to select one of the modes.
-(6 missing values generated)
+. fre
+--Break--
+r(1);
 
-. // but when there are ties, then the first mentioned gender applies
-. bys ID_t (wave) : replace female = female2[1] if female == .
-(6 real changes made)
+. fre t731303_ha
 
-. label var female "sex"
+t731303_ha -- Highest professional qualification Mother (harmonized)
+-------------------------------------------------------------------------------------------------------
+                                                          |      Freq.    Percent      Valid       Cum.
+----------------------------------------------------------+--------------------------------------------
+Valid   -98 don't know                                    |       1077       0.82       0.82       0.82
+        -97 refused                                       |        107       0.08       0.08       0.90
+        -54 missing by design                             |     114973      87.03      87.06      87.96
+        -20 no professional qualification                 |       5325       4.03       4.03      91.99
+        1   completion of an apprenticeship               |       8114       6.14       6.14      98.14
+        2   leaving certificate from a Berufsfachschule   |        755       0.57       0.57      98.71
+            [vocational school], Fachschule [school-based |                                            
+            institutions of professional development]     |                                            
+        3   master craftswoman, technician                |        228       0.17       0.17      98.88
+        4   university (of applied sciences) degree       |       1128       0.85       0.85      99.74
+        5   other vocational qualification                |        348       0.26       0.26     100.00
+        Total                                             |     132055      99.96     100.00           
+Missing .                                                 |         58       0.04                      
+Total                                                     |     132113     100.00                      
+-------------------------------------------------------------------------------------------------------
 
-. label define fem_lb 0 "male" 1 "female"
+. do "C:\Users\Admin\AppData\Local\Temp\STD2b84_000004.tmp"
 
-. label values female fem_lb
-
-. note female : based on t700001 in pTarget \ cgm_dta02.do \ MLB TS
-
-. 
-. 
-. // birth year
-. rename t70000y byr2
-
-. bys ID_t : egen byr = mode(byr2)
-warning: Multiple modes encountered in one or more groups.  Generating missing values for the modes in these groups.  Use option minmode, maxmode, or
-         nummode() to select one of the modes.
-(50 missing values generated)
-
-. bys ID_t (wave) : replace byr = byr2[1] if byr == .
-(50 real changes made)
-
-. note byr: based on t70000y in pTarget \ cgm_dta02.do \ MLB TS
-
-. label var byr "year of birth"
+. label define var 1 "male" 2 `"parents"" "university""', replace
 
 . 
-. bys ID_t (wave): keep if _n == 1
-(114,973 observations deleted)
+end of do-file
 
-. 
-. gen byte coh = cond(byr <= 1955, 1, ///
->                cond(byr <= 1975, 2, ///
->                            cond(byr < ., 3, 0))) 
+. do "C:\Users\Admin\AppData\Local\Temp\STD2b84_000005.tmp"
 
-. label define coh 1 "1944-1955" ///
->                  2 "1956-1975" ///
->                                  3 "1976-1989"
+. twoway scatter efft yaxis, ///
+>     recast(dropline) horizontal  ///
+>         ylab(0/2 4/6 8/10, val noticks nogrid) yscale(reverse) ///
+>         lcolor("0 154 209") mcolor("0 154 209") || ///
+>         scatter effd yaxis, ///
+>         recast(dropline) horizontal ///
+>         lcolor("255 142 123") mcolor("255 142 123") || ///
+>         scatter yaxis effd, msymbol(i) mlab(effd) mlabpos(12) ///
+>         mlabcolor("255 142 123") mlabformat(%5.1f) || ///
+>         scatter yaxis efft, msymbol(i) mlab(efft) mlabpos(12) ///
+>         mlabcolor("0 154 209") mlabformat(%5.1f) || ///
+>         scatter yaxis mid, msymbol(i) mlab(indir) mlabpos(6) ///
+>         mlabcolor(black) mlabformat(%5.1f) ///
+>         xtitle("effect on attaining tertiary education (%-point difference)") ///
+>         xlab(none) xscale(range(-4 37)) ///
+>         legend( order(1 "total" 2 "direct")) yscale(range(0 10.3))
+variable efft not found
+r(111);
 
-. label value coh coh     
+end of do-file
 
-. label var coh "cohort"
+r(111);
 
-. note coh : based on t70000y in pTarget \ cgm_dta02.do \ MLB TS  
+. do "C:\Users\Admin\AppData\Local\Temp\STD2b84_000006.tmp"
 
-. 
-. 
-. // these are asked only in the first interview -------------
-. 
-. // drop 1st generation migrants
-. // it is uncertain where they got their education
-. gen byte todrop = inlist(t400500_g1,1,2) 
-
-. 
-. // migration status
-. gen byte mig:mig_lb = inlist(t400500_g1, 3,4,5,6) if t400500_g1 >= 0
-
-. // northern and western Europe and north America are excluded as immigrants
-. replace mig = 0 if mig == 1 & (inlist(t405100_g2, 1,9,10) & inlist(t405070_g2,1,9,10))
-(228 real changes made)
-
-. label variable mig "migration status"
-
-. label define mig_lb 1 "2nd generation" 0 "no migration background"
-
-. note mig : based on t400500_g1 in pTarget \ cgm_dta02 \ MLB TS
-
-. 
-. // parent's education
-. gen muni = t731303_ha == 4  if t731303_ha >= -20 & !missing(t731303_ha)
-(1,242 missing values generated)
-
-. gen funi = t731353_ha == 4 if t731353_ha >= -20 & !missing(t731353_ha) 
-(1,410 missing values generated)
-
-. egen byte puni = rowmax(muni funi)
-(454 missing values generated)
-
-. label define puni_lb 0 "no university" 1 "university"
-
-. label values puni puni_lb
-
-. label variable puni "parental education"
-
-. note puni : based on t731303_ha t731353_ha in pTarget \ cgm_dta02.do \ MLB TS
-
-. 
-. // parental class
-. recode t731453_g8 (1 2= 1) (3 4 5 6 7 8 = 2) (9 10 11 = 3) (else=.), gen(classf)
-(15,144 differences between t731453_g8 and classf)
-
-. recode t731403_g8 (1 2= 1) (3 4 5 6 7 8 = 2) (9 10 11 = 3) (else=.), gen(classm)
-(13,335 differences between t731403_g8 and classm)
-
-. egen classp = rowmin(classf classm)
-(7,652 missing values generated)
-
-. label define class 1 "service" 2 "intermediate" 3 "working"
-
-. label values classp class
-
-. label var classp "dominant occupational class parents"
-
-. note classp : based on t731403_g8 t731453_g8 in pTarget \ cgm_dta02.do \ MLB TS
-
-. 
-. // prepare to save
-. keep ID_t female byr coh puni mig classp todrop
-
-. notes : cgm02.dta \ explanatory vars \ trieo-dta02.do \ MLB TS
-
-. 
-. compress
-  variable classp was float now byte
-  (51,420 bytes saved)
-
-. label data "explanatory variables"
-
-. datasignature set, reset
-  17140:8(72408):892500176:331384916       (data signature reset)
-
-. save cgm02.dta, replace
-file cgm02.dta saved
-
-. 
-. log close
-      name:  <unnamed>
-       log:  D:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_dta02.txt
-  log type:  text
- closed on:  11 Mar 2025, 16:06:30
-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+. capture log close

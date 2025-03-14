@@ -19,5 +19,6 @@ do cgm_dta03.do // clean spells
 do cgm_dta04.do // make consistent spells
 do cgm_dta05.do // turns spells into transitions
 do cgm_dta06.do // merge explanatory vars into transitions
-do cgm_ana01.do // 
+do cgm_ana01.do // descriptives
+do cgm_ana02.do // estimate the sequential logit models and present results
 exit

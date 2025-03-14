@@ -11,9 +11,9 @@ program define est_probs
 		local dname`i' = r(name`i') 
 	}
 	
-	mlogit dest i.co##(i.female i.puni i.mig)  if orig == `onum'
 	forvalues i = 1/`k' {
-		Fill_table, destnum(`dnum`i'') destname("`dname`i''") origname("`oname'") 
+		Fill_table, destnum(`dnum`i'') destname("`dname`i''") ///
+		            orignum(`onum') origname("`oname'") 
 	}
 end
 
@@ -34,7 +34,7 @@ program define Parse, rclass
 end
 
 program define Fill_table
-	syntax, destnum(integer) destname(string) origname(string) 
+	syntax, destnum(integer) destname(string) origname(string) orignum(integer)
 	if `destnum' == 0 {
 		local mat = "R"
 	}
@@ -42,7 +42,8 @@ program define Fill_table
 		local mat = "Q"
 	}
 	
-	qui margins, over(coh puni) at(female=0 mig=0) nose predict(pr outcome(`destnum'))
+	mlogit dest i.co##(i.puni i.mig)  if orig == `orignum'
+	qui margins, over(coh puni) at(mig=0) nose predict(pr outcome(`destnum'))
 	forvalues coh = 1/3 {
 		forvalues puni = 0/1 {
 			local Q `mat'_coh`coh'_puni`puni' 
@@ -50,7 +51,8 @@ program define Fill_table
 			el(r(table),1,colnumb(r(table),"`coh'.coh#`puni'.puni"))
 		}
 	}
-	qui margins, over(coh female) at(puni=0 mig=0) nose predict(pr outcome(`destnum'))
+	mlogit dest i.co##(i.female i.mig)  if orig == `orignum'
+	qui margins, over(coh female) at(mig=0) nose predict(pr outcome(`destnum'))
 	forvalues coh = 1/3 {
 		forvalues fem = 0/1 {
 			local Q `mat'_coh`coh'_fem`fem' 

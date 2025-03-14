@@ -55,30 +55,8 @@ fre dest if orig == 4
 est_probs, orig(4 "EGy") dest(3 "ERe"; 15 "FA")
 
 // Given enter Vocational, general secondary
-forvalues coh = 1/3 {
-	forvalues puni = 0/1 {
-		local Q Q_coh`coh'_puni`puni'
-		matrix `Q'[rownumb(`Q',"EVsecH"),colnumb(`Q',"FRe")]= 1
-	}
-}
-forvalues coh = 1/3 {
-	forvalues fem = 0/1 {
-		local Q Q_coh`coh'_fem`fem'
-		matrix `Q'[rownumb(`Q',"EVsecH"),colnumb(`Q',"FRe")]= 1
-	}
-}
-forvalues coh = 1/3 {
-	forvalues puni = 0/1 {
-		local Q Q_coh`coh'_puni`puni'
-		matrix `Q'[rownumb(`Q',"EVsecR"),colnumb(`Q',"FA")]= 1
-	}
-}
-forvalues coh = 1/3 {
-	forvalues fem = 0/1 {
-		local Q Q_coh`coh'_fem`fem'
-		matrix `Q'[rownumb(`Q',"EVsecR"),colnumb(`Q',"FA")]= 1
-	}
-}
+one_probs, oname("EVsecH") dname("FRe")
+one_probs, oname("EVsecR") dname("FA")
 
 // Given finish Grundschule
 fre dest if orig == 12
@@ -97,18 +75,7 @@ fre des if orig == 15
 est_probs , orig(15 "FA") dest(0 "DA"; 9 "FVA"; 11 "FU" )
 
 // Given Finish Vocational Hauptschule
-forvalues coh = 1/3 {
-	forvalues puni = 0/1 {
-		local Q R_coh`coh'_puni`puni'
-		matrix `Q'[rownumb(`Q',"FVH"),colnumb(`Q',"DVH")]= 1
-	}
-}
-forvalues coh = 1/3 {
-	forvalues fem = 0/1 {
-		local Q R_coh`coh'_fem`fem'
-		matrix `Q'[rownumb(`Q',"FVH"),colnumb(`Q',"DVH")]= 1
-	}
-}
+one_probs, oname("FVH") dname("DVH")
 
 // Given Finish vocational Realschule
 fre des if orig == 17
@@ -119,18 +86,7 @@ fre des if orig == 18
 est_probs, orig(18 "FVA") dest(0 "DVA"; 11 "FU")
 
 // Given Finish University
-forvalues coh = 1/3 {
-	forvalues puni = 0/1 {
-		local Q R_coh`coh'_puni`puni'
-		matrix `Q'[rownumb(`Q',"FU"),colnumb(`Q',"DU")]= 1
-	}
-}
-forvalues coh = 1/3 {
-	forvalues fem = 0/1 {
-		local Q R_coh`coh'_fem`fem'
-		matrix `Q'[rownumb(`Q',"FU"),colnumb(`Q',"DU")]= 1
-	}
-}
+one_probs, oname("FU") dname("DU")
 
 // ==========================================================
 **# pr finish directly
@@ -397,8 +353,9 @@ keep if schoolr == 1
 
 gen var:var = fem if !missing(fem)
 replace var = puni+2 if !missing(puni)
-label defin var 0 "male" 1 "female" 2 "no univeristy" 3 "university"
-
+label defin var 0 "male" 1 "female" 2 "parents no tertiary" ///
+                3 "parents tertiary", replace
+				
 gsort -coh var
 
 seqvar yaxis = 1/4 7/10 13/16
@@ -427,6 +384,7 @@ twoway scatter total yaxis, ///
 	mlabcolor("0 154 209") ///
 	xtitle("% attaining tertiary education") ///
 	xlab(none) xscale(range(0 65))
+graph export ../txt/gr03.emf, replace
 
 drop if var == .
 keep coh var total direct
@@ -437,7 +395,7 @@ gen effd1 = direct0 - direct1
 gen effd2 = direct3 - direct2
 keep coh eff*
 reshape long efft effd, i(coh) j(var)
-label define var 1 "male" 2 "university", replace
+label define var 1 "male" 2 `""parents" "tertiary""', replace
 label var var
 
 gsort -coh var
@@ -475,7 +433,18 @@ twoway scatter efft yaxis, ///
 	scatter yaxis mid, msymbol(i) mlab(indir) mlabpos(6) ///
 	mlabcolor(black) mlabformat(%5.1f) ///
 	xtitle("effect on attaining tertiary education (%-point difference)") ///
-	xlab(none) xscale(range(-3 40))	///
+	xlab(none) xscale(range(-4 37))	///
 	legend( order(1 "total" 2 "direct")) yscale(range(0 10.3))
+graph export ../txt/gr04.emf, replace	
+	
+diag, wmax(0.5) scale(100) coh(3) puni(0) name(coh3_puni0, replace)
+diag, wmax(0.5) scale(100) coh(3) puni(1) name(coh3_puni1, replace)
+graph combine coh3_puni0 coh3_puni1, rows(1) xsize(12)	
+graph export ../txt/gr05.emf, replace
+
+diag, wmax(0.5) scale(100) coh(3) fem(0) name(coh3_fem0, replace)
+diag, wmax(0.5) scale(100) coh(3) fem(1) name(coh3_fem1, replace)
+graph combine coh3_fem0 coh3_fem1, rows(1) xsize(12)
+graph export ../txt/gr06.emf, replace
 log close
 exit

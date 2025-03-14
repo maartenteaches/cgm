@@ -1,8 +1,8 @@
-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
        log:  D:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_dta06.txt
   log type:  text
- opened on:  11 Mar 2025, 16:06:45
+ opened on:  13 Mar 2025, 11:00:27
 
 . 
 . // merge explanatory variables into transitions
@@ -20,13 +20,13 @@
 (explanatory variables)
 
 . datasignature confirm, strict
-  (data unchanged since 11mar2025 16:06)
+  (data unchanged since 13mar2025 11:00)
 
 . use cgm05
 (cleaned transitions)
 
 . datasignature confirm, strict
-  (data unchanged since 11mar2025 16:06)
+  (data unchanged since 13mar2025 11:00)
 
 . 
 . // merge files
@@ -67,5 +67,5 @@ file cgm06.dta saved
       name:  <unnamed>
        log:  D:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_dta06.txt
   log type:  text
- closed on:  11 Mar 2025, 16:06:45
-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+ closed on:  13 Mar 2025, 11:00:27
+----------------------------------------------------------------------------------------------------------------------
