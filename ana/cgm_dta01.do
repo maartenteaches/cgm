@@ -18,13 +18,20 @@ datasignature confirm, strict
 // keep only educational spells 
 // i.e. exclude employment, military, etc. spells
 keep if sptype < 25
+drop if sptype == 23 // vocprep
 tempfile tofill
 save `tofill', replace
 
 **# merge in the generated educational spells
 neps : use Education
-drop if missing(splink)
+// mising splink = spell outside regular German education
+drop if missing(splink) 
 merge 1:1 ID_t splink using `tofill'
+
+// number = sort in time
+// splink first sorts by general sec and voc/tertiary and sorts by time
+// the last is what we want
+bys ID_t (splink) : replace number = _n
 drop _merge 
 
 
@@ -35,7 +42,7 @@ save `tofill', replace
 **# primary and general secondary
 neps: use spSchool
 datasignature confirm
-keep ID_t splink subspell         ///
+keep ID_t splink spell subspell   ///
     ts11204 ts11204_ha ts11204_v1 ///
 	ts11209 ts11210 ts11211
 
@@ -61,11 +68,10 @@ label define edlevs 0  "drop out"                  ///
 					18 "finish Hochschule"     
 
 recode ts11209 ( -21 -20 6 7    =  0  ) /// andere Abschluss & sonderschulabslus & nich in liste == drop-out
-               (  .             = 10  ) ///
-               (  1  2          = 11  ) ///
-			   (  3             = 12  ) ///
-			   (  4             = 13  ) ///
-			   (  5             = 14  ) ///
+               (  .             = 10  ) /// Grund
+               (  1  2          = 11  ) /// Haupt
+			   (  3             = 12  ) /// Real
+			   (  4  5          = 14  ) /// Abi + Fachabi
 			   ( else           = .   ) ///
 			   , generate(finish)	
 replace finish = . if finish == 10 & ts11204_ha != 1
@@ -99,14 +105,14 @@ assert (ts11204    < 0 | missing(ts11204   ) ) & ///
 	   
 keep if subspell == 0
  
-keep ID_t splink finish start ts11209 
+keep ID_t splink spell finish start ts11209 
 
 merge 1:1 ID_t splink using `tofill', update
 
 replace finish =  0 if tx28101 == 0 & finish == .
 replace finish = 11 if inlist(tx28101, 1,2) & finish == .
 replace finish = 12 if inlist(tx28101, 3,4) & finish == .
-replace finish = 14 if tx28101 == 5 & finish == .
+replace finish = 14 if inlist(tx28101, 5,6) & finish == .
 replace finish = 10 if start == 1 & finish == .
 
 drop _merge ts11209
@@ -117,39 +123,6 @@ save `tofill', replace
 
 tab start finish, miss
 	   
-**# pre-voc
-neps: use spVocPrep
-datasignature confirm
-
-keep if subspell == 0
-keep ID_t splink ts13201 ts13201_v1
-
-gen start = 6
-label variable start "begin of spell"
-note start: based on existence in spVocPrep \ cgm_dta01.do \ MLB TS
-label value start edlevs
-
-recode ts13201_v1 ( 1 2  = 0  ) ///
-                  ( 3    = 15 ) ///
-		          ( else = .  ) ///
-		          , generate(finish)
-replace finish = 0  if finish == . & ts13201 == 1
-replace finish = 15 if finish == . & ts13201 == 2
-label value finish edlevs
-label variable finish "end of spell"
-note finish: based on ts13201 ts13201_v1 in spVocPrep \ cgm_dta01.do \ MLB TS
-
-keep ID_t splink finish start ts13201 
-
-merge 1:1 ID_t splink using `tofill', update
-drop _merge ts13201
-
-notes: cgm01.dta \ merged in pre-vocational from spVocPrep.dta \ cgm_dta01.do #4 \ MLB TS 
-
-save `tofill', replace
-
-tab start finish, miss
-
 **# voc and tertiary
 neps : use spVocTrain
 datasignature confirm
