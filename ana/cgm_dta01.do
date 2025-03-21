@@ -134,13 +134,11 @@ keep ID_t splink subspell ///
 	 ts15219 ts15219_v1 ts15219_ha ts15220_O
 	 
 recode  ts15201_v1 ( 1 2 3 4 = 7 ) ///
-                   ( 5 6     = 8 ) ///
-				   ( 7       = 9 ) /// 
+				   ( 5 6 7   = 9 ) /// 
 				   ( else    = . ) ///
 				  , generate(start)
 replace start = 7 if inlist(ts15201, 1, 2, 3, 4, 5)
-replace start = 8 if inlist(ts15201, 6, 7, 8, 9)
-replace start = 9 if ts15201 == 10
+replace start = 9 if inlist(ts15201, 6, 7, 8, 9, 10)
 label value start edlevs	
 label variable start "begin of spell"
 note start : based on ts15201 ts15201_v1 in spVocTrain \ cgm_dta01.do \MLB TS
@@ -170,7 +168,7 @@ keep ID_t splink finish start ts15219_ha ts15218 tobedropped
 merge 1:1 ID_t splink using `tofill', update
 
 replace finish = 16 if ts15219_ha == 17 & inlist(tx28101, 2, 4, 6) & missing(finish)
-replace finish = 17 if ts15219_ha == 17 & tx28101 == 7 & missing(finish)
+replace finish = 18 if ts15219_ha == 17 & tx28101 == 7 & missing(finish)
 replace finish = 18 if ts15219_ha == 17 & tx28101 == 8 & missing(finish)
 replace start = 7 if finish == 16 & start == .
 replace start = 9 if finish == 18 & start == .
