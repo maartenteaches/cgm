@@ -1,8 +1,8 @@
-----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  C:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_dta01.txt
+       log:  D:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_dta01.txt
   log type:  text
- opened on:  20 Mar 2025, 17:26:56
+ opened on:  21 Mar 2025, 15:49:47
 
 . 
 . // merge educational spells 
@@ -56,8 +56,8 @@ Warning: will read file from temporary copy.
 . tempfile tofill
 
 . save `tofill', replace
-(file C:\Users\MAARTE~1.BUI\AppData\Local\Temp\ST_2d38_000001.tmp not found)
-file C:\Users\MAARTE~1.BUI\AppData\Local\Temp\ST_2d38_000001.tmp saved as .dta format
+(file C:\Users\Admin\AppData\Local\Temp\ST_d50_000001.tmp not found)
+file C:\Users\Admin\AppData\Local\Temp\ST_d50_000001.tmp saved as .dta format
 
 . 
 . **# merge in the generated educational spells
@@ -94,12 +94,12 @@ Warning: will read file from temporary copy.
 
 . 
 . 
-. notes : cgm01.dta \ merged in generated educational spells from SC6_Education_D_15-0-0.dta \ cgm-d
-> ta01.do \ MLB TS         
+. notes : cgm01.dta \ merged in generated educational spells from SC6_Education_D_15-0-0.dta \ cgm-dta01.do \ MLB TS  
+>        
 
 . 
 . save `tofill', replace
-file C:\Users\MAARTE~1.BUI\AppData\Local\Temp\ST_2d38_000001.tmp saved as .dta format
+file C:\Users\Admin\AppData\Local\Temp\ST_d50_000001.tmp saved as .dta format
 
 . 
 . **# primary and general secondary
@@ -138,8 +138,7 @@ Warning: will read file from temporary copy.
 >                                         18 "finish Hochschule"     
 
 . 
-. recode ts11209 ( -21 -20 6 7    =  0  ) /// andere Abschluss & sonderschulabslus & nich in liste =
-> = drop-out
+. recode ts11209 ( -21 -20 6 7    =  0  ) /// andere Abschluss & sonderschulabslus & nich in liste == drop-out
 >                (  .             = 10  ) /// Grund
 >                (  1  2          = 11  ) /// Haupt
 >                            (  3             = 12  ) /// Real
@@ -161,8 +160,7 @@ Warning: will read file from temporary copy.
 . recode ts11204    ( 1 3 2          = 1 ) ///
 >                   ( 4              = 2 ) ///
 >                                   ( 5 7            = 3 ) ///
->                                   ( 6 10 11 12 14  = 5 ) /// Waldorf, sonderschule, andere schule 
-> = gesamtschule
+>                                   ( 6 10 11 12 14  = 5 ) /// Waldorf, sonderschule, andere schule = gesamtschule
 >                                   ( 8 9            = 4 ) ///
 >                                   ( 13             = 7 ) ///
 >                                   ( else           = . ) ///
@@ -237,17 +235,21 @@ Warning: will read file from temporary copy.
     -----------------------------------------
 
 . 
-. replace finish =  0 if tx28101 == 0 & finish == .
-(59 real changes made)
+. bys ID_t (splink) : replace number = _n
+(418 real changes made)
 
-. replace finish = 11 if inlist(tx28101, 1,2) & finish == .
-(4,646 real changes made)
+. 
+. replace finish =  0 if tx28101 == 0 & missing(finish) & !missing(start)
+(5 real changes made)
 
-. replace finish = 12 if inlist(tx28101, 3,4) & finish == .
-(7,307 real changes made)
+. replace finish = 11 if inlist(tx28101, 1,2) & finish == . & inlist(start,1,2,5,7)
+(3 real changes made)
 
-. replace finish = 14 if inlist(tx28101, 5,6) & finish == .
-(3,405 real changes made)
+. replace finish = 12 if inlist(tx28101, 3,4) & finish == . & inlist(start,2,3,4,5,7)
+(1 real change made)
+
+. replace finish = 14 if inlist(tx28101, 5,6) & finish == . & inlist(start,3,4,5,7)
+(4 real changes made)
 
 . replace finish = 10 if start == 1 & finish == .
 (1 real change made)
@@ -259,39 +261,24 @@ Warning: will read file from temporary copy.
 . notes : cgm01.dta \ meged in primary and general secondary from spSchool \ cgm-dta01.do \ MLB TS 
 
 . save `tofill', replace
-file C:\Users\MAARTE~1.BUI\AppData\Local\Temp\ST_2d38_000001.tmp saved as .dta format
+file C:\Users\Admin\AppData\Local\Temp\ST_d50_000001.tmp saved as .dta format
 
 . 
 . 
 . tab start finish, miss
 
-                      |                      end of spell
-       begin of spell |  drop out  finish Gr  finish Ha  finish Re  finish Ab |     Total
-----------------------+-------------------------------------------------------+----------
-enter Grund- Volkssch |     2,077     10,656      1,584        110         30 |    14,457 
-    enter Hauptschule |       735          0      2,790        340         11 |     3,876 
-     enter Realschule |       800          0        372      5,439         61 |     6,675 
-      enter Gymnasium |     1,033          0         33        660      4,600 |     6,330 
-   enter Gesamtschule |       872          0        282      1,063        593 |     2,844 
-     enter vocational |       474          0         65        706      1,112 |     2,380 
-                    . |       682          0      5,035      7,679      3,762 |    40,034 
-----------------------+-------------------------------------------------------+----------
-                Total |     6,673     10,656     10,161     15,997     10,169 |    76,596 
-
-
-                      |   end of
-                      |   spell
-       begin of spell |         . |     Total
-----------------------+-----------+----------
-enter Grund- Volkssch |         0 |    14,457 
-    enter Hauptschule |         0 |     3,876 
-     enter Realschule |         3 |     6,675 
-      enter Gymnasium |         4 |     6,330 
-   enter Gesamtschule |        34 |     2,844 
-     enter vocational |        23 |     2,380 
-                    . |    22,876 |    40,034 
-----------------------+-----------+----------
-                Total |    22,940 |    76,596 
+                      |                           end of spell
+       begin of spell |  drop out  finish Gr  finish Ha  finish Re  finish Ab          . |     Total
+----------------------+------------------------------------------------------------------+----------
+enter Grund- Volkssch |     2,077     10,656      1,584        110         30          0 |    14,457 
+    enter Hauptschule |       735          0      2,790        340         11          0 |     3,876 
+     enter Realschule |       800          0        372      5,439         61          3 |     6,675 
+      enter Gymnasium |     1,033          0         33        660      4,600          4 |     6,330 
+   enter Gesamtschule |       872          0        282      1,063        593         34 |     2,844 
+     enter vocational |       474          0         65        706      1,112         23 |     2,380 
+                    . |       628          0        392        373        361     38,280 |    40,034 
+----------------------+------------------------------------------------------------------+----------
+                Total |     6,619     10,656      5,518      8,691      6,768     38,344 |    76,596 
 
 .            
 . **# voc and tertiary
@@ -310,8 +297,7 @@ Warning: will read file from temporary copy.
 
 .          
 . recode  ts15201_v1 ( 1 2 3 4 = 7 ) ///
->                    ( 5 6     = 8 ) ///
->                                    ( 7       = 9 ) /// 
+>                                    ( 5 6 7   = 9 ) /// 
 >                                    ( else    = . ) ///
 >                                   , generate(start)
 (45,626 differences between ts15201_v1 and start)
@@ -319,11 +305,8 @@ Warning: will read file from temporary copy.
 . replace start = 7 if inlist(ts15201, 1, 2, 3, 4, 5)
 (13,053 real changes made)
 
-. replace start = 8 if inlist(ts15201, 6, 7, 8, 9)
-(3,038 real changes made)
-
-. replace start = 9 if ts15201 == 10
-(4,891 real changes made)
+. replace start = 9 if inlist(ts15201, 6, 7, 8, 9, 10)
+(7,929 real changes made)
 
 . label value start edlevs        
 
@@ -332,92 +315,164 @@ Warning: will read file from temporary copy.
 . note start : based on ts15201 ts15201_v1 in spVocTrain \ cgm_dta01.do \MLB TS
 
 . 
-. // not relevant education
+. // not relevant education (medical specialist, civil service examination, phd, etc)
 . gen byte tobedropped = start == . & ts15201 > 0
 
 . 
-end of do-file
+. recode ts15219_ha ( -20        =  0 ) ///
+>                   (  1 2 3 4 5 = 16 ) ///
+>                                   (  6 7 8     = 18 ) ///
+>                                   ( else       = .  ) ///
+>                   , generate(finish)                              
+(31,214 differences between ts15219_ha and finish)
 
-. fre splink
+. replace finish = 0 if  ts15218  == 2
+(3,883 real changes made)
 
-splink -- Link for spell merging
-------------------------------------------------------------
-               |      Freq.    Percent      Valid       Cum.
----------------+--------------------------------------------
-Valid   240001 |      17687      38.77      38.77      38.77
-        240002 |      13107      28.73      28.73      67.49
-        240003 |       7455      16.34      16.34      83.83
-        240004 |       3717       8.15       8.15      91.98
-        240005 |       1755       3.85       3.85      95.82
-        240006 |        836       1.83       1.83      97.66
-        240007 |        425       0.93       0.93      98.59
-        240008 |        234       0.51       0.51      99.10
-        240009 |        154       0.34       0.34      99.44
-        240010 |         90       0.20       0.20      99.64
-        240011 |         64       0.14       0.14      99.78
-        240012 |         33       0.07       0.07      99.85
-        240013 |         22       0.05       0.05      99.90
-        240014 |         17       0.04       0.04      99.93
-        240015 |         10       0.02       0.02      99.96
-        240016 |          7       0.02       0.02      99.97
-        240017 |          3       0.01       0.01      99.98
-        240018 |          5       0.01       0.01      99.99
-        240019 |          2       0.00       0.00      99.99
-        240020 |          1       0.00       0.00     100.00
-        240021 |          1       0.00       0.00     100.00
-        240022 |          1       0.00       0.00     100.00
-        Total  |      45626     100.00     100.00           
-------------------------------------------------------------
+. replace finish = 18 if inlist(ts15219_ha, 9,10) & tobedropped == 0
+(90 real changes made)
 
-. fre ts15201
+. label value finish      edlevs
 
-ts15201 -- Type of vocational training
----------------------------------------------------------------------------------------------------
-                                                      |      Freq.    Percent      Valid       Cum.
-------------------------------------------------------+--------------------------------------------
-Valid   -98 don't know                                |         11       0.02       0.02       0.02
-        -97 refused                                   |          4       0.01       0.01       0.03
-        -55 not determinable                          |          1       0.00       0.00       0.04
-        -54 missing by design                         |      13499      29.59      29.59      29.62
-        1   apprenticeship (skilled worker, dual      |       8854      19.41      19.41      49.03
-            vocational training; administrative,      |                                            
-            in-company, industrial, agricultural)     |                                            
-        2   vocational training at a school of public |        979       2.15       2.15      51.17
-            health                                    |                                            
-        3   vocational training at a Berufsfachschule |       1443       3.16       3.16      54.34
-            (school-based or full-time school         |                                            
-            training)                                 |                                            
-        4   vocational training at another Fachschule |        694       1.52       1.52      55.86
-            (also specialist subject teacher          |                                            
-            training)                                 |                                            
-        5   master craftsman/craftswoman or           |       1262       2.77       2.77      58.62
-            technician training (also engineering     |                                            
-            schools) or a Bachelor Professional       |                                            
-        6   course of study at an administration and  |        124       0.27       0.27      58.89
-            business academy (VWA)                    |                                            
-        7   course of study at a university of        |        325       0.71       0.71      59.61
-            cooperative education, cooperative state  |                                            
-            university                                |                                            
-        8   course of study at a college of public    |        135       0.30       0.30      59.90
-            administration                            |                                            
-        9   course of study at a university of        |       2596       5.69       5.69      65.59
-            applied sciences (not college of public   |                                            
-            administration)                           |                                            
-        10  course of study at a university           |       5194      11.38      11.38      76.98
-        11  medical specialist training               |        145       0.32       0.32      77.29
-        12  a training course to prepare for a civil  |        478       1.05       1.05      78.34
-            service examination                       |                                            
-        13  a course at an association or a chamber   |       2679       5.87       5.87      84.21
-            (IHK Chamber of Industry and Commerce,    |                                            
-            also certified professional specialist,   |                                            
-            Master Professional)                      |                                            
-        14  a course to obtain a license (paramedic,  |       3950       8.66       8.66      92.87
-            network administrator, sports coach       |                                            
-            licenses, welder's or forklift license)   |                                            
-        15  doctorate                                 |        978       2.14       2.14      95.01
-        16  habilitation                              |         33       0.07       0.07      95.09
-        17  another vocational training               |       2242       4.91       4.91     100.00
-        Total                                         |      45626     100.00     100.00           
----------------------------------------------------------------------------------------------------
+. label variable finish "end of spell"
 
-. exit, clear
+. 
+. // copy finish from subspell if mainspell finish is missing
+. bys ID_t splink : egen maxfinish = max(finish)
+(15,357 missing values generated)
+
+. fre maxfinish if finish == . & subspell ==0
+
+maxfinish
+-----------------------------------------------------------
+              |      Freq.    Percent      Valid       Cum.
+--------------+--------------------------------------------
+Valid   0     |          5       0.04      29.41      29.41
+        16    |          5       0.04      29.41      58.82
+        18    |          7       0.06      41.18     100.00
+        Total |         17       0.13     100.00           
+Missing .     |      12622      99.87                      
+Total         |      12639     100.00                      
+-----------------------------------------------------------
+
+. replace finish = maxfinish if finish == . & subspell == 0
+(17 real changes made)
+
+. drop maxfinish
+
+.                         
+. keep if subspell == 0
+(7,209 observations deleted)
+
+.                         
+. keep ID_t splink finish start ts15219_ha ts15218 tobedropped
+
+. merge 1:1 ID_t splink using `tofill', update
+(label en177 already defined)
+(label de177 already defined)
+(label en1874ext2 already defined)
+(label en1874ext1 already defined)
+(label de1874ext2 already defined)
+(label de1874ext1 already defined)
+(label enext1 already defined)
+(label deext1 already defined)
+(label en1873ext1 already defined)
+(label de1873ext1 already defined)
+(label en1871ext1 already defined)
+(label de1871ext1 already defined)
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                        38,611
+        from master                       216  (_merge==1)
+        from using                     38,395  (_merge==2)
+
+    Matched                            38,201
+        not updated                    38,201  (_merge==3)
+        missing updated                     0  (_merge==4)
+        nonmissing conflict                 0  (_merge==5)
+    -----------------------------------------
+
+. 
+. replace finish = 16 if ts15219_ha == 17 & inlist(tx28101, 2, 4, 6) & missing(finish)
+(129 real changes made)
+
+. replace finish = 18 if ts15219_ha == 17 & tx28101 == 7 & missing(finish)
+(12 real changes made)
+
+. replace finish = 18 if ts15219_ha == 17 & tx28101 == 8 & missing(finish)
+(14 real changes made)
+
+. replace start = 7 if finish == 16 & start == .
+(469 real changes made)
+
+. replace start = 9 if finish == 18 & start == .
+(113 real changes made)
+
+. replace finish = 0 if inlist(ts15219, 16) // other abschluss and IHK is drop-out
+(1,056 real changes made)
+
+. 
+. drop if tobedropped == 1
+(8,466 observations deleted)
+
+. drop tobedropped
+
+. 
+. tab start finish, miss
+
+                      |                                 end of spell
+       begin of spell |  drop out  finish Gr  finish Ha  finish Re  finish Ab  finish vo  finish Ho |     Total
+----------------------+-----------------------------------------------------------------------------+----------
+enter Grund- Volkssch |     2,077     10,656      1,584        110         30          0          0 |    14,457 
+    enter Hauptschule |       735          0      2,790        340         11          0          0 |     3,876 
+     enter Realschule |       800          0        372      5,439         61          0          0 |     6,675 
+      enter Gymnasium |     1,033          0         33        660      4,600          0          0 |     6,330 
+   enter Gesamtschule |       872          0        282      1,063        593          0          0 |     2,844 
+     enter vocational |     2,072          0         65        706      1,112     15,913         51 |    20,904 
+     enter Hochschule |     1,904          0          0          0          0        199      5,540 |     8,160 
+                    . |       647          0        392        373        361          0          0 |     5,100 
+----------------------+-----------------------------------------------------------------------------+----------
+                Total |    10,140     10,656      5,518      8,691      6,768     16,112      5,591 |    68,346 
+
+
+                      |   end of
+                      |   spell
+       begin of spell |         . |     Total
+----------------------+-----------+----------
+enter Grund- Volkssch |         0 |    14,457 
+    enter Hauptschule |         0 |     3,876 
+     enter Realschule |         3 |     6,675 
+      enter Gymnasium |         4 |     6,330 
+   enter Gesamtschule |        34 |     2,844 
+     enter vocational |       985 |    20,904 
+     enter Hochschule |       517 |     8,160 
+                    . |     3,327 |     5,100 
+----------------------+-----------+----------
+                Total |     4,870 |    68,346 
+
+. 
+. drop _merge ts15219_ha ts15218 
+
+. 
+. notes : cgm01.dta \ merged in vocational and tertiary from spVocTrain \ cgm_dta01.do \ MLB TS 
+
+. 
+. compress
+  (0 bytes saved)
+
+. datasignature set, reset
+  68346:22(68329):3011762294:3237737582       (data signature reset)
+
+. label data "raw educational spells from NEPS"
+
+. save cgm01.dta, replace
+file cgm01.dta saved
+
+. 
+. log close 
+      name:  <unnamed>
+       log:  D:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_dta01.txt
+  log type:  text
+ closed on:  21 Mar 2025, 15:49:49
+----------------------------------------------------------------------------------------------------------------------

@@ -109,10 +109,12 @@ keep ID_t splink spell finish start ts11209
 
 merge 1:1 ID_t splink using `tofill', update
 
-replace finish =  0 if tx28101 == 0 & finish == .
-replace finish = 11 if inlist(tx28101, 1,2) & finish == .
-replace finish = 12 if inlist(tx28101, 3,4) & finish == .
-replace finish = 14 if inlist(tx28101, 5,6) & finish == .
+bys ID_t (splink) : replace number = _n
+
+replace finish =  0 if tx28101 == 0 & missing(finish) & !missing(start)
+replace finish = 11 if inlist(tx28101, 1,2) & finish == . & inlist(start,1,2,5,7)
+replace finish = 12 if inlist(tx28101, 3,4) & finish == . & inlist(start,2,3,4,5,7)
+replace finish = 14 if inlist(tx28101, 5,6) & finish == . & inlist(start,3,4,5,7)
 replace finish = 10 if start == 1 & finish == .
 
 drop _merge ts11209
@@ -143,13 +145,12 @@ label value start edlevs
 label variable start "begin of spell"
 note start : based on ts15201 ts15201_v1 in spVocTrain \ cgm_dta01.do \MLB TS
 
-// not relevant education
+// not relevant education (medical specialist, civil service examination, phd, etc)
 gen byte tobedropped = start == . & ts15201 > 0
 
 recode ts15219_ha ( -20        =  0 ) ///
                   (  1 2 3 4 5 = 16 ) ///
-				  (  6 7       = 17 ) ///
-				  (  8         = 18 ) ///
+				  (  6 7 8     = 18 ) ///
 				  ( else       = .  ) ///
                   , generate(finish)				  
 replace finish = 0 if  ts15218  == 2
@@ -172,9 +173,8 @@ replace finish = 16 if ts15219_ha == 17 & inlist(tx28101, 2, 4, 6) & missing(fin
 replace finish = 17 if ts15219_ha == 17 & tx28101 == 7 & missing(finish)
 replace finish = 18 if ts15219_ha == 17 & tx28101 == 8 & missing(finish)
 replace start = 7 if finish == 16 & start == .
-replace start = 8 if finish == 17 & start == .
 replace start = 9 if finish == 18 & start == .
-replace finish = 0 if inlist(ts15219, 16, 17) // other abschluss and IHK is drop-out
+replace finish = 0 if inlist(ts15219, 16) // other abschluss and IHK is drop-out
 
 drop if tobedropped == 1
 drop tobedropped
