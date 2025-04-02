@@ -4,7 +4,8 @@ macro drop _all
 
 // use only community contributed packages from 
 // the ado directory local to this project
-cd "D:\Mijn documenten\projecten\track_mobility\cgm\"
+*cd "D:\Mijn documenten\projecten\track_mobility\cgm\"
+cd "c:\active\cgm"
 sysdir set PLUS     "`c(pwd)'/ado/plus"
 sysdir set PERSONAL "`c(pwd)'/ado/personal"
 sysdir set OLDPLACE "`c(pwd)'/ado"

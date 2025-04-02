@@ -11,9 +11,6 @@ macro drop _all
 use cgm03
 datasignature confirm
 
-**# drop pre-voc
-drop if start == 6
-
 **# first transition begins with entering Grundschule
 tab start finish if sort == 1
 bys ID_t (sort) : gen byte add = ( start != 1 & _n == 1 ) + 1
@@ -22,23 +19,14 @@ expand add, gen(added)
 replace sort   = 0  if added 
 replace start  = 1  if added
 replace finish = 10 if added
-replace startm = .  if added
-replace starty = .  if added
-replace endm   = .  if added
-replace endy   = .  if added
 bys ID_t (sort) : replace sort = _n
 drop add added
-
 
 // drop spells entering grundschule after first spell
 drop if start == 1 & sort > 1
 
 // no drop-outs from Grundschule
 replace finish = 10 if start == 1 & finish == 0
-
-// no finishing realschule and (Fach)Abitur after Grundschule
-// finish Hauptschule instead (possible after Volksschule)
-replace finish  = 11 if start == 1 & inlist(finish, 12, 13, 14)
 
 // clean sort
 bys ID_t (sort) : replace sort = _n
@@ -58,34 +46,62 @@ tab lfinish start if sort == 2
 
 // probably wrong sort
 // reverse sort if 2nd trans voc & 3rd trans general secondary
-bys ID_t (sort) : gen byte toberecoded = (start[2]==7 & finish[2]== 16) & ///
-                                         inlist(start[3], 2, 3, 4, 5)
+bys ID_t (sort) : gen byte toberecoded = start==7  & ///
+                                         inlist(start[_n+1], 2, 3, 4) & ///
+										 _n == 2
+replace sort = 3 if toberecoded == 1
+bys ID_t (sort): replace sort = 2 if toberecoded[_n-1]==1
 
-// voc --> Fachhochschule --> realschule to
-// realschule --> voc --> fachhochschule									   
-bys ID_t (sort) : replace toberecoded = start[2] == 7 & start[3] == 8 & start[4] == 3
-recode sort (4=2) (2=3) (3=4) if toberecoded
-
-// if someone enters vocational in second spell, she probably finished 
-// the Volksschule (+/- Realschulabschluss) in first spell
-bys ID_t (sort) : replace finish = 11 if sort == 1 & inlist(start[_n+1], 7) 
-
-
-// enter a spell start realschule, finish realschule if second transition 
-// started with enter fachhochschule	
-bys ID_t (sort) : gen byte add = (start == 8 & sort == 2) + 1
+//2nd spell: voc --> finish real
+// enter haupt --> finish haupt --> enter voc --> finsh real
+gen add = (sort == 2 & start == 7 & finish == 12)+1
 expand add, gen(added)
-
-replace sort   = 1.5 if added
-replace start  = 3   if added
-replace finish = 12  if added
-replace startm = .   if added
-replace starty = .   if added
-replace endm   = .   if added
-replace endy   = .   if added
-bys ID_t (sort) : replace sort = _n
+replace sort = sort - 0.5 if added
+replace start = 2 if added
+replace finish = 11 if added
+bys ID_t (sort): replace sort = _n
 drop add added
-	
+
+//2nd spell: voc --> finish Abi
+// enter real --> finish real --> enter voc --> finsh abi
+gen add = (sort == 2 & start == 7 & finish == 14)+1
+expand add, gen(added)
+replace sort = sort - 0.5 if added
+replace start = 3 if added
+replace finish = 12 if added
+bys ID_t (sort): replace sort = _n
+drop add added
+
+// if just two spells and 2nd spell is enter voc 
+// the Volksschule (+/- Realschulabschluss) in first spell
+bys ID_t (sort): gen add = (sort == 1 & start[_n+1]==7 & _N == 2) +1
+expand add, gen(added)
+replace sort = sort +0.5 if added
+replace start = 2 if added
+replace finish = 11 if added
+bys ID_t (sort): replace sort = _n
+drop add added
+
+// enter voc --> finish voc --> enter hoch
+// enter gym --> finish abi --> enter voc --> finish voc --enter hoch
+bys ID_t (sort) : gen add = (sort == 2 & start == 7 & finish == 16 & start[_n+1]==9)+1
+expand add, gen(added)
+replace sort = sort - 0.5 if added
+replace start = 4 if added
+replace finish = 14 if added
+bys ID_t (sort): replace sort = _n
+drop add added
+
+// if 2nd spell is enter voc & 3rd spell is enter voc
+// the Volksschule (+/- Realschulabschluss) in first spell
+bys ID_t (sort): gen add = (sort == 2 & start == 7 & start[_n+1]==7 ) +1
+expand add, gen(added)
+replace sort = sort -0.5 if added
+replace start = 2 if added
+replace finish = 11 if added
+bys ID_t (sort): replace sort = _n
+drop add added
+
 // enter a spell start Gymnasium, finish Abi if second transition 
 // started with enter hochschule	
 bys ID_t (sort) : gen byte add = (start == 9 & sort == 2) + 1
@@ -94,16 +110,8 @@ expand add, gen(added)
 replace sort   = 1.5 if added
 replace start  = 4   if added
 replace finish = 14  if added
-replace startm = .   if added
-replace starty = .   if added
-replace endm   = .   if added
-replace endy   = .   if added
 bys ID_t (sort) : replace sort = _n
 drop add added
-
-// finish hauptschule --> enter hauptschule to 
-// finish grundschule --> enter hauptschule
-bys ID_t (sort) : replace finish = 10 if sort == 1 & finish == 11 & start[_n+1] == 2
 
 // return table of lfinish start for research log
 // after cleaning

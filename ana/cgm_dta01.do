@@ -181,6 +181,9 @@ tab start finish, miss
 
 drop _merge ts15219_ha ts15218 
 
+// make sure the sort order is not missing
+bys ID_t (splink) : replace number = _n
+
 notes : cgm01.dta \ merged in vocational and tertiary from spVocTrain \ cgm_dta01.do \ MLB TS 
 
 compress
