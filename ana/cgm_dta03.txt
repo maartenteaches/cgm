@@ -1,8 +1,8 @@
-----------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  c:\active\cgm\ana\cgm_dta03.txt
+       log:  D:\active\cgm\ana\cgm_dta03.txt
   log type:  text
- opened on:   2 Apr 2025, 14:52:39
+ opened on:   3 Apr 2025, 10:28:52
 
 . 
 . // clean spells
@@ -82,15 +82,13 @@
 . 
 . // enter Real --> . --> enter vocaltional
 . // enter Real --> finish Real --> enter vocaltional
-. bys ID_t (sort): replace finish = 12 if start == 3 & finish == . & start[_n+1] =
-> = 7
+. bys ID_t (sort): replace finish = 12 if start == 3 & finish == . & start[_n+1] == 7
 (2 real changes made)
 
 . 
 . // enter real --> . --> enter Gym --> finish Real
 . // enter real --> drop out --> enter Gym --> finish Real
-. bys ID_t (sort) : replace finish = 0 if finish == . & start == 3 & start[_n+1] =
-> = 4 & finish[_n+1] == 12
+. bys ID_t (sort) : replace finish = 0 if finish == . & start == 3 & start[_n+1] == 4 & finish[_n+1] == 12
 (1 real change made)
 
 . 
@@ -171,8 +169,7 @@
 . 
 . // no gensec --> enter gesamt --> . --> enter vocaltional
 . // no gensec --> enter gesamt --> finish haupt --> enter vocaltional
-. bys ID_t (sort): replace finish = 11 if gensec == 0 & start == 5 & finish == . &
->  start[_n+1] == 7
+. bys ID_t (sort): replace finish = 11 if gensec == 0 & start == 5 & finish == . & start[_n+1] == 7
 (3 real changes made)
 
 . 
@@ -190,8 +187,7 @@
 . 
 . //----------------------------------------------------------------------------
 . **# merge consecutive spells with the same start and end level 
-. bys ID_t start finish (sort) : drop if _n > 1 & _N > 1 & sort[_N] - sort[1] == _
-> N -1
+. bys ID_t start finish (sort) : drop if _n > 1 & _N > 1 & sort[_N] - sort[1] == _N -1
 (5,744 observations deleted)
 
 . 
@@ -207,20 +203,18 @@
 . bys ID_t start (sort) : replace dropout = dropout[_N-1] == _N-1
 (7,452 real changes made)
 
-. bys ID_t start (sort) : replace finish = finish[_N] if _N > 1 & sort[_N] - sort[
-> 1] == _N - 1 & dropout==1 & finish[_N] < .
+. bys ID_t start (sort) : replace finish = finish[_N] if _N > 1 & sort[_N] - sort[1] == _N - 1 & dropout==1 & finish[_
+> N] < .
 (1,551 real changes made)
 
-. bys ID_t start (sort) : drop if _n > 1 & _N > 1 & sort[_N] - sort[1] == _N-1 & d
-> ropout == 1
+. bys ID_t start (sort) : drop if _n > 1 & _N > 1 & sort[_N] - sort[1] == _N-1 & dropout == 1
 (1,560 observations deleted)
 
 . drop dropout                                      
 
 .         
 . //-------------------------------------------------------------
-. **# simplify/ correct some rare transitions                                     
->   
+. **# simplify/ correct some rare transitions                                       
 . // no finishing (Fach)Abitur after entering Hauptschule
 . // finish Realschule instead
 . replace finish = 12 if start == 2 & inlist(finish, 13, 14)
@@ -240,8 +234,7 @@
 
 . 
 . // no finishing (fach)hochschule after entering vocational
-. // enter vocational --> finish vocational --> enter ter --> finish ter if eligab
-> le
+. // enter vocational --> finish vocational --> enter ter --> finish ter if eligable
 . gen elig = inlist(finish, 12,14)
 
 . bys ID_t (sort) : replace elig = sum(elig)>=1
@@ -411,7 +404,7 @@ file cgm03.dta saved
 . 
 . log close
       name:  <unnamed>
-       log:  c:\active\cgm\ana\cgm_dta03.txt
+       log:  D:\active\cgm\ana\cgm_dta03.txt
   log type:  text
- closed on:   2 Apr 2025, 14:52:40
-----------------------------------------------------------------------------------
+ closed on:   3 Apr 2025, 10:28:54
+----------------------------------------------------------------------------------------------------------------------

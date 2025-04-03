@@ -130,129 +130,166 @@ replace lstart = L.start
 replace lfinish = L.finish
 tab lfinish start if sort == 3 
 
-// finish hauptschule in 2nd spell, enter Hauptschule, finish Real in 3rd spell, 
-// finish Realschule in 3rd spell --> enter realschule in 3rd spell
-bys ID_t (sort) : replace start = 3 if start == 2 & sort == 3 & finish[_n-1] == 11 & finish == 12
-
-// drop spells when 2nd spell finish hauptschule, 3rd spell enter hauptschule 
-// and finish hauptschule or drop-out
-bys ID_t (sort) : drop if start == 2 & sort == 3 & finish[_n-1] == 11 & inlist(finish, 0, 11)
-
-// finish realschule in 2nd spell, enter realschule in 3rd spell,
-// finish Abi in 3rd spel --> enter gym in 3rd spell
-bys ID_t (sort) : replace start = 4 if sort == 3 & start == 3 & finish[_n-1] == 12 & finish == 14
-
-// drop spells when 2nd spell finish realschule, 3rd spell enter enter realschule 
-// and finish drop-out
-bys ID_t (sort) : drop if sort == 3 & start == 3 & finish[_n-1] == 12 & inlist(finish,0, 12)
-
-// change dropout to finish voc in 2nd spell if 2nd spell starts with voc and 
-// 3rd spell start fachhochschule
-bys ID_t (sort) : replace finish = 16 if start[_n+1] == 8 & finish == 0 & start == 7 & sort == 2
-
-// change dropout to finish realschule in 2nd spell if 2nd spell starts with gym
-// and 3rd spell starts with fachhochschule
-bys ID_t (sort) : replace finish = 12 if start[_n+1] == 8 & finish == 0 & start == 4 & sort == 2
-
-// change dropout to Abi if 2nd spell starts with gym and 3rd spell starts
-// with enter hochschule 
-bys ID_t (sort) : replace finish = 14 if start[_n+1] == 9 & finish == 0 & inlist(start, 4, 5,7) & sort == 2 
-
-// hauptschule --> fachhochschule to realschule --> fachhochschule
-bys ID_t (sort) : replace toberecoded = finish[2] == 11 & start[3] == 8
-replace finish = 12 if sort == 2 & toberecoded
-
-// hauptschule --> hochschule to haupt--> realschule --> gym --> hochschule
-bys ID_t (sort) : gen byte add = ( sort == 3 & finish[_n-1] == 11 & start == 9) + 1
-expand add, gen(added)
-
-replace sort   = 2.5  if added 
-replace start  = 3  if added
-replace finish = 12 if added
-replace startm = .  if added
-replace starty = .  if added
-replace endm   = .  if added
-replace endy   = .  if added
+// drop finish Real --> enter Haupt --> drop-out
+bys ID_t (sort) : drop if sort > 2 & finish[_n-1] == 12 & start == 2 & finish == 0
 bys ID_t (sort) : replace sort = _n
-drop add
 
-bys ID_t (sort) : gen byte add = added + 1
-drop added
-expand add, gen(added)
-
-replace sort   = 3.5  if added 
-replace start  = 4  if added
-replace finish = 14 if added
-replace startm = .  if added
-replace starty = .  if added
-replace endm   = .  if added
-replace endy   = .  if added
+// drop finish Abi --> enter Real --> drop-out
+bys ID_t (sort) : drop if sort > 2 & finish[_n-1] == 14 & start == 3 & finish == 0
 bys ID_t (sort) : replace sort = _n
-drop add added
 
-// realschule --> hochschule to realschule --> Fachhochschule
-bys ID_t (sort) : replace start = 8 if start == 9 & finish[_n-1] == 12
-
-// change real --> abi --> gym to real --> finish real --> gym
-bys ID_t (sort) : replace finish = 12 if finish == 14 & start == 3 & start[_n+1] == 4 & sort == 2
-
-//drop duplicate spells
-bys ID_t (sort) : drop if start == start[_n-1] & finish == finish[_n-1]
-
-
-// voc --> hochschule to voc --> abi --> hochschule
-bys ID_t (sort) : gen byte add = ( sort == 3 & finish[_n-1] == 16 & start == 9) + 1
-expand add, gen(added)
-
-replace sort   = 2.5  if added 
-replace start  = 7  if added
-replace finish = 14 if added
-replace startm = .  if added
-replace starty = .  if added
-replace endm   = .  if added
-replace endy   = .  if added
+// drop finish real --> enter real --> finish realschule, drop-out
+bys ID_t (sort) : drop if sort > 2 & start == 3 & finish[_n-1] == 12 & inlist(finish,0, 12)
 bys ID_t (sort) : replace sort = _n
-drop add added
 
-// start Real --> drop-out --> enter Hoch to start Real --> drop-out 
-bys ID_t (sort) : drop if start[_n-1]==3 & finish[_n-1] == 0 & start == 9 & sort == 3
+// drop finish haupt --> enter haupt --> finish haupt or drop-out
+bys ID_t (sort) : drop if sort > 2 & start == 2 & finish[_n-1] == 11 & inlist(finish, 0, 11)
+bys ID_t (sort) : replace sort = _n
 
-// drop if 2nd spell finish realschule and 3rd spell enter hauptschule
-bys ID_t (sort) : drop if sort == 3 & start == 2 & finish[_n-1] == 12
+// drop finish Abi --> enter Gym --> finish abi or drop-out
+bys ID_t (sort) : drop if sort > 2 & start == 4 & finish[_n-1] == 14 & inlist(finish, 0, 14)
+bys ID_t (sort) : replace sort = _n
 
-// drop if 2nd spell finish realschule and 3rd spell enter Realschule
-bys ID_t (sort) : drop if sort == 3 & start == 3 & finish[_n-1] == 12
-
-// drop if 2nd spell finish Abi and 3rd spell enter hauptschule
-bys ID_t (sort) : drop if sort == 3 & start == 2 & finish[_n-1] == 14
-
-// drop if 2nd spell finish Abi and 3rd spell enter realschule
-bys ID_t (sort) : drop if sort == 3 & start == 3 & finish[_n-1] == 14
-
-// drop if 2nd spell finish Abi and 3rd spell enter gymnasium
-bys ID_t (sort) : drop if sort == 3 & start == 4 & finish[_n-1] == 14
-
-//ERe --> Abi --> EGy --> abi to ERe --> FRe --> EGy --> abi
-replace finish = 12 if sort == 2 & start == 3 & finish == 14 & start[_n+1] == 4
-
-//EGy --> Abi --> ERe --> FRe to ERe --> FRe --> EGy --> Abi
-replace toberecoded = 0
-bys ID_t (sort) : replace toberecoded = (start[2]==4 & finish[2]== 14) & ///
-                                         start[3]==3 & finish[3]== 12 
-recode sort (3=2) (2=3) if toberecoded
-
-// EHa --> FRe --> ERe to EHa --> FHa --> ERe to 
-replace finish = 11 if sort == 2 & start == 2 & finish == 12 & start[_n+1] == 3
-
-// Epv --> Fpv --> EHo to Evoc --> Abi --> EHo
-gen tochange = sort == 2 & start == 6 & finish == 15 & start[_n+1] == 9
-replace start = 7 if tochange
-replace finish = 14 if tochange
+// enter .. --> finish Real --> enter Haupt --> finish Haupt
+// enter Haupt --> finish Haupt --> enter .. --> finish Real
+bys ID_t (sort) : gen tochange = finish[_n-1]==12 & start==2 & finish == 11 & sort > 2
+bys ID_t (sort) : replace sort = sort - 1 if tochange==1
+bys ID_t (sort) : replace sort = sort + 1 if tochange[_n+1]==1
 drop tochange
 
-// drop duplicate spell
-bys ID_t (sort) : drop if start == start[_n-1] & finish == finish[_n-1]
+// enter Real --> finish Real --> enter Real --> finish Haupt
+// enter Real --> finish Haupt --> enter Real --> finish Real
+bys ID_t (sort) : gen tochange = finish[_n-1]==12 & start==3 & finish == 11 & sort > 2
+bys ID_t (sort) : replace sort = sort - 1 if tochange==1
+bys ID_t (sort) : replace sort = sort + 1 if tochange[_n+1]==1
+drop tochange
+
+// enter .. --> finish Abi --> enter Real/Gym --> finish Real
+// enter Real --> finish Real --> enter .. --> finish Abi
+bys ID_t (sort) : gen tochange = finish[_n-1]==14 & inlist(start,3,4) & finish == 12 & sort > 2
+bys ID_t (sort) : replace sort = sort - 1 if tochange==1
+bys ID_t (sort) : replace sort = sort + 1 if tochange[_n+1]==1
+drop tochange
+
+// enter Gym --> finish Abi --> enter Haupt --> finish Haupt
+// enter Real --> finish Real --> enter Gym --> finish Abi
+bys ID_t (sort) : gen tochange = finish[_n-1]==14 & start==2 & finish == 11 & sort > 2
+bys ID_t (sort) : replace sort = sort - 1 if tochange==1
+bys ID_t (sort) : replace sort = sort + 1 if tochange[_n+1]==1
+replace start = 3 if tochange == 1
+replace finish = 12 if tochange == 1
+drop tochange
+
+// finish hauptschule --> enter Hauptschule --> finish Real  
+// finish hauptschule --> enter realschule --> finish Realschule
+bys ID_t (sort) : replace start = 3 if sort > 2 & start == 2 & finish[_n-1] == 11 & finish == 12
+
+// finish realschule --> enter realschule --> finish Abi 
+// finish realschule --> enter gym --> finish Abi
+bys ID_t (sort) : replace start = 4 if sort > 2 & start == 3 & finish[_n-1] == 12 & finish == 14
+
+// again:
+// drop finish Real --> enter Haupt --> drop-out
+bys ID_t (sort) : drop if sort > 2 & finish[_n-1] == 12 & start == 2 & finish == 0
 bys ID_t (sort) : replace sort = _n
+
+// drop finish Abi --> enter Real --> drop-out
+bys ID_t (sort) : drop if sort > 2 & finish[_n-1] == 14 & start == 3 & finish == 0
+bys ID_t (sort) : replace sort = _n
+
+// drop finish real --> enter real --> finish realschule, drop-out
+bys ID_t (sort) : drop if sort > 2 & start == 3 & finish[_n-1] == 12 & inlist(finish,0, 12)
+bys ID_t (sort) : replace sort = _n
+
+// drop finish haupt --> enter haupt --> finish haupt or drop-out
+bys ID_t (sort) : drop if sort > 2 & start == 2 & finish[_n-1] == 11 & inlist(finish, 0, 11)
+bys ID_t (sort) : replace sort = _n
+
+// drop finish Abi --> enter Gym --> finish abi or drop-out
+bys ID_t (sort) : drop if sort > 2 & start == 4 & finish[_n-1] == 14 & inlist(finish, 0, 14)
+bys ID_t (sort) : replace sort = _n
+
+// enter .. --> finish Abi --> enter Real --> finish Real
+// enter Real --> finish Real --> enter .. --> finish Abi
+bys ID_t (sort) : gen tochange = finish[_n-1]==14 & start==3 & inlist(finish, 11, 12) & sort > 2
+bys ID_t (sort) : replace sort = sort - 1 if tochange==1
+bys ID_t (sort) : replace sort = sort + 1 if tochange[_n+1]==1
+drop tochange
+
+// drop-out --> enter voc --> finish voc in 3rd spell
+// finish gensec --> enter voc --> finish voc
+bys ID_t (sort) : replace finish = 11 if start == 2 & finish == 0 & ///
+                                         start[_n+1] == 7 & finish[_n+1] == 16 ///
+										 & sort == 2
+bys ID_t (sort) : replace finish = 12 if start == 3 & finish == 0 & ///
+                                         start[_n+1] == 7 & finish[_n+1] == 16  ///
+										 & sort == 2
+bys ID_t (sort) : replace finish = 14 if start == 4 & finish == 0 & ///
+                                         start[_n+1] == 7 & finish[_n+1] == 16 ///
+                                         & sort == 2
+										 
+// enter Haupt/Real --> drop-out --> enter voc --> finish real in 3rd spell
+// enter Haupt/real --> finish Haupt --> enter voc --> finish real
+bys ID_t (sort) : replace finish = 11 if sort == 2 & inlist(start, 2,3) & ///
+                                         finish == 0 & ///
+                                         start[_n+1] == 7 & finish[_n+1] == 12
+
+// enter Gym --> drop-out --> enter voc --> finish real in 3rd spell
+// enter real --> finish Haupt --> enter voc --> finish real
+bys ID_t (sort) : gen tochange = sort == 2 & start == 4 & finish == 0 & ///
+                                 start[_n+1] == 7 & finish[_n+1] == 12
+replace finish = 11 if tochange == 1									 
+replace start = 3 if tochange == 1
+drop tochange	
+
+// enter haupt --> drop-out --> enter voc --> finish gymnasium
+// enter real --> finish real --> enter voc --> finish gymnasium
+bys ID_t (sort) : gen tochange = sort == 2 & start == 2 & finish == 0 & ///
+                                 start[_n+1] == 7 & finish[_n+1] == 14
+replace finish = 12 if tochange == 1									 
+replace start = 3 if tochange == 1
+drop tochange	
+
+// enter real/gym --> drop-out --> enter voc --> finish Abi
+// enter real/gym --> finish real --> enter voc --> finish abi
+bys ID_t (sort) : replace finish = 12 if sort == 2 & inlist(start, 3,4) & ///
+                                         finish == 0 & ///
+                                         start[_n+1] == 7 & finish[_n+1] == 14
+
+// enter haupt --> drop-out --> enter voc --> drop-out
+// enter haupt --> finish haupt --> enter voc --> drop-out
+bys ID_t (sort): replace finish = 11 if start == 2 & finish == 0 & ///
+                                        start[_n+1] == 7 & finish[_n+1] == 0 ///
+										& sort == 2
+
+// enter haupt --> finish Haupt --> enter uni	
+// enter Real --> finish Real --> enter (fach)uni	
+gen tochange = sort == 2 & start == 2 & finish == 11 & ///
+               start[_n+1] == 9
+replace start = 3 if tochange == 1
+replace finish = 12 if tochange == 1
+drop tochange
+
+// enter Real --> finish Haupt --> enter Gym 
+// enter Real --> finish Real --> enter gym
+bys ID_t (sort): replace finish = 12 if ///
+    sort == 2 & start == 3 & finish == 11 & start[_n+1] == 4
+
+// enter haupt --> finish haupt --> enter gym	
+// enter haupt --> finish haupt --> enter real --> finish real --> enter gym
+bys ID_t (sort): gen byte toadd = (start == 2 & finish == 11 & start[_n+1]==4) + 1
+expand toadd, gen(added)
+replace sort = sort + 0.5 if added == 1
+replace start = 3 if added == 1
+replace finish = 12 if added == 1
+bys ID_t (sort): replace sort = _n
+drop add added
+
+// enter Haupt --> drop-out --> enter gym
+// enter real --> drop-out --> enter gym
+bys ID_t (sort): replace start = 3 if sort == 2 & start == 2 & ///
+                                      finish == 0 & start[_n+1] == 4
+
 
 // return table of lfinish start for research log
 // after cleaning
@@ -272,7 +309,24 @@ replace lstart = L.start
 replace lfinish = L.finish
 tab lfinish start if sort == 4 
 
+// drop finish abi --> enter haupt
+bys ID_t (sort) : drop if finish[_n-1] == 14 & start == 2
 
+// drop finish abi --> enter gym
+bys ID_t (sort) : drop if finish[_n-1] == 14 & start == 4
+
+// drop finish real --> enter real
+bys ID_t (sort) : drop if finish[_n-1] == 12 & start == 3
+
+bys ID_t (sort) : replace sort = _n
+
+
+tsset ID_t sort
+replace lstart = L.start
+replace lfinish = L.finish
+tab lfinish start if sort == 4 
+
+exit
 // finish haupt --> enter haupt --> finish real to
 // finish haupt --> enter real --> finish real
 bys ID_t (sort) : replace start = 3 if finish[_n-1] == 11 & start == 2 & sort == 4
