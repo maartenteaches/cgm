@@ -503,6 +503,9 @@ replace start = 3 if added == 1
 bys ID_t (sort) : replace sort = _n
 drop add added
 
+// drop enter Real, Gym --> drop-out --> enter voc
+bys ID_t (sort) : drop if inlist(start, 3,4) & finish == 0 & start[_n+1] == 7
+
 // -------------------------------------------------------------------------
 // last spell ends in a diploma
 gen rsort = -sort

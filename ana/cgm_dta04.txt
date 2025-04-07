@@ -2,7 +2,7 @@
       name:  <unnamed>
        log:  c:\active\cgm\ana\cgm_dta04.txt
   log type:  text
- opened on:   7 Apr 2025, 14:03:52
+ opened on:   7 Apr 2025, 16:52:11
 
 . 
 . // make consistent spells
@@ -1262,6 +1262,11 @@ Panel variable: ID_t (unbalanced)
 . drop add added
 
 . 
+. // drop enter Real, Gym --> drop-out --> enter voc
+. bys ID_t (sort) : drop if inlist(start, 3,4) & finish == 0 & start[_n+1] == 7
+(190 observations deleted)
+
+. 
 . // -------------------------------------------------------------------------
 . // last spell ends in a diploma
 . gen rsort = -sort
@@ -1270,13 +1275,13 @@ Panel variable: ID_t (unbalanced)
 
 . 
 . bys ID_t (rsort) : replace tobedropped = sum(tobedropped)
-(4,357 real changes made)
+(3,966 real changes made)
 
 . bys ID_t (rsort) : replace tobedropped = tobedropped == _n
-(6,982 real changes made)
+(6,436 real changes made)
 
 . drop if tobedropped
-(641 observations deleted)
+(639 observations deleted)
 
 . 
 . **# vocational separate by gensec
@@ -1289,10 +1294,10 @@ Panel variable: ID_t (unbalanced)
 . gen abi   = finish == 14
 
 . bys ID_t (sort) : replace haupt = sum(haupt)
-(7,244 real changes made)
+(7,132 real changes made)
 
 . bys ID_t (sort) : replace real  = sum(real)
-(11,649 real changes made)
+(11,559 real changes made)
 
 . bys ID_t (sort) : replace abi   = sum(abi)
 (7,182 real changes made)
@@ -1306,11 +1311,11 @@ Panel variable: ID_t (unbalanced)
 
 . bys ID_t (sort) : replace start2 = 5  if start == 7 & finish[_n-1] == 11 & inlis
 > t(finish,12,14)
-(744 real changes made)
+(754 real changes made)
 
 . bys ID_t (sort) : replace start2 = 6  if start == 7 & finish[_n-1] == 12 & inlis
 > t(finish,12,14)
-(975 real changes made)
+(995 real changes made)
 
 . replace start2 = 7  if start == 7 & real == 0 & abi == 0 & !inlist(finish,12,14)
 (3,367 real changes made)
@@ -1328,10 +1333,10 @@ Panel variable: ID_t (unbalanced)
 . clonevar finish2 = finish
 
 . replace finish2 = .
-(57,709 real changes made, 57,709 to missing)
+(57,521 real changes made, 57,521 to missing)
 
 . replace finish2 = 0  if finish ==  0
-(2,901 real changes made)
+(2,713 real changes made)
 
 . replace finish2 = 12 if finish == 10
 (17,062 real changes made)
@@ -1396,12 +1401,12 @@ Panel variable: ID_t (unbalanced)
 ----------------------+--------------------------------------------+----------
 enter Grund- Volkssch |    17,062          0          0          0 |    17,062 
     enter Hauptschule |         0      6,282          0          0 |     6,282 
-     enter Realschule |         0          0      9,248          0 |     9,248 
-      enter Gymnasium |         0          0          0      6,652 |     6,652 
-     enter vocational |         0          0          0          0 |    13,465 
+     enter Realschule |         0          0      9,149          0 |     9,149 
+      enter Gymnasium |         0          0          0      6,563 |     6,563 
+     enter vocational |         0          0          0          0 |    13,495 
      enter Hochschule |         0          0          0          0 |     4,970 
 ----------------------+--------------------------------------------+----------
-                Total |    17,062      6,282      9,248      6,652 |    57,679 
+                Total |    17,062      6,282      9,149      6,563 |    57,521 
 
 
                       |               begin of spell
@@ -1409,12 +1414,12 @@ enter Grund- Volkssch |    17,062          0          0          0 |    17,062
 ----------------------+--------------------------------------------+----------
 enter Grund- Volkssch |         0          0          0          0 |    17,062 
     enter Hauptschule |         0          0          0          0 |     6,282 
-     enter Realschule |         0          0          0          0 |     9,248 
-      enter Gymnasium |         0          0          0          0 |     6,652 
-     enter vocational |       744        975      3,367      5,480 |    13,465 
+     enter Realschule |         0          0          0          0 |     9,149 
+      enter Gymnasium |         0          0          0          0 |     6,563 
+     enter vocational |       754        995      3,367      5,480 |    13,495 
      enter Hochschule |         0          0          0          0 |     4,970 
 ----------------------+--------------------------------------------+----------
-                Total |       744        975      3,367      5,480 |    57,679 
+                Total |       754        995      3,367      5,480 |    57,521 
 
 
                       |    begin of spell
@@ -1422,19 +1427,19 @@ enter Grund- Volkssch |         0          0          0          0 |    17,062
 ----------------------+----------------------+----------
 enter Grund- Volkssch |         0          0 |    17,062 
     enter Hauptschule |         0          0 |     6,282 
-     enter Realschule |         0          0 |     9,248 
-      enter Gymnasium |         0          0 |     6,652 
-     enter vocational |     2,899          0 |    13,465 
+     enter Realschule |         0          0 |     9,149 
+      enter Gymnasium |         0          0 |     6,563 
+     enter vocational |     2,899          0 |    13,495 
      enter Hochschule |         0      4,970 |     4,970 
 ----------------------+----------------------+----------
-                Total |     2,899      4,970 |    57,679 
+                Total |     2,899      4,970 |    57,521 
 
 . tab finish finish2
 
                       |                end of spell
          end of spell |      done  finish Gr  finish Ha  finish Re |     Total
 ----------------------+--------------------------------------------+----------
-             drop out |     2,901          0          0          0 |     2,901 
+             drop out |     2,713          0          0          0 |     2,713 
    finish Grundschule |         0     17,062          0          0 |    17,062 
    finish Hauptschule |         0          0      5,613          0 |     5,613 
     finish Realschule |         0          0          0      8,748 |     8,748 
@@ -1442,13 +1447,13 @@ enter Grund- Volkssch |         0          0 |    17,062
     finish vocational |         0          0          0          0 |    11,744 
     finish Hochschule |         0          0          0          0 |     4,970 
 ----------------------+--------------------------------------------+----------
-                Total |     2,901     17,062      5,613      8,748 |    57,709 
+                Total |     2,713     17,062      5,613      8,748 |    57,521 
 
 
                       |                end of spell
          end of spell | finish Ab  finish vo  finish vo  finish vo |     Total
 ----------------------+--------------------------------------------+----------
-             drop out |         0          0          0          0 |     2,901 
+             drop out |         0          0          0          0 |     2,713 
    finish Grundschule |         0          0          0          0 |    17,062 
    finish Hauptschule |         0          0          0          0 |     5,613 
     finish Realschule |         0          0          0          0 |     8,748 
@@ -1456,14 +1461,14 @@ enter Grund- Volkssch |         0          0 |    17,062
     finish vocational |         0      3,367      5,478      2,899 |    11,744 
     finish Hochschule |         0          0          0          0 |     4,970 
 ----------------------+--------------------------------------------+----------
-                Total |     6,671      3,367      5,478      2,899 |    57,709 
+                Total |     6,671      3,367      5,478      2,899 |    57,521 
 
 
                       |   end of
                       |   spell
          end of spell | finish Un |     Total
 ----------------------+-----------+----------
-             drop out |         0 |     2,901 
+             drop out |         0 |     2,713 
    finish Grundschule |         0 |    17,062 
    finish Hauptschule |         0 |     5,613 
     finish Realschule |         0 |     8,748 
@@ -1471,12 +1476,12 @@ enter Grund- Volkssch |         0          0 |    17,062
     finish vocational |         0 |    11,744 
     finish Hochschule |     4,970 |     4,970 
 ----------------------+-----------+----------
-                Total |     4,970 |    57,709 
+                Total |     4,970 |    57,521 
 
 . 
 . // replace the new variables with the old variables
 . replace start = start2
-(15,098 real changes made, 30 to missing)
+(15,098 real changes made)
 
 . replace finish = finish2
 (51,441 real changes made)
@@ -1492,16 +1497,16 @@ enter Grund- Volkssch |         0          0 |    17,062
 ----------------------+--------------------------------------------+----------
     enter Grundschule |         0     17,062          0          0 |    17,062 
     enter Hauptschule |       669          0      5,613          0 |     6,282 
-     enter Realschule |     1,112          0          0      8,136 |     9,248 
-      enter Gymnasium |     1,118          0          0          0 |     6,652 
-enter vocational, gen |         0          0          0        607 |       744 
-enter vocational, gen |         0          0          0          0 |       975 
+     enter Realschule |     1,013          0          0      8,136 |     9,149 
+      enter Gymnasium |     1,029          0          0          0 |     6,563 
+enter vocational, gen |         0          0          0        612 |       754 
+enter vocational, gen |         0          0          0          0 |       995 
 enter vocational, Hau |         0          0          0          0 |     3,367 
 enter vocational, Rea |         2          0          0          0 |     5,480 
 enter vocational, Abi |         0          0          0          0 |     2,899 
      enter University |         0          0          0          0 |     4,970 
 ----------------------+--------------------------------------------+----------
-                Total |     2,901     17,062      5,613      8,743 |    57,679 
+                Total |     2,713     17,062      5,613      8,748 |    57,521 
 
 
                       |                end of spell
@@ -1509,16 +1514,16 @@ enter vocational, Abi |         0          0          0          0 |     2,899
 ----------------------+--------------------------------------------+----------
     enter Grundschule |         0          0          0          0 |    17,062 
     enter Hauptschule |         0          0          0          0 |     6,282 
-     enter Realschule |         0          0          0          0 |     9,248 
-      enter Gymnasium |     5,534          0          0          0 |     6,652 
-enter vocational, gen |       137          0          0          0 |       744 
-enter vocational, gen |       975          0          0          0 |       975 
+     enter Realschule |         0          0          0          0 |     9,149 
+      enter Gymnasium |     5,534          0          0          0 |     6,563 
+enter vocational, gen |       142          0          0          0 |       754 
+enter vocational, gen |       995          0          0          0 |       995 
 enter vocational, Hau |         0      3,367          0          0 |     3,367 
 enter vocational, Rea |         0          0      5,478          0 |     5,480 
 enter vocational, Abi |         0          0          0      2,899 |     2,899 
      enter University |         0          0          0          0 |     4,970 
 ----------------------+--------------------------------------------+----------
-                Total |     6,646      3,367      5,478      2,899 |    57,679 
+                Total |     6,671      3,367      5,478      2,899 |    57,521 
 
 
                       |   end of
@@ -1527,16 +1532,16 @@ enter vocational, Abi |         0          0          0      2,899 |     2,899
 ----------------------+-----------+----------
     enter Grundschule |         0 |    17,062 
     enter Hauptschule |         0 |     6,282 
-     enter Realschule |         0 |     9,248 
-      enter Gymnasium |         0 |     6,652 
-enter vocational, gen |         0 |       744 
-enter vocational, gen |         0 |       975 
+     enter Realschule |         0 |     9,149 
+      enter Gymnasium |         0 |     6,563 
+enter vocational, gen |         0 |       754 
+enter vocational, gen |         0 |       995 
 enter vocational, Hau |         0 |     3,367 
 enter vocational, Rea |         0 |     5,480 
 enter vocational, Abi |         0 |     2,899 
      enter University |     4,970 |     4,970 
 ----------------------+-----------+----------
-                Total |     4,970 |    57,679 
+                Total |     4,970 |    57,521 
 
 . //-----------------------------------------------------------
 . // some corrections
@@ -1558,7 +1563,7 @@ enter vocational, Abi |         0 |     2,899
 (1 real change made)
 
 . bys ID_t (sort) : replace sort = _n
-(4 real changes made)
+(243 real changes made)
 
 . drop n added
 
@@ -1569,19 +1574,19 @@ enter vocational, Abi |         0 |     2,899
 . bys ID_t (sort) : gen n = (finish == 15 & start==5) + 1
 
 . expand n, gen(added)
-(137 observations created)
+(142 observations created)
 
 . replace finish = 14 if finish == 15 & start==5 & !added
-(137 real changes made)
+(142 real changes made)
 
 . replace start = 6 if added
-(137 real changes made)
+(142 real changes made)
 
 . replace sort = sort + .5 if added
-(137 real changes made)
+(142 real changes made)
 
 . bys ID_t (sort) : replace sort = _n
-(349 real changes made)
+(362 real changes made)
 
 . drop n added
 
@@ -1595,14 +1600,14 @@ enter vocational, Abi |         0 |     2,899
 . 
 . compress
   variable sort was float now byte
-  (173,541 bytes saved)
+  (172,992 bytes saved)
 
 . note: cgm04.dta \ cleaned spells \ cgm_dta04.do \ MLB TS 
 
 . label data "cleaned spells"
 
 . datasignature set, reset
-  57847:4(70326):4114597339:4078774462       (data signature reset)
+  57664:4(70326):1068658414:4014272055       (data signature reset)
 
 . save cgm04.dta, replace
 file cgm04.dta saved
@@ -1612,5 +1617,5 @@ file cgm04.dta saved
       name:  <unnamed>
        log:  c:\active\cgm\ana\cgm_dta04.txt
   log type:  text
- closed on:   7 Apr 2025, 14:03:55
+ closed on:   7 Apr 2025, 16:52:13
 ----------------------------------------------------------------------------------

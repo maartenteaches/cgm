@@ -30,25 +30,6 @@ tab orig dest
 // drop the first enter Grundschule transition
 drop if orig == . & dest == 1 & sort == 1
 
-// drop intermediate drop-out
-bys ID_t (sort) : gen tobedropped = 1 if orig == 0 & dest[_n -1 ] == 0
-bys ID_t (sort) : replace dest = dest[_n +1] if dest == 0 & orig[_n + 1] == 0
-drop if tobedropped == 1
-drop tobedropped
-
-//enter grundschule --> finish hauptschule (Volksschule)
-//enter grundschule --> finish groundschule --> enter hauptschule --> finish Hauptschule
-bys ID_t (sort) : gen n = cond(orig==1 & dest == 13, 3, 1)
-expand n, gen(added)
-bys ID_t added : replace sort = sort + .3*_n if added
-bys ID_t (sort) : replace sort = _n
-replace dest = 12 if orig == 1 & dest == 13
-replace orig = 12 if added & sort == 2
-replace dest = 2 if added & sort == 2
-replace orig = 2 if added & sort == 3
-replace dest = 13 if added & sort == 3
-drop n added
-
 // end in exit
 bys ID_t (sort) : gen exp = (_n==_N) + 1
 expand exp , gen(added)
@@ -65,50 +46,28 @@ bys ID_t (sort) : replace sort = _n
 
 bys orig : tab dest
 
-// remove orig == done & dest == done
-drop if orig == 0 & dest == 0
+// drop intermediate drop-out
+bys ID_t (sort) : gen todrop = dest[_n-1] == 0 & orig == 0
+bys ID_t (sort) : replace dest = dest[_n+1] ///
+    if dest == 0 & orig[_n+1] == 0
+drop if todrop
 
-// drop Egy --> Evocreal 
-bys ID_t (sort): replace dest = 8 if orig[_n+1] == 4 & dest[_n+1] == 8
-bys ID_t (sort): drop if orig == 4 & dest == 8
+// finish Real --> enter Voc R --> enter Real --> enter gym
+// finish Real --> enter Gym
+bys ID_t (sort) : gen tochange = orig == 14 & dest == 8 & ///
+                                 orig[_n+1]== 8 & dest[_n+1]==3 & ///
+								 orig[_n+2]==3 & dest[_n+2]==4
+replace dest = 4 if tochange
+bys ID_t (sort) : drop if tochange[_n-1] == 1
+bys ID_t (sort) : drop if tochange[_n-1] == 1
+bys ID_t (sort) : replace sort = _n
 
-// drop Evocreal --> Evocreal
-drop if  orig == 8 & dest == 8 
+// drop voc-R --> voc-R
+drop if orig == 8 & dest == 8
+bys ID_t (sort) : replace sort = _n
 
-// FVocR --> Evocreal --> EHoch 
-// FvocR --> Ehoch
-bys ID_t (sort) : replace dest = 11 if dest == 8 & orig == 17 & dest[_n+1] == 11
-drop if orig == 8 & dest == 11
-
-//FvocR or FRe --> Egy --> Euni
-//FvocR --> Euni
-bys ID_t (sort) : replace dest = 11 if dest == 4 & inlist(orig,14,17) & orig[_n+1] == 4 & dest[_n+1] == 11
-drop if orig == 4 & dest == 11
-
-// drop EvocAbi --> EvocAbi
-drop if orig == 9 & dest == 9
-
-// Abi --> EvocAbi --> drop out --> EHoch
-// Abi --> Ehoc
-bys ID_t (sort) : replace dest = 11 if orig[_n+1] == 9 & dest[_n+1] == 11 
-drop if orig == 9 & dest == 11
-
-// drop EvocAbi --> done
-replace dest = 0 if dest[_n+1] == 0 & orig[_n+1] == 9
-drop if dest == 0 & orig == 9
-
-
-tab dest if orig == 16
-//EvocH --> FvocHau --> Euni
-// EVgensecH --> FRe --> Euni
-sort ID_t sort
-replace dest =  5 if orig[_n+2] == 16 & dest[_n+2] == 11
-replace orig =  5 if orig[_n+1] == 16 & dest[_n+1] == 11
-replace dest = 14 if orig[_n+1] == 16 & dest[_n+1] == 11
-replace orig = 14 if orig       == 16 & dest       == 11
-
+exit
 bys orig : tab dest
-drop f exp
 label var sort "sort order"
 
 compress
