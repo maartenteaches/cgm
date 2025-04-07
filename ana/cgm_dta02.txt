@@ -1,8 +1,8 @@
 ----------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  D:\active\cgm\ana\cgm_dta02.txt
+       log:  c:\active\cgm\ana\cgm_dta02.txt
   log type:  text
- opened on:   3 Apr 2025, 10:28:49
+ opened on:   7 Apr 2025, 17:24:14
 
 . 
 . // explanatory variables
@@ -187,7 +187,7 @@ file cgm02.dta saved
 . 
 . log close
       name:  <unnamed>
-       log:  D:\active\cgm\ana\cgm_dta02.txt
+       log:  c:\active\cgm\ana\cgm_dta02.txt
   log type:  text
- closed on:   3 Apr 2025, 10:28:52
+ closed on:   7 Apr 2025, 17:24:16
 ----------------------------------------------------------------------------------------------------------------------

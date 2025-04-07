@@ -1,0 +1,397 @@
+----------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  c:\active\cgm\ana\cgm_dta05.txt
+  log type:  text
+ opened on:   7 Apr 2025, 17:24:20
+
+. 
+. // turn spells into transitions
+. // clean those transitions
+. // MLB
+. 
+. version 18
+
+. clear all
+
+. macro drop _all
+
+. 
+. use cgm04
+(cleaned spells)
+
+. datasignature confirm, strict
+  (data unchanged since 07apr2025 17:24)
+
+. 
+. // expand
+. expand 2, gen(f)
+(57,664 observations created)
+
+. gen orig = start if f == 1
+(57,664 missing values generated)
+
+. gen dest = cond(f==1, finish, start) 
+
+. replace sort = sort + .5 if f==1
+variable sort was byte now float
+(57,664 real changes made)
+
+. bys ID_t (sort) : replace sort = _n
+(98,266 real changes made)
+
+. bys ID_t ( sort ) : replace orig = finish[_n-1] if f==0    
+(40,602 real changes made)
+
+. label value orig dest edlevs
+
+. label variable orig "origin"
+
+. label variable dest "destination"
+
+. notes orig : origin of transition / cgm_dta05.do MLB TS 
+
+. notes dest : destination of transition / cgm_dta05.do MLB TS 
+
+. 
+. tab orig dest
+
+                      |                                 destination
+               origin |      done  enter Hau  enter Rea  enter Gym  enter voc  enter voc  enter voc |     Total
+----------------------+-----------------------------------------------------------------------------+----------
+                 done |         0        521      1,699        492          0          0          0 |     2,713 
+    enter Grundschule |         0          0          0          0          0          0          0 |    17,062 
+    enter Hauptschule |       669          0          0          0          0          0          0 |     6,282 
+     enter Realschule |     1,013          0          0          0          0          0          0 |     9,150 
+      enter Gymnasium |     1,029          0          0          0          0          0          0 |     6,563 
+enter vocational, gen |         0          0          0          0          0          0          0 |       754 
+enter vocational, gen |         0          0          0          0          0          0          0 |     1,137 
+enter vocational, Hau |         0          0          0          0          0          0          0 |     3,367 
+enter vocational, Rea |         2          0          0          0          0          0          0 |     5,480 
+enter vocational, Abi |         0          0          0          0          0          0          0 |     2,899 
+     enter University |         0          0          0          0          0          0          0 |     4,970 
+   finish Grundschule |         0      5,761      6,570      4,575          0          0          0 |    16,906 
+   finish Hauptschule |         0          0        881          0        754          0      3,367 |     5,002 
+    finish Realschule |         0          0          0      1,496          0      1,137          0 |     8,284 
+        finish Abitur |         0          0          0          0          0          0          0 |     6,034 
+finish vocational, Re |         0          0          0          0          0          0          0 |       515 
+finish vocational, Ab |         0          0          0          0          0          0          0 |     1,148 
+----------------------+-----------------------------------------------------------------------------+----------
+                Total |     2,713      6,282      9,150      6,563        754      1,137      3,367 |    98,266 
+
+
+                      |                                 destination
+               origin | enter voc  enter voc  enter Uni  finish Gr  finish Ha  finish Re  finish Ab |     Total
+----------------------+-----------------------------------------------------------------------------+----------
+                 done |         1          0          0          0          0          0          0 |     2,713 
+    enter Grundschule |         0          0          0     17,062          0          0          0 |    17,062 
+    enter Hauptschule |         0          0          0          0      5,613          0          0 |     6,282 
+     enter Realschule |         0          0          0          0          0      8,137          0 |     9,150 
+      enter Gymnasium |         0          0          0          0          0          0      5,534 |     6,563 
+enter vocational, gen |         0          0          0          0          0        754          0 |       754 
+enter vocational, gen |         0          0          0          0          0          0      1,137 |     1,137 
+enter vocational, Hau |         0          0          0          0          0          0          0 |     3,367 
+enter vocational, Rea |         0          0          0          0          0          0          0 |     5,480 
+enter vocational, Abi |         0          0          0          0          0          0          0 |     2,899 
+     enter University |         0          0          0          0          0          0          0 |     4,970 
+   finish Grundschule |         0          0          0          0          0          0          0 |    16,906 
+   finish Hauptschule |         0          0          0          0          0          0          0 |     5,002 
+    finish Realschule |     5,479          0        172          0          0          0          0 |     8,284 
+        finish Abitur |         0      2,899      3,135          0          0          0          0 |     6,034 
+finish vocational, Re |         0          0        515          0          0          0          0 |       515 
+finish vocational, Ab |         0          0      1,148          0          0          0          0 |     1,148 
+----------------------+-----------------------------------------------------------------------------+----------
+                Total |     5,480      2,899      4,970     17,062      5,613      8,891      6,671 |    98,266 
+
+
+                      |                 destination
+               origin | finish vo  finish vo  finish vo  finish Un |     Total
+----------------------+--------------------------------------------+----------
+                 done |         0          0          0          0 |     2,713 
+    enter Grundschule |         0          0          0          0 |    17,062 
+    enter Hauptschule |         0          0          0          0 |     6,282 
+     enter Realschule |         0          0          0          0 |     9,150 
+      enter Gymnasium |         0          0          0          0 |     6,563 
+enter vocational, gen |         0          0          0          0 |       754 
+enter vocational, gen |         0          0          0          0 |     1,137 
+enter vocational, Hau |     3,367          0          0          0 |     3,367 
+enter vocational, Rea |         0      5,478          0          0 |     5,480 
+enter vocational, Abi |         0          0      2,899          0 |     2,899 
+     enter University |         0          0          0      4,970 |     4,970 
+   finish Grundschule |         0          0          0          0 |    16,906 
+   finish Hauptschule |         0          0          0          0 |     5,002 
+    finish Realschule |         0          0          0          0 |     8,284 
+        finish Abitur |         0          0          0          0 |     6,034 
+finish vocational, Re |         0          0          0          0 |       515 
+finish vocational, Ab |         0          0          0          0 |     1,148 
+----------------------+--------------------------------------------+----------
+                Total |     3,367      5,478      2,899      4,970 |    98,266 
+
+. 
+. // drop the first enter Grundschule transition
+. drop if orig == . & dest == 1 & sort == 1
+(17,062 observations deleted)
+
+. 
+. // end in exit
+. bys ID_t (sort) : gen exp = (_n==_N) + 1
+
+. expand exp , gen(added)
+(17,062 observations created)
+
+. replace orig = dest if added
+(17,062 real changes made)
+
+. replace dest = 0 if added
+(17,062 real changes made)
+
+. replace sort = sort + 1 if added
+(17,062 real changes made)
+
+. drop added
+
+. bys ID_t (sort) : replace sort = _n
+(115,328 real changes made)
+
+. 
+. // remove first transition as that now contains no information
+. assert orig == 1 & dest == 12 if sort == 1
+
+. drop if sort == 1
+(17,062 observations deleted)
+
+. bys ID_t (sort) : replace sort = _n
+(98,266 real changes made)
+
+. 
+. bys orig : tab dest
+
+----------------------------------------------------------------------------------------------------------------------
+-> orig = done
+
+                       destination |      Freq.     Percent        Cum.
+-----------------------------------+-----------------------------------
+                 enter Hauptschule |        521       19.20       19.20
+                  enter Realschule |      1,699       62.62       81.83
+                   enter Gymnasium |        492       18.13       99.96
+      enter vocational, Realschule |          1        0.04      100.00
+-----------------------------------+-----------------------------------
+                             Total |      2,713      100.00
+
+----------------------------------------------------------------------------------------------------------------------
+-> orig = enter Hauptschule
+
+                       destination |      Freq.     Percent        Cum.
+-----------------------------------+-----------------------------------
+                              done |        669       10.65       10.65
+                finish Hauptschule |      5,613       89.35      100.00
+-----------------------------------+-----------------------------------
+                             Total |      6,282      100.00
+
+----------------------------------------------------------------------------------------------------------------------
+-> orig = enter Realschule
+
+                       destination |      Freq.     Percent        Cum.
+-----------------------------------+-----------------------------------
+                              done |      1,013       11.07       11.07
+                 finish Realschule |      8,137       88.93      100.00
+-----------------------------------+-----------------------------------
+                             Total |      9,150      100.00
+
+----------------------------------------------------------------------------------------------------------------------
+-> orig = enter Gymnasium
+
+                       destination |      Freq.     Percent        Cum.
+-----------------------------------+-----------------------------------
+                              done |      1,029       15.68       15.68
+                     finish Abitur |      5,534       84.32      100.00
+-----------------------------------+-----------------------------------
+                             Total |      6,563      100.00
+
+----------------------------------------------------------------------------------------------------------------------
+-> orig = enter vocational, gen. sec., Haupt
+
+                       destination |      Freq.     Percent        Cum.
+-----------------------------------+-----------------------------------
+                 finish Realschule |        754      100.00      100.00
+-----------------------------------+-----------------------------------
+                             Total |        754      100.00
+
+----------------------------------------------------------------------------------------------------------------------
+-> orig = enter vocational, gen. sec., Real
+
+                       destination |      Freq.     Percent        Cum.
+-----------------------------------+-----------------------------------
+                     finish Abitur |      1,137      100.00      100.00
+-----------------------------------+-----------------------------------
+                             Total |      1,137      100.00
+
+----------------------------------------------------------------------------------------------------------------------
+-> orig = enter vocational, Hauptschule
+
+                       destination |      Freq.     Percent        Cum.
+-----------------------------------+-----------------------------------
+    finish vocational, Hauptschule |      3,367      100.00      100.00
+-----------------------------------+-----------------------------------
+                             Total |      3,367      100.00
+
+----------------------------------------------------------------------------------------------------------------------
+-> orig = enter vocational, Realschule
+
+                       destination |      Freq.     Percent        Cum.
+-----------------------------------+-----------------------------------
+                              done |          2        0.04        0.04
+     finish vocational, Realschule |      5,478       99.96      100.00
+-----------------------------------+-----------------------------------
+                             Total |      5,480      100.00
+
+----------------------------------------------------------------------------------------------------------------------
+-> orig = enter vocational, Abitur
+
+                       destination |      Freq.     Percent        Cum.
+-----------------------------------+-----------------------------------
+         finish vocational, Abitur |      2,899      100.00      100.00
+-----------------------------------+-----------------------------------
+                             Total |      2,899      100.00
+
+----------------------------------------------------------------------------------------------------------------------
+-> orig = enter University
+
+                       destination |      Freq.     Percent        Cum.
+-----------------------------------+-----------------------------------
+                 finish University |      4,970      100.00      100.00
+-----------------------------------+-----------------------------------
+                             Total |      4,970      100.00
+
+----------------------------------------------------------------------------------------------------------------------
+-> orig = finish Grundschule
+
+                       destination |      Freq.     Percent        Cum.
+-----------------------------------+-----------------------------------
+                              done |        156        0.91        0.91
+                 enter Hauptschule |      5,761       33.77       34.68
+                  enter Realschule |      6,570       38.51       73.19
+                   enter Gymnasium |      4,575       26.81      100.00
+-----------------------------------+-----------------------------------
+                             Total |     17,062      100.00
+
+----------------------------------------------------------------------------------------------------------------------
+-> orig = finish Hauptschule
+
+                       destination |      Freq.     Percent        Cum.
+-----------------------------------+-----------------------------------
+                              done |        611       10.89       10.89
+                  enter Realschule |        881       15.70       26.58
+enter vocational, gen. sec., Haupt |        754       13.43       40.01
+     enter vocational, Hauptschule |      3,367       59.99      100.00
+-----------------------------------+-----------------------------------
+                             Total |      5,613      100.00
+
+----------------------------------------------------------------------------------------------------------------------
+-> orig = finish Realschule
+
+                       destination |      Freq.     Percent        Cum.
+-----------------------------------+-----------------------------------
+                              done |        607        6.83        6.83
+                   enter Gymnasium |      1,496       16.83       23.65
+ enter vocational, gen. sec., Real |      1,137       12.79       36.44
+      enter vocational, Realschule |      5,479       61.62       98.07
+                  enter University |        172        1.93      100.00
+-----------------------------------+-----------------------------------
+                             Total |      8,891      100.00
+
+----------------------------------------------------------------------------------------------------------------------
+-> orig = finish Abitur
+
+                       destination |      Freq.     Percent        Cum.
+-----------------------------------+-----------------------------------
+                              done |        637        9.55        9.55
+          enter vocational, Abitur |      2,899       43.46       53.01
+                  enter University |      3,135       46.99      100.00
+-----------------------------------+-----------------------------------
+                             Total |      6,671      100.00
+
+----------------------------------------------------------------------------------------------------------------------
+-> orig = finish vocational, Hauptschule
+
+                       destination |      Freq.     Percent        Cum.
+-----------------------------------+-----------------------------------
+                              done |      3,367      100.00      100.00
+-----------------------------------+-----------------------------------
+                             Total |      3,367      100.00
+
+----------------------------------------------------------------------------------------------------------------------
+-> orig = finish vocational, Realschule
+
+                       destination |      Freq.     Percent        Cum.
+-----------------------------------+-----------------------------------
+                              done |      4,963       90.60       90.60
+                  enter University |        515        9.40      100.00
+-----------------------------------+-----------------------------------
+                             Total |      5,478      100.00
+
+----------------------------------------------------------------------------------------------------------------------
+-> orig = finish vocational, Abitur
+
+                       destination |      Freq.     Percent        Cum.
+-----------------------------------+-----------------------------------
+                              done |      1,751       60.40       60.40
+                  enter University |      1,148       39.60      100.00
+-----------------------------------+-----------------------------------
+                             Total |      2,899      100.00
+
+----------------------------------------------------------------------------------------------------------------------
+-> orig = finish University
+
+                       destination |      Freq.     Percent        Cum.
+-----------------------------------+-----------------------------------
+                              done |      4,970      100.00      100.00
+-----------------------------------+-----------------------------------
+                             Total |      4,970      100.00
+
+
+. 
+. // drop intermediate drop-out
+. bys ID_t (sort) : gen todrop = dest[_n-1] == 0 & orig == 0
+
+. bys ID_t (sort) : replace dest = dest[_n+1] ///
+>     if dest == 0 & orig[_n+1] == 0
+(2,713 real changes made)
+
+. drop if todrop
+(2,713 observations deleted)
+
+. 
+. // finish Real --> enter Voc R --> enter Real --> enter gym
+. // finish Real --> enter Gym
+. bys ID_t (sort) : gen tochange = orig == 14 & dest == 8 & ///
+>                                  orig[_n+1]== 8 & dest[_n+1]==3 & ///
+>                                                                  orig[_n+2]==3 & dest[_n+2]==4
+
+. replace dest = 4 if tochange
+(1 real change made)
+
+. bys ID_t (sort) : drop if tochange[_n-1] == 1
+(1 observation deleted)
+
+. bys ID_t (sort) : drop if tochange[_n-1] == 1
+(1 observation deleted)
+
+. bys ID_t (sort) : replace sort = _n
+(11,991 real changes made)
+
+. 
+. // drop voc-R --> voc-R
+. drop if orig == 8 & dest == 8
+(1 observation deleted)
+
+. bys ID_t (sort) : replace sort = _n
+(2 real changes made)
+
+. 
+. exit
+
+end of do-file
+
+. do cgm_dta06.do // merge explanatory vars into transitions
+
+. capture log close

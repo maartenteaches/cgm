@@ -1,8 +1,8 @@
 ----------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  D:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_ana01.txt
+       log:  c:\active\cgm\ana\cgm_ana01.txt
   log type:  text
- opened on:  13 Mar 2025, 11:00:27
+ opened on:   7 Apr 2025, 17:24:20
 
 . 
 . // descriptives
@@ -19,7 +19,7 @@
 (analysis dataset)
 
 . datasignature confirm
-  (data unchanged since 13mar2025 11:00)
+  (data unchanged since 07apr2025 17:24)
 
 . codebook, compact
 
@@ -114,8 +114,8 @@ Total         |      15378     100.00
 
 . save `tofill', replace
 (dataset contains 0 observations)
-(file C:\Users\Admin\AppData\Local\Temp\ST_2b84_000001.tmp not found)
-file C:\Users\Admin\AppData\Local\Temp\ST_2b84_000001.tmp saved as .dta format
+(file C:\Users\maart\AppData\Local\Temp\ST_4ee0_000001.tmp not found)
+file C:\Users\maart\AppData\Local\Temp\ST_4ee0_000001.tmp saved as .dta format
 
 . restore
 
@@ -140,14 +140,14 @@ file C:\Users\Admin\AppData\Local\Temp\ST_2b84_000001.tmp saved as .dta format
   8.         save `tofill', replace
   9.         restore
  10. }
-file C:\Users\Admin\AppData\Local\Temp\ST_2b84_000001.tmp saved as .dta format
+file C:\Users\maart\AppData\Local\Temp\ST_4ee0_000001.tmp saved as .dta format
 (variable labels was str6, now str23 to accommodate using data's values)
 (label coh already defined)
-file C:\Users\Admin\AppData\Local\Temp\ST_2b84_000001.tmp saved as .dta format
+file C:\Users\maart\AppData\Local\Temp\ST_4ee0_000001.tmp saved as .dta format
 (variable labels was str13, now str23 to accommodate using data's values)
 (variable var was str4, now str6 to accommodate using data's values)
 (label coh already defined)
-file C:\Users\Admin\AppData\Local\Temp\ST_2b84_000001.tmp saved as .dta format
+file C:\Users\maart\AppData\Local\Temp\ST_4ee0_000001.tmp saved as .dta format
 
 . 
 . preserve
@@ -231,7 +231,7 @@ Number of observations (_N) was 20, now 21.
 >         xtitle("% of people with university degree" "who got there indirectly")
 
 . graph export ../txt/gr01.emf, replace
-file D:\Mijn documenten\projecten\track_mobility\cgm\ana\../txt/gr01.emf saved as Enhanced Metafile format
+file c:\active\cgm\ana\../txt/gr01.emf saved as Enhanced Metafile format
 
 . restore 
 
@@ -248,8 +248,8 @@ file D:\Mijn documenten\projecten\track_mobility\cgm\ana\../txt/gr01.emf saved a
 
 . save `tofill', replace
 (dataset contains 0 observations)
-(file C:\Users\Admin\AppData\Local\Temp\ST_2b84_000007.tmp not found)
-file C:\Users\Admin\AppData\Local\Temp\ST_2b84_000007.tmp saved as .dta format
+(file C:\Users\maart\AppData\Local\Temp\ST_4ee0_000007.tmp not found)
+file C:\Users\maart\AppData\Local\Temp\ST_4ee0_000007.tmp saved as .dta format
 
 . restore
 
@@ -271,14 +271,14 @@ file C:\Users\Admin\AppData\Local\Temp\ST_2b84_000007.tmp saved as .dta format
   8.         save `tofill', replace
   9.         restore
  10. }
-file C:\Users\Admin\AppData\Local\Temp\ST_2b84_000007.tmp saved as .dta format
+file C:\Users\maart\AppData\Local\Temp\ST_4ee0_000007.tmp saved as .dta format
 (variable labels was str6, now str23 to accommodate using data's values)
 (label coh already defined)
-file C:\Users\Admin\AppData\Local\Temp\ST_2b84_000007.tmp saved as .dta format
+file C:\Users\maart\AppData\Local\Temp\ST_4ee0_000007.tmp saved as .dta format
 (variable labels was str13, now str23 to accommodate using data's values)
 (variable var was str4, now str6 to accommodate using data's values)
 (label coh already defined)
-file C:\Users\Admin\AppData\Local\Temp\ST_2b84_000007.tmp saved as .dta format
+file C:\Users\maart\AppData\Local\Temp\ST_4ee0_000007.tmp saved as .dta format
 
 . 
 . use `tofill', clear
@@ -360,12 +360,12 @@ Number of observations (_N) was 20, now 21.
 >         xtitle("% with a university degree")
 
 . graph export ../txt/gr02.emf, replace
-file D:\Mijn documenten\projecten\track_mobility\cgm\ana\../txt/gr02.emf saved as Enhanced Metafile format
+file c:\active\cgm\ana\../txt/gr02.emf saved as Enhanced Metafile format
 
 .   
 . log close
       name:  <unnamed>
-       log:  D:\Mijn documenten\projecten\track_mobility\cgm\ana\cgm_ana01.txt
+       log:  c:\active\cgm\ana\cgm_ana01.txt
   log type:  text
- closed on:  13 Mar 2025, 11:00:34
+ closed on:   7 Apr 2025, 17:24:22
 ----------------------------------------------------------------------------------------------------------------------

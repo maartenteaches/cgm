@@ -1,8 +1,8 @@
 ----------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  D:\active\cgm\ana\cgm_dta03.txt
+       log:  c:\active\cgm\ana\cgm_dta03.txt
   log type:  text
- opened on:   3 Apr 2025, 10:28:52
+ opened on:   7 Apr 2025, 17:24:16
 
 . 
 . // clean spells
@@ -404,7 +404,7 @@ file cgm03.dta saved
 . 
 . log close
       name:  <unnamed>
-       log:  D:\active\cgm\ana\cgm_dta03.txt
+       log:  c:\active\cgm\ana\cgm_dta03.txt
   log type:  text
- closed on:   3 Apr 2025, 10:28:54
+ closed on:   7 Apr 2025, 17:24:17
 ----------------------------------------------------------------------------------------------------------------------
