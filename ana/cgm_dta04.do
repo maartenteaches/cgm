@@ -320,248 +320,98 @@ bys ID_t (sort) : drop if finish[_n-1] == 12 & start == 3
 
 bys ID_t (sort) : replace sort = _n
 
+// enter real --> finish haupt --> enter gym --> finish abi
+// enter real --> finish real --> enter gym --> finish abi
+bys ID_t (sort) : replace finish = 12 if finish == 11 & start == 3 & ///
+                                         start[_n+1] == 4 & finish[_n+1] == 14
+
+// enter hochschule when allowed
+gen allowed = inlist(finish, 12,14)		
+bys ID_t (sort) : replace allowed = sum(allowed) >= 1
+fre allowed if start == 9		
+
+// gain allowance through vocational, only if finished vocational
+gen vocfinish = finish == 16
+bys ID_t (sort) : replace vocfinish = sum(vocfinish) >= 1
+gen add = (start == 9 & allowed == 0 & vocfinish == 1) +1
+expand add, gen(added)
+replace sort = sort - 0.5 if added == 1
+replace start = 7 if added == 1
+replace finish = 14 if added == 1
+bys ID_t (sort): replace sort = _n
+
+// drop enter hoch if not allowed and not finish voc			
+drop if start == 9 & allowed == 0 & vocfinish == 0				
+drop allowed vocfinish add added
+
+// stop after finish hochschule
+bys ID_t (sort) : gen done = finish[_n-1] == 18
+bys ID_t (sort) : replace done = sum(done) >= 1
+drop if done == 1
+drop done
+
+// finish voc --> finish gensec
+// finish gensec --> finish voc
+gen vocfinish = finish == 16
+bys ID_t (sort) : replace vocfinish = sum(vocfinish) >= 1
+bys ID_t (sort) : gen where = vocfinish == 0 & vocfinish[_n+1] == 1
+bys ID_t (sort) : replace where = sum(where * sort)
+replace sort = where + 0.3 if finish == 12 & vocfinish == 1
+replace sort = where + 0.6 if finish == 14 & vocfinish == 1
+bys ID_t (sort) : replace sort = _n
+drop where vocfinish
+
+// drop finish voc --> enter voc --> finish voc / drop-out
+bys ID_t (sort) : drop if finish[_n-1]== 16 & start == 7 & inlist(finish,0,16)
+
+// no haupt after finish haupt
+bys ID_t (sort) : gen haupt = finish[_n-1] == 11
+bys ID_t (sort) : replace haupt = sum(haupt) >= 1
+fre finish if haupt
+fre start if haupt
+drop if haupt == 1 & (start == 2 | finish == 11)
+drop haupt
+bys ID_t (sort) : replace sort = _n
+
+// no haupt or real after finish real
+bys ID_t (sort) : gen real = finish[_n-1] == 12
+bys ID_t (sort) : replace real = sum(real) >= 1
+fre finish if real
+fre start if real
+drop if inlist(finish,11,12) & real == 1
+drop if start == 2 & real == 1
+drop real
+bys ID_t (sort) : replace sort = _n
+
+// no haupt or real or abi after finish abi
+bys ID_t (sort) : gen abi = finish[_n-1] == 14
+bys ID_t (sort) : replace abi = sum(abi) >= 1
+fre start finish if abi == 1
+drop if inlist(finish,11,12, 14) & abi == 1
+drop if inlist(start, 2, 3,4) & abi == 1
+bys ID_t (sort) : replace sort = _n
+drop abi
+
+// voc after finish voc
+bys ID_t (sort) : gen voc = finish[_n-1] == 16
+bys ID_t (sort) : replace voc = sum(voc) >= 1
+fre start finish if voc == 1
+drop if start == 7 & finish == 16 & voc == 1
+bys ID_t (sort) : replace sort = _n
+drop voc
+
+// drop duplicate spells
+bys ID_t (sort) : drop if start == start[_n+1] & finish == finish[_n+1]
+
+// drop start something --> drop-out --> start samething
+drop if start == start[_n+1] & finish == 0
+bys ID_t (sort) : replace sort = _n
 
 tsset ID_t sort
 replace lstart = L.start
 replace lfinish = L.finish
-tab lfinish start if sort == 4 
+tab lfinish start 								 
 
-exit
-// finish haupt --> enter haupt --> finish real to
-// finish haupt --> enter real --> finish real
-bys ID_t (sort) : replace start = 3 if finish[_n-1] == 11 & start == 2 & sort == 4
-
-
-// spell start real then drop-out adds nothing if previous spell finished real
-bys ID_t (sort) : drop if finish[_n-1] == 12 & start == 3 & finish == 0 & sort == 4
-	
-// after vocational no need to enter hauptschule	
-bys ID_t (sort) : drop if finish[_n-1] == 16 & start == 2 & sort == 4
-	
-// after fachhochschule no need to enter pre-voc, voc, or fachhochschule
-bys ID_t (sort) : replace sort = _n
-bys ID_t (sort) : drop if finish[_n-1] == 17 & inlist(start, 7,8) & sort == 4
-// repeat
-bys ID_t (sort) : replace sort = _n
-bys ID_t (sort) : drop if finish[_n-1] == 17 & inlist(start, 7,8) & sort == 4
-
-// after hochschule you are done
-bys ID_t (sort) : replace sort = _n
-bys ID_t (sort) : gen byte hoch = finish[_n-1] == 18
-bys ID_t (sort) : replace hoch = sum(hoch)
-fre hoch
-drop if hoch
-drop hoch
-
-// after abi no need to enter Haupt, real, or gym
-bys ID_t (sort) : replace sort = _n
-bys ID_t (sort) : drop if finish[_n-1] == 14 & start < 6 
-
-// drop duplicate spell
-bys ID_t (sort) : drop if start == start[_n-1] & finish == finish[_n-1]
-
-
-// after cleaning
-tsset ID_t sort
-replace lstart = L.start
-replace lfinish = L.finish
-tab lfinish start if sort == 4 
-
-
-// --------------------------------------------------------------- 
-**# Fifth spell
-bys ID_t (sort) : replace sort = _n
-
-// before cleaning
-tsset ID_t sort
-replace lstart = L.start
-replace lfinish = L.finish
-tab lfinish start if sort == 5 
-
-// no need to enter realschule or gesamtschule after abi
-bys ID_t (sort) : drop if finish[_n-1] == 14 & inlist(start, 3, 5)
-
-// no need to enter realschule after realschule
-bys ID_t (sort) : drop if finish[_n-1] == 12 & start == 3
-
-// no need to enter hauptschule after finish voc
-bys ID_t (sort) : drop if finish[_n-1]==16 & start == 2
-
-// no need to enter pre-voc, voc, real or fachhochschule after finish fachhochschule
-bys ID_t (sort) : replace sort = _n
-bys ID_t (sort) : drop if finish[_n-1]==17 & inlist(start, 3,7,8) & sort == 5
-//repeat
-bys ID_t (sort) : replace sort = _n
-bys ID_t (sort) : drop if finish[_n-1]==17 & inlist(start, 3,7,8) & sort == 5
-
-// drop duplicate spell
-bys ID_t (sort) : drop if start == start[_n-1] & finish == finish[_n-1]
-
-// after cleaning
-tsset ID_t sort
-replace lstart = L.start
-replace lfinish = L.finish
-tab lfinish start if sort == 5 
-
-// --------------------------------------------------------------- 
-**# Sixth spell
-bys ID_t (sort) : replace sort = _n
-
-// before cleaning
-tsset ID_t sort
-replace lstart = L.start
-replace lfinish = L.finish
-tab lfinish start if sort == 6 
-
-// no need to enter real pre-voc, voc or fachhochschule after finish fachhochschule
-bys ID_t (sort) : replace sort = _n
-bys ID_t (sort) : drop if finish[_n-1]==17 & inlist(start, 3,7,8) & sort == 6
-//repeat
-bys ID_t (sort) : replace sort = _n
-bys ID_t (sort) : drop if finish[_n-1]==17 & inlist(start, 3,7,8) & sort == 6
-
-// drop duplicate spell
-bys ID_t (sort) : drop if start == start[_n-1] & finish == finish[_n-1]
-
-// after cleaning
-tsset ID_t sort
-replace lstart = L.start
-replace lfinish = L.finish
-tab lfinish start if sort == 6 
-
-// --------------------------------------------------------------- 
-**# Seventh spell
-
-// before cleaning
-tsset ID_t sort
-replace lstart = L.start
-replace lfinish = L.finish
-tab lfinish start if sort == 7 
-	
-// no need to enter pre-voc, voc or fachhochschule after finish fachhochschule
-bys ID_t (sort) : replace sort = _n
-bys ID_t (sort) : drop if finish[_n-1]==17 & inlist(start, 7,8) & sort == 7
-//repeat
-bys ID_t (sort) : replace sort = _n
-bys ID_t (sort) : drop if finish[_n-1]==17 & inlist(start, 7,8) & sort == 7
-
-// drop duplicate spell
-bys ID_t (sort) : drop if start == start[_n-1] & finish == finish[_n-1]
-
-// after cleaning
-tsset ID_t sort
-replace lstart = L.start
-replace lfinish = L.finish
-tab lfinish start if sort == 7 
-
-// --------------------------------------------------------------- 
-**# Eigth spell
-
-// before cleaning
-tsset ID_t sort
-replace lstart = L.start
-replace lfinish = L.finish
-tab lfinish start if sort == 8 
-	
-// no need to enter pre-voc, voc, real or fachhochschule after finish fachhochschule
-bys ID_t (sort) : replace sort = _n
-bys ID_t (sort) : drop if finish[_n-1]==17 & inlist(start, 3,7,8) & sort == 8
-//repeat
-bys ID_t (sort) : replace sort = _n
-bys ID_t (sort) : drop if finish[_n-1]==17 & inlist(start, 3,7,8) & sort == 8
-
-// drop duplicate spell
-bys ID_t (sort) : drop if start == start[_n-1] & finish == finish[_n-1]
-
-// after cleaning
-tsset ID_t sort
-replace lstart = L.start
-replace lfinish = L.finish
-tab lfinish start if sort == 8 
-
-// --------------------------------------------------------------- 
-**# Ninth spell
-
-// before cleaning
-tsset ID_t sort
-replace lstart = L.start
-replace lfinish = L.finish
-tab lfinish start if sort == 9 
-
-// drop duplicate spell
-bys ID_t (sort) : drop if start == start[_n-1] & finish == finish[_n-1]
-
-// after cleaning
-tsset ID_t sort
-replace lstart = L.start
-replace lfinish = L.finish
-tab lfinish start if sort == 9 
-
-
-// --------------------------------------------------------------- 
-**# Tenth spell
-
-// before cleaning
-tsset ID_t sort
-replace lstart = L.start
-replace lfinish = L.finish
-tab lfinish start if sort == 10 
-	
-// no need to enter Fachhochschule if finished Fachhochschule
-bys ID_t (sort) : drop if finish[_n-1]==17 & start== 8 & sort == 10
-
-// drop duplicate spell
-bys ID_t (sort) : drop if start == start[_n-1] & finish == finish[_n-1]
-
-// after cleaning
-bys ID_t (sort) : replace sort = _n
-tsset ID_t sort
-replace lstart = L.start
-replace lfinish = L.finish
-tab lfinish start if sort == 10
-
-// --------------------------------------------------------------------------
-**# drop spells that are lower or equal than what was already achieved
-
-// nothing after finishing hochschule
-bys ID_t (sort) : gen byte tobedropped = finish[_n-1] == 18
-bys ID_t (sort) : replace  tobedropped = sum(tobedropped)
-drop if tobedropped
-
-// only hochschule after fachhochschule
-bys ID_t (sort) : replace tobedropped = finish[_n-1]== 17
-bys ID_t (sort) : replace  tobedropped = sum(tobedropped)
-replace tobedropped = 0 if start == 9
-drop if tobedropped
-
-// no hauptschule after vocational
-// no vocational diploma after vocational
-bys ID_t (sort) : replace tobedropped = finish[_n-1]== 16
-bys ID_t (sort) : replace  tobedropped = sum(tobedropped)
-replace tobedropped = 0 if !(inlist(start,2) | finish == 16)
-drop if tobedropped
-
-// no general secondary education after finishing Abi
-bys ID_t (sort) : replace tobedropped = finish[_n-1] == 14
-bys ID_t (sort) : replace tobedropped = sum(tobedropped)
-replace tobedropped = ( tobedropped >= 1 & tobedropped < .) & ( inlist(finish,11,12,14) | inrange(start,1,5) )
-drop if tobedropped
-
-// no diploma realschule after realschule
-// no enter hauptschule after realschule
-bys ID_t (sort) : replace tobedropped = finish[_n-1] == 12
-bys ID_t (sort) : replace tobedropped = sum(tobedropped)
-replace tobedropped = 0 if !(finish == 12 | start == 2 | finish == 11)
-drop if tobedropped
-
-// no finish hauptschule after hauptschule
-bys ID_t (sort) : replace tobedropped = finish[_n-1] == 11
-bys ID_t (sort) : replace tobedropped = sum(tobedropped)
-replace tobedropped = 0 if finish != 11 
-drop if tobedropped
-
-bys ID_t (sort) : replace sort = _n
-fre sort
 
 //--------------------------------------------------------------------------
 // voc --> drop out --> gen sec to
@@ -581,52 +431,15 @@ bys ID_t (sort) : drop if start == 7 & finish == 0 & ///
 //-------------------------------------------------------------------------
 // voc --> drop out --> (fach)hochschule to
 // --> (fach)hochschule
-bys ID_t (sort) : drop if start == 7 & finish == 0 & inlist(start[_n+1], 8, 9)
+bys ID_t (sort) : drop if start == 7 & finish == 0 & start[_n+1] == 9
 
-// ------------------------------------------------------------------------
-// fachhochschule --> drop out --> hochschule/voc to
-//  --> hochschule/voc
-bys ID_t (sort) : drop if start == 8 & finish == 0 & inlist(start[_n+1],9,7)
-	
 //-------------------------------------------------------------------------
 // hochschule --> drop out --> voc/fach/gym to
 // voc/fach/gym
-bys ID_t (sort) : drop if start == 9 & finish == 0 & inlist(start[_n+1],7,8,4)
-
-drop if start == 7 & finish == 11
+bys ID_t (sort) : drop if start == 9 & finish == 0 & inlist(start[_n+1],7,4)
 
 bys ID_t (sort) : replace sort = _n	
 
-//-------------------------------------------------------------------------
-// finish voc --> enter gen sec
-// finish voc --> enter voc --> finish gen sec
-bys ID_t (sort) : replace start = 7 if inlist(start,3, 4, 5) & finish[_n-1] == 16
-drop if start == 7 & finish == 11
-
-//------------------------------------------------------------------------
-// finish Real enter Hochschule to
-// finish Real enter Fachhochschule
-bys ID_t (sort) : gen byte tochange = finish[_n-1] == 12 & start== 9
-replace start = 8 if tochange
-replace finish = 17 if tochange
-drop tochange
-
-//-------------------------------------------------------------------------
-// repeat enter voc --> drop out --> enter gen sec to
-// enter gen sec --> finish gen sec
-// gymnasium
-bys ID_t (sort) : drop if start == 7 & finish == 0 & ///
-                          start[_n+1] == 4 & finish[_n+1] == 14
-
-//--------------------------------------------------------------------------
-// voc --> drop out --> enter Fach to
-// enter Fac
-bys ID_t (sort) : drop if start == 7 & finish == 0 & start[_n+1] == 8
-
-//-------------------------------------------------------------------------
-// Egym --> drop-out --> enter fach
-// Egym --> FRe --> enter Fach
-bys ID_t (sort) : replace finish = 12 if start[_n+1] == 8 & start == 4 & finish==0
 
 
 // gym --> hoch
@@ -646,43 +459,10 @@ expand add, gen(added)
 replace sort   = sort + .5 if added
 replace start  = 3   if added
 replace finish = 0  if added
-replace startm = .   if added
-replace starty = .   if added
-replace endm   = .   if added
-replace endy   = .   if added
 bys ID_t (sort) : replace sort = _n
 drop add added
 
-//--------------------------------------------------------------------------
-// haupt --> gym to
-// haupt --> real --> gym
-bys ID_t (sort) : replace sort = _n	
-bys ID_t (sort) : gen byte add = (start == 2 & finish == 0 & start[_n+1] == 4) + 1
-expand add, gen(added)
-
-replace sort   = sort + .5 if added
-replace start  = 3   if added
-replace finish = 0  if added
-replace startm = .   if added
-replace starty = .   if added
-replace endm   = .   if added
-replace endy   = .   if added
-bys ID_t (sort) : replace sort = _n
-drop add added
-
-//--------------------------------------------------------------------------
-// gen sec --> drop out --> enter voc to 
-// gen sec --> finish gen sec --> enter voc
-bys ID_t (sort) : replace finish = 11 if start == 2 & finish == 0 & start[_n+1] ==7
-bys ID_t (sort) : replace finish = 12 if start == 3 & finish == 0 & start[_n+1] ==7
-bys ID_t (sort) : replace finish = 14 if start == 4 & finish == 0 & start[_n+1] ==7
-
-//--------------------------------------------------------------------------
-// no enter XX --> drop out --> enter XX again
-bys ID_t (sort) : replace tobedropped = start == start[_n+1] & finish == 0
-drop if tobedropped
-bys ID_t (sort) : replace sort = _n
-
+//------------------------------------------------
 // enter Gym --> finish Real
 // Enter Gym --> enter Real --> finish Real
 gen add = (start == 4 & finish == 12) + 1
@@ -723,81 +503,16 @@ replace start = 3 if added == 1
 bys ID_t (sort) : replace sort = _n
 drop add added
 
-// Fachhochschule = hochschule
-replace start = 9 if start == 8
-replace finish = 18 if finish ==17
-
-//drop  finish real --> enter real 
-bys ID_t (sort) : drop if start == 3 & finish[_n-1] == 12
-bys ID_t (sort) : replace sort = _n
-
-// enter real --> drop out --> enter uni
-// enter real --> finish real --> enter uni
-bys ID_t (sort) : replace finish = 12 if start == 3 & finish == 0 & start[_n+1]==9
-
-
-// EHo --> drop --> Eho --> finish
-// Eho -- Finish
-bys ID_t (sort) : drop if start == 9 & finish == 0 & start[_n+1] == 9 & finish[_n+1] == 18
-
-// Eho --> Fvo 
-// Evo --> Fvo
-bys ID_t (sort) : replace start = 7 if start == 9 & finish == 16
-
-// EVo --> Fho 
-// EHo --> Fho if Real or Abi
-// Evo --> Fvo if not real or abi
-bys ID_t (sort) : gen abi = inlist(finish,12,14)
-bys ID_t (sort) : replace abi = sum(abi)
-bys ID_t (sort) : replace start  =  9 if start == 7 & finish == 18 & abi
-bys ID_t (sort) : replace finish = 16 if start == 7 & finish == 18 & abi == 0
-drop abi
-
 // -------------------------------------------------------------------------
 // last spell ends in a diploma
 gen rsort = -sort
-replace tobedropped = (finish == 0)
+gen tobedropped = (finish == 0)
 
 bys ID_t (rsort) : replace tobedropped = sum(tobedropped)
 bys ID_t (rsort) : replace tobedropped = tobedropped == _n
 drop if tobedropped
 
-// drop duplicate spell
-bys ID_t (sort) : drop if start == start[_n-1] & finish == finish[_n-1]
-
-
-//----------------------------------------------------------------------- 
-**# move general secondary before vocational
-gen byte voc = start == 7
-bys ID_t voc (sort) : gen place2 = sort[1] if voc == 1
-bys ID_t (sort) : egen place = min(place2)
-drop place2
-bys ID_t (sort) : replace voc = sum(voc)
-assert voc <=4
-gen toberesorted = voc >= 1 & inlist(finish,11, 12, 14)
-tab toberesorted
-
-bys ID_t (sort) : replace toberesorted = sum(toberesorted) if toberesorted == 1
-replace sort = place - 1 + ( toberesorted / 4) if toberesorted > 0 & toberesorted < 3
-bys ID_t (sort) : replace sort = _n
-
-//----------------------------------------------------------------------- 
-**# some corrections
-// drop duplicate gen sec diplomas after Abi
-drop tobedropped
-bys ID_t (sort) : gen byte tobedropped = finish[_n-1] == 14
-bys ID_t (sort) : replace tobedropped = sum(tobedropped)
-replace tobedropped = tobedropped == 1 & inlist(finish,11,12,14)
-drop if tobedropped
-
-// drop duplicate haupt & real diplomas after real
-bys ID_t (sort) : replace tobedropped = finish[_n-1] == 12
-bys ID_t (sort) : replace tobedropped = sum(tobedropped)
-replace tobedropped = tobedropped == 1 & inlist(finish,11,12)
-drop if tobedropped
-
-bys ID_t (sort) : replace sort = _n
-
+**# vocational separate by gensec
 //------------------------------------------------------------------------ #3
 // store highest general secondary diploma
 gen haupt = finish == 11
@@ -815,7 +530,6 @@ bys ID_t (sort) : replace start2 = 6  if start == 7 & finish[_n-1] == 12 & inlis
 replace start2 = 7  if start == 7 & real == 0 & abi == 0 & !inlist(finish,12,14)
 replace start2 = 8  if start == 7 & real == 1 & abi == 0 & !inlist(finish,12,14)
 replace start2 = 9  if start == 7 & abi  == 1 & !inlist(finish,12,14)
-replace start2 = 10 if start == 8
 replace start2 = 11 if start == 9
 
 clonevar finish2 = finish
@@ -828,7 +542,6 @@ replace finish2 = 15 if finish == 14
 replace finish2 = 16 if finish == 16 & start2 == 7
 replace finish2 = 17 if finish == 16 & start2 == 8
 replace finish2 = 18 if finish == 16 & start2 == 9
-replace finish2 = 19 if finish == 17
 replace finish2 = 20 if finish == 18
 
 
@@ -870,7 +583,6 @@ label copy edlevs2 edlevs, replace
 
 // admire the result
 tab start finish
-
 //-----------------------------------------------------------
 // some corrections
 
@@ -900,7 +612,7 @@ keep ID_t sort start finish
 bys ID_t (sort) : replace sort = _n
 
 compress
-note: cgm04.dta \ cleaned spelss \ cgm_dta04.do \ MLB TS 
+note: cgm04.dta \ cleaned spells \ cgm_dta04.do \ MLB TS 
 label data "cleaned spells"
 datasignature set, reset
 save cgm04.dta, replace
