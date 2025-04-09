@@ -25,6 +25,8 @@ label variable dest "destination"
 notes orig : origin of transition / cgm_dta05.do MLB TS 
 notes dest : destination of transition / cgm_dta05.do MLB TS 
 
+drop start finish
+
 tab orig dest
 
 // drop the first enter Grundschule transition

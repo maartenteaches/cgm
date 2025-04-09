@@ -16,6 +16,8 @@ datasignature confirm, strict
 
 // merge files
 merge m:1 ID_t using cgm02.dta
+drop if _merge == 2
+drop _merge
 
 // remove first generation migrants
 drop if todrop

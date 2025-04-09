@@ -1,8 +1,8 @@
 ----------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  c:\active\cgm\ana\cgm_dta05.txt
+       log:  D:\active\cgm\ana\cgm_dta05.txt
   log type:  text
- opened on:   7 Apr 2025, 17:24:20
+ opened on:   9 Apr 2025, 16:41:06
 
 . 
 . // turn spells into transitions
@@ -20,7 +20,7 @@
 (cleaned spells)
 
 . datasignature confirm, strict
-  (data unchanged since 07apr2025 17:24)
+  (data unchanged since 09apr2025 16:41)
 
 . 
 . // expand
@@ -51,6 +51,9 @@ variable sort was byte now float
 . notes orig : origin of transition / cgm_dta05.do MLB TS 
 
 . notes dest : destination of transition / cgm_dta05.do MLB TS 
+
+. 
+. drop start finish
 
 . 
 . tab orig dest

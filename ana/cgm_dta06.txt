@@ -1,8 +1,8 @@
 ----------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  c:\active\cgm\ana\cgm_dta06.txt
+       log:  D:\active\cgm\ana\cgm_dta06.txt
   log type:  text
- opened on:   7 Apr 2025, 17:24:20
+ opened on:   9 Apr 2025, 16:41:07
 
 . 
 . // merge explanatory variables into transitions
@@ -20,7 +20,7 @@
 (explanatory variables)
 
 . datasignature confirm, strict
-  (data unchanged since 07apr2025 17:24)
+  (data unchanged since 09apr2025 16:40)
 
 . use cgm05
 (cleaned transitions)
@@ -41,10 +41,16 @@
     Matched                            95,005  (_merge==3)
     -----------------------------------------
 
+. drop if _merge == 2
+(69 observations deleted)
+
+. drop _merge
+
+. 
 . 
 . // remove first generation migrants
 . drop if todrop
-(8,413 observations deleted)
+(8,356 observations deleted)
 
 . drop todrop
 
@@ -57,7 +63,7 @@
 . label data "analysis dataset"
 
 . datasignature set, reset
-  86661:13(87594):369529164:4204037934       (data signature reset)
+  86649:12(48875):585760459:665162426       (data signature reset)
 
 . save cgm06.dta, replace
 file cgm06.dta saved
@@ -65,7 +71,7 @@ file cgm06.dta saved
 . 
 . log close
       name:  <unnamed>
-       log:  c:\active\cgm\ana\cgm_dta06.txt
+       log:  D:\active\cgm\ana\cgm_dta06.txt
   log type:  text
- closed on:   7 Apr 2025, 17:24:20
+ closed on:   9 Apr 2025, 16:41:07
 ----------------------------------------------------------------------------------------------------------------------

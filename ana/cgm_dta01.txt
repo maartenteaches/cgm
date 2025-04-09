@@ -1,8 +1,8 @@
 ----------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  c:\active\cgm\ana\cgm_dta01.txt
+       log:  D:\active\cgm\ana\cgm_dta01.txt
   log type:  text
- opened on:   7 Apr 2025, 17:24:13
+ opened on:   9 Apr 2025, 16:40:49
 
 . 
 . // merge educational spells 
@@ -56,8 +56,8 @@ Warning: will read file from temporary copy.
 . tempfile tofill
 
 . save `tofill', replace
-(file C:\Users\maart\AppData\Local\Temp\ST_4ee0_000001.tmp not found)
-file C:\Users\maart\AppData\Local\Temp\ST_4ee0_000001.tmp saved as .dta format
+(file C:\Users\Admin\AppData\Local\Temp\ST_2dc4_000001.tmp not found)
+file C:\Users\Admin\AppData\Local\Temp\ST_2dc4_000001.tmp saved as .dta format
 
 . 
 . **# merge in the generated educational spells
@@ -99,7 +99,7 @@ Warning: will read file from temporary copy.
 
 . 
 . save `tofill', replace
-file C:\Users\maart\AppData\Local\Temp\ST_4ee0_000001.tmp saved as .dta format
+file C:\Users\Admin\AppData\Local\Temp\ST_2dc4_000001.tmp saved as .dta format
 
 . 
 . **# primary and general secondary
@@ -261,7 +261,7 @@ Warning: will read file from temporary copy.
 . notes : cgm01.dta \ meged in primary and general secondary from spSchool \ cgm-dta01.do \ MLB TS 
 
 . save `tofill', replace
-file C:\Users\maart\AppData\Local\Temp\ST_4ee0_000001.tmp saved as .dta format
+file C:\Users\Admin\AppData\Local\Temp\ST_2dc4_000001.tmp saved as .dta format
 
 . 
 . 
@@ -477,7 +477,7 @@ file cgm01.dta saved
 . 
 . log close 
       name:  <unnamed>
-       log:  c:\active\cgm\ana\cgm_dta01.txt
+       log:  D:\active\cgm\ana\cgm_dta01.txt
   log type:  text
- closed on:   7 Apr 2025, 17:24:14
+ closed on:   9 Apr 2025, 16:40:51
 ----------------------------------------------------------------------------------------------------------------------
