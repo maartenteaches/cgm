@@ -2,7 +2,7 @@
       name:  <unnamed>
        log:  D:\active\cgm\ana\cgm_ana03.txt
   log type:  text
- opened on:   9 Apr 2025, 17:10:45
+ opened on:  16 Apr 2025, 14:17:22
 
 . 
 . // describe what trajectories are most common
@@ -269,5 +269,5 @@ Valid   FGr, EGy, FA, ET, FT                               |       1911      44.
       name:  <unnamed>
        log:  D:\active\cgm\ana\cgm_ana03.txt
   log type:  text
- closed on:   9 Apr 2025, 17:10:47
+ closed on:  16 Apr 2025, 14:17:25
 ----------------------------------------------------------------------------------------------------------------------
