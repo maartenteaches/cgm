@@ -38,11 +38,13 @@ label var byr "year of birth"
 bys ID_t (wave): keep if _n == 1
 
 gen byte coh = cond(byr <= 1955, 1, ///
-               cond(byr <= 1975, 2, ///
-			   cond(byr < ., 3, 0))) 
+               cond(byr <= 1965, 2, ///
+               cond(byr <= 1975, 3, ///
+			   cond(byr < ., 4, 0)))) 
 label define coh 1 "1944-1955" ///
-                 2 "1956-1975" ///
-				 3 "1976-1989"
+                 2 "1956-1965" ///
+                 3 "1966-1975" ///
+				 4 "1976-1989"
 label value coh coh	
 label var coh "cohort"
 note coh : based on t70000y in pTarget \ cgm_dta02.do \ MLB TS	

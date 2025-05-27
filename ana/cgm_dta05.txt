@@ -1,8 +1,8 @@
 ----------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  D:\active\cgm\ana\cgm_dta05.txt
+       log:  c:\active\cgm\ana\cgm_dta05.txt
   log type:  text
- opened on:   9 Apr 2025, 16:41:06
+ opened on:  27 May 2025, 15:44:34
 
 . 
 . // turn spells into transitions
@@ -20,7 +20,7 @@
 (cleaned spells)
 
 . datasignature confirm, strict
-  (data unchanged since 09apr2025 16:41)
+  (data unchanged since 27may2025 15:44)
 
 . 
 . // expand

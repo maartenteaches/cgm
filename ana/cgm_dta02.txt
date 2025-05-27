@@ -1,8 +1,8 @@
 ----------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  D:\active\cgm\ana\cgm_dta02.txt
+       log:  c:\active\cgm\ana\cgm_dta02.txt
   log type:  text
- opened on:   9 Apr 2025, 16:40:51
+ opened on:  27 May 2025, 15:44:27
 
 . 
 . // explanatory variables
@@ -92,12 +92,14 @@ warning: Multiple modes encountered in one or more groups.  Generating missing v
 
 . 
 . gen byte coh = cond(byr <= 1955, 1, ///
->                cond(byr <= 1975, 2, ///
->                            cond(byr < ., 3, 0))) 
+>                cond(byr <= 1965, 2, ///
+>                cond(byr <= 1975, 3, ///
+>                            cond(byr < ., 4, 0)))) 
 
 . label define coh 1 "1944-1955" ///
->                  2 "1956-1975" ///
->                                  3 "1976-1989"
+>                  2 "1956-1965" ///
+>                  3 "1966-1975" ///
+>                                  4 "1976-1989"
 
 . label value coh coh     
 
@@ -179,7 +181,7 @@ warning: Multiple modes encountered in one or more groups.  Generating missing v
 . label data "explanatory variables"
 
 . datasignature set, reset
-  17140:8(72408):892500176:331384916       (data signature reset)
+  17140:8(72408):2042275426:3863642702       (data signature reset)
 
 . save cgm02.dta, replace
 file cgm02.dta saved
@@ -187,7 +189,7 @@ file cgm02.dta saved
 . 
 . log close
       name:  <unnamed>
-       log:  D:\active\cgm\ana\cgm_dta02.txt
+       log:  c:\active\cgm\ana\cgm_dta02.txt
   log type:  text
- closed on:   9 Apr 2025, 16:40:57
+ closed on:  27 May 2025, 15:44:29
 ----------------------------------------------------------------------------------------------------------------------

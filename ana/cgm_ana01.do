@@ -68,7 +68,7 @@ use `tofill', clear
 sort coh var, stable
 l , sepby(coh)
 // add some blank space between the variables
-seqvar yaxis = 1 2 4 5 7 8 12 13 15 16 18 19 23 24 26 27 29 30
+seqvar yaxis = 1 2 4 5 7 8 12 13 15 16 18 19 23 24 26 27 29 30 34 35 37 38 40 41
 labmask yaxis, values(labels)
 
 set obs `=_N+1'
@@ -78,8 +78,9 @@ replace yaxis = 11 in l
 set obs `=_N+1'
 replace yaxis =  22 in l
 label define yaxis  0 "{bf:1944-1955}" ///
-                   11 "{bf:1956-1975}" ///
-				   22 "{bf:1976-1989}", modify
+                   11 "{bf:1956-1965}" ///
+				   22 "{bf:1966-1975}" /// 
+				   33 "{bf:1976-1989}", modify
 
 // turn proportions into percentages
 replace indir = indir * 100
@@ -87,7 +88,7 @@ replace indir = indir * 100
 // make the graph
 twoway scatter indir yaxis ,             ///
     recast(dropline) horizontal              ///
-	ylabel(0 1 2 4 5 7 8 11 12 13 15 16 18 19 22 23 24 26 27 29 30, val noticks nogrid) ///
+	ylabel(0 1 2 4 5 7 8 11 12 13 15 16 18 19 22 23 24 26 27 29 30 33 34 35 37 38 40 41, val noticks nogrid) ///
 	xlabel(none)                             ///
 	yscale(reverse) xscale(range(0 60))      ///
     mlabel(indir) mlabformat(%9.0f)      ///
@@ -129,7 +130,7 @@ use `tofill', clear
 sort coh var, stable
 l , sepby(coh)
 // add some blank space between the variables
-seqvar yaxis = 1 2 4 5 7 8 12 13 15 16 18 19 23 24 26 27 29 30
+seqvar yaxis = 1 2 4 5 7 8 12 13 15 16 18 19 23 24 26 27 29 30 34 35 37 38 40 41
 labmask yaxis, values(labels)
 
 set obs `=_N+1'
@@ -139,8 +140,10 @@ replace yaxis = 11 in l
 set obs `=_N+1'
 replace yaxis =  22 in l
 label define yaxis  0 "{bf:1944-1955}" ///
-                   11 "{bf:1956-1975}" ///
-				   22 "{bf:1976-1989}", modify
+                   11 "{bf:1956-1965}" ///
+				   22 "{bf:1966-1975}" ///
+				   33 "{bf:1976-1989}" ///
+				   , modify
 
 // turn proportions into percentages
 replace uni = uni * 100
@@ -148,7 +151,7 @@ replace uni = uni * 100
 // make the graph
 twoway scatter uni yaxis ,             ///
     recast(dropline) horizontal              ///
-	ylabel(0 1 2 4 5 7 8 11 12 13 15 16 18 19 22 23 24 26 27 29 30, val noticks nogrid) ///
+	ylabel(0 1 2 4 5 7 8 11 12 13 15 16 18 19 22 23 24 26 27 29 30 33 34 35 37 38 40 41, val noticks nogrid) ///
 	xlabel(none)                             ///
 	yscale(reverse) xscale(range(0 60))      ///
     mlabel(uni) mlabformat(%9.0f)      ///

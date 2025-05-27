@@ -1,8 +1,8 @@
 ----------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  D:\active\cgm\ana\cgm_dta04.txt
+       log:  c:\active\cgm\ana\cgm_dta04.txt
   log type:  text
- opened on:   9 Apr 2025, 16:40:59
+ opened on:  27 May 2025, 15:44:31
 
 . 
 . // make consistent spells
@@ -19,7 +19,7 @@
 (cleaned spells)
 
 . datasignature confirm
-  (data unchanged since 09apr2025 16:40)
+  (data unchanged since 27may2025 15:44)
 
 . 
 . **# first transition begins with entering Grundschule
@@ -1461,7 +1461,7 @@ file cgm04.dta saved
 . 
 . log close
       name:  <unnamed>
-       log:  D:\active\cgm\ana\cgm_dta04.txt
+       log:  c:\active\cgm\ana\cgm_dta04.txt
   log type:  text
- closed on:   9 Apr 2025, 16:41:06
+ closed on:  27 May 2025, 15:44:34
 ----------------------------------------------------------------------------------------------------------------------
