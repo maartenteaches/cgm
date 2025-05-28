@@ -1,8 +1,8 @@
-----------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
        log:  c:\active\cgm\ana\cgm_dta06.txt
   log type:  text
- opened on:  27 May 2025, 15:44:35
+ opened on:  28 May 2025, 11:26:17
 
 . 
 . // merge explanatory variables into transitions
@@ -20,7 +20,7 @@
 (explanatory variables)
 
 . datasignature confirm, strict
-  (data unchanged since 27may2025 15:44)
+  (data unchanged since 28may2025 11:26)
 
 . use cgm05
 (cleaned transitions)
@@ -72,5 +72,5 @@ file cgm06.dta saved
       name:  <unnamed>
        log:  c:\active\cgm\ana\cgm_dta06.txt
   log type:  text
- closed on:  27 May 2025, 15:44:35
-----------------------------------------------------------------------------------------------------------------------
+ closed on:  28 May 2025, 11:26:17
+---------------------------------------------------------------------------------------------------------------------------

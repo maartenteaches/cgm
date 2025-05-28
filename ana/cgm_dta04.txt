@@ -1,8 +1,8 @@
-----------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
        log:  c:\active\cgm\ana\cgm_dta04.txt
   log type:  text
- opened on:  27 May 2025, 15:44:31
+ opened on:  28 May 2025, 11:26:14
 
 . 
 . // make consistent spells
@@ -19,7 +19,7 @@
 (cleaned spells)
 
 . datasignature confirm
-  (data unchanged since 27may2025 15:44)
+  (data unchanged since 28may2025 11:26)
 
 . 
 . **# first transition begins with entering Grundschule
@@ -1288,59 +1288,60 @@ Panel variable: ID_t (unbalanced)
 . 
 . tab start start2
 
-                      |                                begin of spell
-       begin of spell | enter Gru  enter Hau  enter Rea  enter Gym  enter voc  enter voc  enter voc |     Total
-----------------------+-----------------------------------------------------------------------------+----------
-enter Grund- Volkssch |    17,062          0          0          0          0          0          0 |    17,062 
-    enter Hauptschule |         0      6,282          0          0          0          0          0 |     6,282 
-     enter Realschule |         0          0      9,149          0          0          0          0 |     9,149 
-      enter Gymnasium |         0          0          0      6,563          0          0          0 |     6,563 
-     enter vocational |         0          0          0          0        754        995      3,367 |    13,495 
-     enter Hochschule |         0          0          0          0          0          0          0 |     4,970 
-----------------------+-----------------------------------------------------------------------------+----------
-                Total |    17,062      6,282      9,149      6,563        754        995      3,367 |    57,521 
+                      |                                     begin of spell
+       begin of spell | enter Gru  enter Hau  enter Rea  enter Gym  enter voc  enter voc  enter voc  enter voc |     Total
+----------------------+----------------------------------------------------------------------------------------+----------
+enter Grund- Volkssch |    17,062          0          0          0          0          0          0          0 |    17,062 
+    enter Hauptschule |         0      6,282          0          0          0          0          0          0 |     6,282 
+     enter Realschule |         0          0      9,149          0          0          0          0          0 |     9,149 
+      enter Gymnasium |         0          0          0      6,563          0          0          0          0 |     6,563 
+     enter vocational |         0          0          0          0        754        995      3,367      5,480 |    13,495 
+     enter Hochschule |         0          0          0          0          0          0          0          0 |     4,970 
+----------------------+----------------------------------------------------------------------------------------+----------
+                Total |    17,062      6,282      9,149      6,563        754        995      3,367      5,480 |    57,521 
 
 
-                      |          begin of spell
-       begin of spell | enter voc  enter voc  enter Uni |     Total
-----------------------+---------------------------------+----------
-enter Grund- Volkssch |         0          0          0 |    17,062 
-    enter Hauptschule |         0          0          0 |     6,282 
-     enter Realschule |         0          0          0 |     9,149 
-      enter Gymnasium |         0          0          0 |     6,563 
-     enter vocational |     5,480      2,899          0 |    13,495 
-     enter Hochschule |         0          0      4,970 |     4,970 
-----------------------+---------------------------------+----------
-                Total |     5,480      2,899      4,970 |    57,521 
+                      |    begin of spell
+       begin of spell | enter voc  enter Uni |     Total
+----------------------+----------------------+----------
+enter Grund- Volkssch |         0          0 |    17,062 
+    enter Hauptschule |         0          0 |     6,282 
+     enter Realschule |         0          0 |     9,149 
+      enter Gymnasium |         0          0 |     6,563 
+     enter vocational |     2,899          0 |    13,495 
+     enter Hochschule |         0      4,970 |     4,970 
+----------------------+----------------------+----------
+                Total |     2,899      4,970 |    57,521 
 
 . tab finish finish2
 
-                      |                                 end of spell
-         end of spell |      done  finish Gr  finish Ha  finish Re  finish Ab  finish vo  finish vo |     Total
-----------------------+-----------------------------------------------------------------------------+----------
-             drop out |     2,713          0          0          0          0          0          0 |     2,713 
-   finish Grundschule |         0     17,062          0          0          0          0          0 |    17,062 
-   finish Hauptschule |         0          0      5,613          0          0          0          0 |     5,613 
-    finish Realschule |         0          0          0      8,748          0          0          0 |     8,748 
-        finish Abitur |         0          0          0          0      6,671          0          0 |     6,671 
-    finish vocational |         0          0          0          0          0      3,367      5,478 |    11,744 
-    finish Hochschule |         0          0          0          0          0          0          0 |     4,970 
-----------------------+-----------------------------------------------------------------------------+----------
-                Total |     2,713     17,062      5,613      8,748      6,671      3,367      5,478 |    57,521 
+                      |                                      end of spell
+         end of spell |      done  finish Gr  finish Ha  finish Re  finish Ab  finish vo  finish vo  finish vo |     Total
+----------------------+----------------------------------------------------------------------------------------+----------
+             drop out |     2,713          0          0          0          0          0          0          0 |     2,713 
+   finish Grundschule |         0     17,062          0          0          0          0          0          0 |    17,062 
+   finish Hauptschule |         0          0      5,613          0          0          0          0          0 |     5,613 
+    finish Realschule |         0          0          0      8,748          0          0          0          0 |     8,748 
+        finish Abitur |         0          0          0          0      6,671          0          0          0 |     6,671 
+    finish vocational |         0          0          0          0          0      3,367      5,478      2,899 |    11,744 
+    finish Hochschule |         0          0          0          0          0          0          0          0 |     4,970 
+----------------------+----------------------------------------------------------------------------------------+----------
+                Total |     2,713     17,062      5,613      8,748      6,671      3,367      5,478      2,899 |    57,521 
 
 
-                      |     end of spell
-         end of spell | finish vo  finish Un |     Total
-----------------------+----------------------+----------
-             drop out |         0          0 |     2,713 
-   finish Grundschule |         0          0 |    17,062 
-   finish Hauptschule |         0          0 |     5,613 
-    finish Realschule |         0          0 |     8,748 
-        finish Abitur |         0          0 |     6,671 
-    finish vocational |     2,899          0 |    11,744 
-    finish Hochschule |         0      4,970 |     4,970 
-----------------------+----------------------+----------
-                Total |     2,899      4,970 |    57,521 
+                      |   end of
+                      |   spell
+         end of spell | finish Un |     Total
+----------------------+-----------+----------
+             drop out |         0 |     2,713 
+   finish Grundschule |         0 |    17,062 
+   finish Hauptschule |         0 |     5,613 
+    finish Realschule |         0 |     8,748 
+        finish Abitur |         0 |     6,671 
+    finish vocational |         0 |    11,744 
+    finish Hochschule |     4,970 |     4,970 
+----------------------+-----------+----------
+                Total |     4,970 |    57,521 
 
 . 
 . // replace the new variables with the old variables
@@ -1356,38 +1357,39 @@ enter Grund- Volkssch |         0          0          0 |    17,062
 . // admire the result
 . tab start finish
 
-                      |                                 end of spell
-       begin of spell |      done  finish Gr  finish Ha  finish Re  finish Ab  finish vo  finish vo |     Total
-----------------------+-----------------------------------------------------------------------------+----------
-    enter Grundschule |         0     17,062          0          0          0          0          0 |    17,062 
-    enter Hauptschule |       669          0      5,613          0          0          0          0 |     6,282 
-     enter Realschule |     1,013          0          0      8,136          0          0          0 |     9,149 
-      enter Gymnasium |     1,029          0          0          0      5,534          0          0 |     6,563 
-enter vocational, gen |         0          0          0        612        142          0          0 |       754 
-enter vocational, gen |         0          0          0          0        995          0          0 |       995 
-enter vocational, Hau |         0          0          0          0          0      3,367          0 |     3,367 
-enter vocational, Rea |         2          0          0          0          0          0      5,478 |     5,480 
-enter vocational, Abi |         0          0          0          0          0          0          0 |     2,899 
-     enter University |         0          0          0          0          0          0          0 |     4,970 
-----------------------+-----------------------------------------------------------------------------+----------
-                Total |     2,713     17,062      5,613      8,748      6,671      3,367      5,478 |    57,521 
+                      |                                      end of spell
+       begin of spell |      done  finish Gr  finish Ha  finish Re  finish Ab  finish vo  finish vo  finish vo |     Total
+----------------------+----------------------------------------------------------------------------------------+----------
+    enter Grundschule |         0     17,062          0          0          0          0          0          0 |    17,062 
+    enter Hauptschule |       669          0      5,613          0          0          0          0          0 |     6,282 
+     enter Realschule |     1,013          0          0      8,136          0          0          0          0 |     9,149 
+      enter Gymnasium |     1,029          0          0          0      5,534          0          0          0 |     6,563 
+enter vocational, gen |         0          0          0        612        142          0          0          0 |       754 
+enter vocational, gen |         0          0          0          0        995          0          0          0 |       995 
+enter vocational, Hau |         0          0          0          0          0      3,367          0          0 |     3,367 
+enter vocational, Rea |         2          0          0          0          0          0      5,478          0 |     5,480 
+enter vocational, Abi |         0          0          0          0          0          0          0      2,899 |     2,899 
+     enter University |         0          0          0          0          0          0          0          0 |     4,970 
+----------------------+----------------------------------------------------------------------------------------+----------
+                Total |     2,713     17,062      5,613      8,748      6,671      3,367      5,478      2,899 |    57,521 
 
 
-                      |     end of spell
-       begin of spell | finish vo  finish Un |     Total
-----------------------+----------------------+----------
-    enter Grundschule |         0          0 |    17,062 
-    enter Hauptschule |         0          0 |     6,282 
-     enter Realschule |         0          0 |     9,149 
-      enter Gymnasium |         0          0 |     6,563 
-enter vocational, gen |         0          0 |       754 
-enter vocational, gen |         0          0 |       995 
-enter vocational, Hau |         0          0 |     3,367 
-enter vocational, Rea |         0          0 |     5,480 
-enter vocational, Abi |     2,899          0 |     2,899 
-     enter University |         0      4,970 |     4,970 
-----------------------+----------------------+----------
-                Total |     2,899      4,970 |    57,521 
+                      |   end of
+                      |   spell
+       begin of spell | finish Un |     Total
+----------------------+-----------+----------
+    enter Grundschule |         0 |    17,062 
+    enter Hauptschule |         0 |     6,282 
+     enter Realschule |         0 |     9,149 
+      enter Gymnasium |         0 |     6,563 
+enter vocational, gen |         0 |       754 
+enter vocational, gen |         0 |       995 
+enter vocational, Hau |         0 |     3,367 
+enter vocational, Rea |         0 |     5,480 
+enter vocational, Abi |         0 |     2,899 
+     enter University |     4,970 |     4,970 
+----------------------+-----------+----------
+                Total |     4,970 |    57,521 
 
 . //-----------------------------------------------------------
 . // some corrections
@@ -1463,5 +1465,5 @@ file cgm04.dta saved
       name:  <unnamed>
        log:  c:\active\cgm\ana\cgm_dta04.txt
   log type:  text
- closed on:  27 May 2025, 15:44:34
-----------------------------------------------------------------------------------------------------------------------
+ closed on:  28 May 2025, 11:26:17
+---------------------------------------------------------------------------------------------------------------------------

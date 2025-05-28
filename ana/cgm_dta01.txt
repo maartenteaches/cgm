@@ -1,8 +1,8 @@
-----------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
        log:  c:\active\cgm\ana\cgm_dta01.txt
   log type:  text
- opened on:  27 May 2025, 15:44:24
+ opened on:  28 May 2025, 11:26:11
 
 . 
 . // merge educational spells 
@@ -56,8 +56,8 @@ Warning: will read file from temporary copy.
 . tempfile tofill
 
 . save `tofill', replace
-(file C:\Users\maart\AppData\Local\Temp\ST_3100_000001.tmp not found)
-file C:\Users\maart\AppData\Local\Temp\ST_3100_000001.tmp saved as .dta format
+(file C:\Users\maart\AppData\Local\Temp\ST_36e8_000001.tmp not found)
+file C:\Users\maart\AppData\Local\Temp\ST_36e8_000001.tmp saved as .dta format
 
 . 
 . **# merge in the generated educational spells
@@ -94,12 +94,12 @@ Warning: will read file from temporary copy.
 
 . 
 . 
-. notes : cgm01.dta \ merged in generated educational spells from SC6_Education_D_15-0-0.dta \ cgm-dta01.do \ MLB TS  
->        
+. notes : cgm01.dta \ merged in generated educational spells from SC6_Education_D_15-0-0.dta \ cgm-dta01.do \ MLB TS       
+>   
 
 . 
 . save `tofill', replace
-file C:\Users\maart\AppData\Local\Temp\ST_3100_000001.tmp saved as .dta format
+file C:\Users\maart\AppData\Local\Temp\ST_36e8_000001.tmp saved as .dta format
 
 . 
 . **# primary and general secondary
@@ -261,7 +261,7 @@ Warning: will read file from temporary copy.
 . notes : cgm01.dta \ meged in primary and general secondary from spSchool \ cgm-dta01.do \ MLB TS 
 
 . save `tofill', replace
-file C:\Users\maart\AppData\Local\Temp\ST_3100_000001.tmp saved as .dta format
+file C:\Users\maart\AppData\Local\Temp\ST_36e8_000001.tmp saved as .dta format
 
 . 
 . 
@@ -421,35 +421,19 @@ Total         |      12639     100.00
 . 
 . tab start finish, miss
 
-                      |                                 end of spell
-       begin of spell |  drop out  finish Gr  finish Ha  finish Re  finish Ab  finish vo  finish Ho |     Total
-----------------------+-----------------------------------------------------------------------------+----------
-enter Grund- Volkssch |     2,077     10,656      1,584        110         30          0          0 |    14,457 
-    enter Hauptschule |       735          0      2,790        340         11          0          0 |     3,876 
-     enter Realschule |       800          0        372      5,439         61          0          0 |     6,675 
-      enter Gymnasium |     1,033          0         33        660      4,600          0          0 |     6,330 
-   enter Gesamtschule |       872          0        282      1,063        593          0          0 |     2,844 
-     enter vocational |     2,072          0         65        706      1,112     15,913         51 |    20,904 
-     enter Hochschule |     1,904          0          0          0          0        199      5,540 |     8,160 
-                    . |       647          0        392        373        361          0          0 |     5,100 
-----------------------+-----------------------------------------------------------------------------+----------
-                Total |    10,140     10,656      5,518      8,691      6,768     16,112      5,591 |    68,346 
-
-
-                      |   end of
-                      |   spell
-       begin of spell |         . |     Total
-----------------------+-----------+----------
-enter Grund- Volkssch |         0 |    14,457 
-    enter Hauptschule |         0 |     3,876 
-     enter Realschule |         3 |     6,675 
-      enter Gymnasium |         4 |     6,330 
-   enter Gesamtschule |        34 |     2,844 
-     enter vocational |       985 |    20,904 
-     enter Hochschule |       517 |     8,160 
-                    . |     3,327 |     5,100 
-----------------------+-----------+----------
-                Total |     4,870 |    68,346 
+                      |                                      end of spell
+       begin of spell |  drop out  finish Gr  finish Ha  finish Re  finish Ab  finish vo  finish Ho          . |     Total
+----------------------+----------------------------------------------------------------------------------------+----------
+enter Grund- Volkssch |     2,077     10,656      1,584        110         30          0          0          0 |    14,457 
+    enter Hauptschule |       735          0      2,790        340         11          0          0          0 |     3,876 
+     enter Realschule |       800          0        372      5,439         61          0          0          3 |     6,675 
+      enter Gymnasium |     1,033          0         33        660      4,600          0          0          4 |     6,330 
+   enter Gesamtschule |       872          0        282      1,063        593          0          0         34 |     2,844 
+     enter vocational |     2,072          0         65        706      1,112     15,913         51        985 |    20,904 
+     enter Hochschule |     1,904          0          0          0          0        199      5,540        517 |     8,160 
+                    . |       647          0        392        373        361          0          0      3,327 |     5,100 
+----------------------+----------------------------------------------------------------------------------------+----------
+                Total |    10,140     10,656      5,518      8,691      6,768     16,112      5,591      4,870 |    68,346 
 
 . 
 . drop _merge ts15219_ha ts15218 
@@ -479,5 +463,5 @@ file cgm01.dta saved
       name:  <unnamed>
        log:  c:\active\cgm\ana\cgm_dta01.txt
   log type:  text
- closed on:  27 May 2025, 15:44:27
-----------------------------------------------------------------------------------------------------------------------
+ closed on:  28 May 2025, 11:26:11
+---------------------------------------------------------------------------------------------------------------------------

@@ -1,8 +1,8 @@
-----------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
        log:  c:\active\cgm\ana\cgm_dta02.txt
   log type:  text
- opened on:  27 May 2025, 15:44:27
+ opened on:  28 May 2025, 11:26:11
 
 . 
 . // explanatory variables
@@ -43,8 +43,8 @@ Warning: will read file from temporary copy.
   (data unchanged since 15oct2024 15:47)
 
 . 
-. keep ID_t wave t700001 t70000m t70000y t751001_g1  t731351_g3 t731301_g3 t731301 t731301_ha t731301_v1 t731303 t7313
-> 03_ha t731303_v1 t731351_ha t731353_ha t731353 t731353_v1 t400500_g1 t405100_g2 t405070_g2 t731453_g8 t731403_g8
+. keep ID_t wave t700001 t70000m t70000y t751001_g1  t731351_g3 t731301_g3 t731301 t731301_ha t731301_v1 t731303 t731303_ha
+>  t731303_v1 t731351_ha t731353_ha t731353 t731353_v1 t400500_g1 t405100_g2 t405070_g2 t731453_g8 t731403_g8
 
 . 
 . // these are asked multiple times ---------------------------
@@ -53,8 +53,8 @@ Warning: will read file from temporary copy.
 
 . // the most commonly named gender is the gender
 . bys ID_t : egen female = mode(female2)
-warning: Multiple modes encountered in one or more groups.  Generating missing values for the modes in these groups.
-         Use option minmode, maxmode, or nummode() to select one of the modes.
+warning: Multiple modes encountered in one or more groups.  Generating missing values for the modes in these groups.  Use
+         option minmode, maxmode, or nummode() to select one of the modes.
 (6 missing values generated)
 
 . // but when there are ties, then the first mentioned gender applies
@@ -75,8 +75,8 @@ warning: Multiple modes encountered in one or more groups.  Generating missing v
 . rename t70000y byr2
 
 . bys ID_t : egen byr = mode(byr2)
-warning: Multiple modes encountered in one or more groups.  Generating missing values for the modes in these groups.
-         Use option minmode, maxmode, or nummode() to select one of the modes.
+warning: Multiple modes encountered in one or more groups.  Generating missing values for the modes in these groups.  Use
+         option minmode, maxmode, or nummode() to select one of the modes.
 (50 missing values generated)
 
 . bys ID_t (wave) : replace byr = byr2[1] if byr == .
@@ -191,5 +191,5 @@ file cgm02.dta saved
       name:  <unnamed>
        log:  c:\active\cgm\ana\cgm_dta02.txt
   log type:  text
- closed on:  27 May 2025, 15:44:29
-----------------------------------------------------------------------------------------------------------------------
+ closed on:  28 May 2025, 11:26:13
+---------------------------------------------------------------------------------------------------------------------------

@@ -1,8 +1,8 @@
-----------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
        log:  c:\active\cgm\ana\cgm_dta03.txt
   log type:  text
- opened on:  27 May 2025, 15:44:29
+ opened on:  28 May 2025, 11:26:13
 
 . 
 . // clean spells
@@ -203,8 +203,8 @@
 . bys ID_t start (sort) : replace dropout = dropout[_N-1] == _N-1
 (7,452 real changes made)
 
-. bys ID_t start (sort) : replace finish = finish[_N] if _N > 1 & sort[_N] - sort[1] == _N - 1 & dropout==1 & finish[_
-> N] < .
+. bys ID_t start (sort) : replace finish = finish[_N] if _N > 1 & sort[_N] - sort[1] == _N - 1 & dropout==1 & finish[_N] < 
+> .
 (1,551 real changes made)
 
 . bys ID_t start (sort) : drop if _n > 1 & _N > 1 & sort[_N] - sort[1] == _N-1 & dropout == 1
@@ -406,5 +406,5 @@ file cgm03.dta saved
       name:  <unnamed>
        log:  c:\active\cgm\ana\cgm_dta03.txt
   log type:  text
- closed on:  27 May 2025, 15:44:30
-----------------------------------------------------------------------------------------------------------------------
+ closed on:  28 May 2025, 11:26:14
+---------------------------------------------------------------------------------------------------------------------------
