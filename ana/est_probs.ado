@@ -6,24 +6,25 @@ program define est_probs
 	local oname = r(name1)
 	Parse `dest'
 	local k = r(k)
+	local rownames = ""
 	forvalues i = 1/`k' {
 		local dnum`i'  = r(num`i')
 		local dname`i' = r(name`i') 
+		local rownames = "`rownames' `dname`i''"
 	}
 	
-	version 5: mlogit dest `varlist'  if orig == `onum'
+	version 5: mlogit dest `varlist'  if orig == `onum', baseoutcome(dnum1)
 	local eqnames  : coleq e(b), quoted
 	local eqnames  : list uniq eqnames
 	mata: predict_pr()
-	matlist(pr)
-	
-	/*
+	matrix rownames pr = `rownames'
+	matlist pr
+/*	
 	forvalues i = 1/`k' {
 		Fill_table, destnum(`dnum`i'') destname("`dname`i''") ///
-		            orignum(`onum') origname("`oname'") 
+		            orignum(`onum') origname("`oname'")  row(`i')
 	}
-	*/
-	
+*/	
 end
 
 program define Parse, rclass
@@ -50,14 +51,30 @@ program define Fill_table
 	else {
 		local mat = "Q"
 	}
-	
-	mlogit dest i.co##(i.puni i.mig)  if orig == `orignum'
-	qui margins, over(coh puni) at(mig=0) nose predict(pr outcome(`destnum'))
-	forvalues coh = 1/3 {
-		forvalues puni = 0/1 {
-			local Q `mat'_coh`coh'_puni`puni' 
+
+// coh1_female
+// coh1 male (all 0)
+// coh2 female
+// coh2 male
+// coh3 female
+// coh3 male
+// coh4 female
+// coh4 male
+// coh1 parental uni
+// coh1 no parental uni (all 0)
+// coh2 parental uni
+// coh2 no parental uni
+// coh3 parental uni
+// coh3 no parental uni
+// coh4 parental uni
+// coh4 no parental uni
+
+	local col = 1
+	forvalues coh = 1/4 {
+		forvalues female = 0/1 {
+			local Q `mat'_coh`coh'_female`female' 
 			matrix `Q'[rownumb(`Q',"`origname'"),colnumb(`Q',"`destname'")]= ///
-			el(r(table),1,colnumb(r(table),"`coh'.coh#`puni'.puni"))
+			el(pr,1,colnumb(r(table),"`coh'.coh#`puni'.puni"))
 		}
 	}
 	mlogit dest i.co##(i.female i.mig)  if orig == `orignum'
