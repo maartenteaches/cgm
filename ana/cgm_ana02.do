@@ -12,7 +12,8 @@ use cgm06.dta
 datasignature confirm, strict
 codebook, compact
 
-// create indicator and interaction variables
+**# prepare variables and matrices for prediction
+**## create indicator and interaction variables
 // by not using factor variables we can use an old version of -mlogit-, which was implemented in C and thus a lot faster. 
 tab coh, gen(coh)
 drop coh1
@@ -22,23 +23,9 @@ foreach var1 of varlist coh? {
 	}
 }
 
-// locals that contain the variables we want included in the models
-local x1 = "      coh2        coh3        coh4" 
-local x1 = "`x1'  puni        mig"
-local x1 = "`x1'  coh2Xpuni   coh3Xpuni   coh4Xpuni"
-local x1 = "`x1'  coh2Xmig    coh3Xmig    coh4Xmig"
-
-local x2 = "      coh2        coh3        coh4" 
-local x2 = "`x2'  female      mig"
-local x2 = "`x2'  coh2Xfemale coh3Xfemale coh4Xfemale"
-local x2 = "`x2'  coh2Xmig    coh3Xmig    coh4Xmig"
-
-local x1 : list clean x1
-local x2 : list clean x2
-
-// matrices for the values of the explanatory variable at which we want the predictions
+**## matrices for the values of the explanatory variable at which we want the predictions
 matrix atpuni   = J(11,8, 0)\J(1,8,1)
-matrix atfemale = J(11,8,0)\J(1,8,1)
+matrix atfem    = J(11,8,0)\J(1,8,1)
 
 // rownumbers
 local coh2        = 1
@@ -53,76 +40,71 @@ local coh3Xfemale = 7
 local coh4Xpuni   = 8
 local coh4Xfemale = 8
 
-// coh1_female
-matrix atfemale[`female'      ,1] = 1
-
 // coh1 male (all 0)
 
-// coh2 female
-matrix atfemale[`female'      ,3] = 1
-matrix atfemale[`coh2'       , 3] = 1
-matrix atfemale[`coh2Xfemale', 3] = 1
+// coh1_female
+matrix atfem[`female'      ,2] = 1
 
 // coh2 male
-matrix atfemale[`coh2'       , 4] = 1
+matrix atfem[`coh2'       , 3] = 1
 
-// coh3 female
-matrix atfemale[`female'     , 5] = 1
-matrix atfemale[`coh3'       , 5] = 1
-matrix atfemale[`coh3Xfemale', 5] = 1
+// coh2 female
+matrix atfem[`female'      ,4] = 1
+matrix atfem[`coh2'       , 4] = 1
+matrix atfem[`coh2Xfemale', 4] = 1
 
 // coh3 male
-matrix atfemale[`coh3'       , 6] = 1
+matrix atfem[`coh3'       , 5] = 1
 
-// coh4 female
-matrix atfemale[`female'     , 7] = 1
-matrix atfemale[`coh4'       , 7] = 1
-matrix atfemale[`coh4Xfemale', 7] = 1
+// coh3 female
+matrix atfem[`female'     , 6] = 1
+matrix atfem[`coh3'       , 6] = 1
+matrix atfem[`coh3Xfemale', 6] = 1
 
 // coh4 male
-matrix atfemale[`coh4'       , 8] = 1
+matrix atfem[`coh4'       , 7] = 1
 
-// coh1 parental uni
-matrix atpuni[`puni'      ,1] = 1
+// coh4 female
+matrix atfem[`female'     , 8] = 1
+matrix atfem[`coh4'       , 8] = 1
+matrix atfem[`coh4Xfemale', 8] = 1
+
 
 // coh1 no parental uni (all 0)
 
-// coh2 parental uni
-matrix atpuni[`puni'      ,3] = 1
-matrix atpuni[`coh2'       , 3] = 1
-matrix atpuni[`coh2Xpuni', 3] = 1
+// coh1 parental uni
+matrix atpuni[`puni'      , 2] = 1
 
 // coh2 no parental uni
-matrix atpuni[`coh2'       , 4] = 1
+matrix atpuni[`coh2'      , 3] = 1
 
-// coh3 parental uni
-matrix atpuni[`puni'     , 5] = 1
-matrix atpuni[`coh3'       , 5] = 1
-matrix atpuni[`coh3Xpuni', 5] = 1
+// coh2 parental uni
+matrix atpuni[`puni'      , 4] = 1
+matrix atpuni[`coh2'      , 4] = 1
+matrix atpuni[`coh2Xpuni' , 4] = 1
 
 // coh3 no parental uni
-matrix atpuni[`coh3'       , 6] = 1
+matrix atpuni[`coh3'      , 5] = 1
 
-// coh4 parental uni
-matrix atpuni[`puni'     , 7] = 1
-matrix atpuni[`coh4'       , 7] = 1
-matrix atpuni[`coh4Xpuni', 7] = 1
+// coh3 parental uni
+matrix atpuni[`puni'     , 6] = 1
+matrix atpuni[`coh3'     , 6] = 1
+matrix atpuni[`coh3Xpuni', 6] = 1
 
 // coh4 no parental uni
-matrix atpuni[`coh4'       , 8] = 1
+matrix atpuni[`coh4'       , 7] = 1
 
-fre dest if orig == 2
+// coh4 parental uni
+matrix atpuni[`puni'     , 8] = 1
+matrix atpuni[`coh4'     , 8] = 1
+matrix atpuni[`coh4Xpuni', 8] = 1
 
-est_probs `x1', orig(2 "EHa") dest(3 "ERe"; 13 "FHa") at(atpuni)
-
-exit
-
-**# create the basic matrices
-// prepare matices
+**# create predicted transition matrices
+**## prepare matices
 local na "EHa ERe EGy EVsecH EVsecR FGr FHa FRe FA FVH FVR FVA FU" 
 local a  "DGr DHa DRe DA DVH DVR DVA DU"
 
-forvalues coh = 1/3 {
+forvalues coh = 1/4 {
 	forvalues puni = 0/1 {
 		matrix Q_coh`coh'_puni`puni' = J(13,13,0)
 		matrix R_coh`coh'_puni`puni' = J(13, 8,0)
@@ -134,7 +116,7 @@ forvalues coh = 1/3 {
 		
 	}
 }
-forvalues coh = 1/3 {
+forvalues coh = 1/4 {
 	forvalues fem = 0/1 {
 		matrix Q_coh`coh'_fem`fem' = J(13,13,0)
 		matrix R_coh`coh'_fem`fem' = J(13, 8,0)
@@ -147,47 +129,48 @@ forvalues coh = 1/3 {
 	}
 }
 
+**## predictions
 // Given enter Hauptschule
-fre dest if orig == 2
-est_probs, orig(2 "EHa") dest(3 "ERe"; 13 "FHa")
+*fre dest if orig == 2
+est_probs , orig(2 "EHa") dest(3 "ERe"; 13 "FHa") 
 
 // Given enter Realschule
-fre dest if orig == 3
-est_probs, orig(3 "ERe") dest(2 "EHa"; 4 "EGy"; 14 "FRe")
+*fre dest if orig == 3
+est_probs , orig(3 "ERe") dest(2 "EHa"; 4 "EGy"; 14 "FRe") 
 
 // Given enter Gymnasium
-fre dest if orig == 4
-est_probs, orig(4 "EGy") dest(3 "ERe"; 15 "FA")
+*fre dest if orig == 4
+est_probs , orig(4 "EGy") dest(3 "ERe"; 15 "FA") 
 
 // Given enter Vocational, general secondary
 one_probs, oname("EVsecH") dname("FRe")
 one_probs, oname("EVsecR") dname("FA")
 
 // Given finish Grundschule
-fre dest if orig == 12
-est_probs, orig(12 "FGr") dest(0 "DGr"; 2 "EHa"; 3 "ERe"; 4 "EGy")
+*fre dest if orig == 12
+est_probs , orig(12 "FGr") dest(0 "DGr"; 2 "EHa"; 3 "ERe"; 4 "EGy")
 
 // Given finish Hauptschule
-fre dest if orig == 13
+*fre dest if orig == 13
 est_probs, orig(13 "FHa") dest(0 "DHa"; 3 "ERe"; 5 "EVsecH"; 7 "FVH")
 
 // Given finish Realschule
-fre dest if orig == 14
+*fre dest if orig == 14
 est_probs, orig(14 "FRe") dest(0 "DRe"; 4 "EGy"; 6 "EVsecR"; 8 "FVR"; 11 "FU" )
 
 // Given finish Abitur
-fre des if orig == 15
+*fre des if orig == 15
 est_probs , orig(15 "FA") dest(0 "DA"; 9 "FVA"; 11 "FU" )
 
 // Given Finish Vocational Hauptschule
 one_probs, oname("FVH") dname("DVH")
 
 // Given Finish vocational Realschule
-fre des if orig == 17
+*fre des if orig == 17
 est_probs , orig(17 "FVR") dest(0 "DVR"; 11 "FU" )
 
 // Given Finish vocational Abitur
-fre des if orig == 18
+*fre des if orig == 18
 est_probs, orig(18 "FVA") dest(0 "DVA"; 11 "FU")
 
 // Given Finish University
@@ -195,8 +178,7 @@ one_probs, oname("FU") dname("DU")
 
 // ==========================================================
 **# pr finish directly
-
-forvalues coh = 1/3 {
+forvalues coh = 1/4 {
 	forvalues puni = 0/1 {
 		local dir DIR_coh`coh'_puni`puni'
 		local R R_coh`coh'_puni`puni'
@@ -253,7 +235,7 @@ forvalues coh = 1/3 {
 	}
 }
 
-forvalues coh = 1/3 {
+forvalues coh = 1/4 {
 	forvalues fem = 0/1 {
 		local dir DIR_coh`coh'_fem`fem'
 		local R R_coh`coh'_fem`fem'
@@ -314,15 +296,15 @@ forvalues coh = 1/3 {
 **# finishing directly and indirectly
 
 mata 
-for(coh=1; coh <= 3; coh++) {
+for(coh=1; coh <= 4; coh++) {
 	for(puni=0; puni<=1; puni++) {
 		name = "R_coh" + strofreal(coh) + "_puni" + strofreal(puni)
 		R = st_matrix(name)
 		name = "Q_coh" + strofreal(coh) + "_puni" + strofreal(puni)
 		Q = st_matrix(name)
 		name = "DIR_coh" + strofreal(coh) + "_puni" + strofreal(puni)
-		
 		DIR = st_matrix(name)
+		
 		N = luinv(I(13) - Q)
 		E =  N*R
 		E = E[6,.] \ DIR \ E[6,.]:-DIR \ (E[6,.]:-DIR) :/ E[6,.] 
@@ -338,7 +320,7 @@ for(coh=1; coh <= 3; coh++) {
 	
 }
 
-for(coh=1; coh <= 3; coh++) {
+for(coh=1; coh <= 4; coh++) {
 	for(fem=0; fem<=1; fem++) {
 		name = "R_coh" + strofreal(coh) + "_fem" + strofreal(fem)
 		R = st_matrix(name)
@@ -366,7 +348,7 @@ end
 
 local na "EHa ERe EGy EVsecH EVsecR FGr FHa FRe FA FVH FVR FVA FU" 
 local a  "DGr DHa DRe DA DVH DVR DVA DU"
-forvalues coh = 1/3 {
+forvalues coh = 1/4 {
 	forvalues puni = 0/1 {
 		matrix rownames E_coh`coh'_puni`puni' = "total" "direct" "indirect" "proportion"
 		matrix colnames E_coh`coh'_puni`puni' = `a'
@@ -379,7 +361,7 @@ forvalues coh = 1/3 {
 		matlist D_coh`coh'_puni`puni'
 	}
 }
-forvalues coh = 1/3 {
+forvalues coh = 1/4 {
 	forvalues fem = 0/1 {
 		matrix rownames E_coh`coh'_fem`fem' = "total" "direct" "indirect" "proportion"
 		matrix colnames E_coh`coh'_fem`fem' = `a'
@@ -421,7 +403,7 @@ foreach var in school coh puni fem {
 }
 
 save `tofill'
-forvalues coh = 1/3 {
+forvalues coh = 1/4 {
 	forvalues puni = 0/1 {
 		drop _all
 		matrix E_coh`coh'_puni`puni' = E_coh`coh'_puni`puni''
@@ -433,7 +415,7 @@ forvalues coh = 1/3 {
 		save `tofill', replace
 	}
 }
-forvalues coh = 1/3 {
+forvalues coh = 1/4 {
 	forvalues fem = 0/1 {
 		drop _all
 		matrix E_coh`coh'_fem`fem' = E_coh`coh'_fem`fem''
@@ -446,7 +428,6 @@ forvalues coh = 1/3 {
 	}
 }
 
-
 gen byte schoolr:schoolr = abs(school-9) 
 replace direct = direct*100
 replace total = total*100
@@ -454,24 +435,17 @@ gen zero = 0
 gen dirlab = strofreal(direct, "%3.0f")
 gen totlab = strofreal(total, "%3.0f")
 
-keep if schoolr == 1
+*keep if schoolr == 1
 
 gen var:var = fem if !missing(fem)
 replace var = puni+2 if !missing(puni)
 label defin var 0 "male" 1 "female" 2 "parents no tertiary" ///
                 3 "parents tertiary", replace
 				
-gsort -coh var
+gsort -coh schoolr var
 
 seqvar yaxis = 1/4 7/10 13/16
 labmask yaxis , values(var) decode
-
-set obs `=_N+1'
-replace yaxis = 0 in l
-set obs `=_N+1'
-replace yaxis = 6 in l
-set obs `=_N+1'
-replace yaxis =  12 in l
 
 label define yaxis 12 "{bf:1944-1955}" ///
                    6  "{bf:1956-1975}" ///

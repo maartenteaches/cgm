@@ -1,28 +1,45 @@
 program define est_probs
-	syntax varlist , orig(string) dest(string)  at(name)
+	syntax, orig(passthru) dest(passthru)
+	
+	local xpuni = "         coh2        coh3        coh4" 
+	local xpuni = "`xpuni'  puni        mig"
+	local xpuni = "`xpuni'  coh2Xpuni   coh3Xpuni   coh4Xpuni"
+	local xpuni = "`xpuni'  coh2Xmig    coh3Xmig    coh4Xmig"
+
+	local xfem = "        coh2        coh3        coh4" 
+	local xfem = "`xfem'  female      mig"
+	local xfem = "`xfem'  coh2Xfemale coh3Xfemale coh4Xfemale"
+	local xfem = "`xfem'  coh2Xmig    coh3Xmig    coh4Xmig"
+	
+	Main `xpuni', `orig' `dest' what("puni")
+	Main `xfem', `orig' `dest' what("fem")
+end
+
+program define Main
+	syntax varlist , orig(string) dest(string)  what(string)
 	
 	Parse `orig'
 	local onum  = r(num1)
 	local oname = r(name1)
 	Parse `dest'
 	local k = r(k)
+	local rownames = ""
 	forvalues i = 1/`k' {
 		local dnum`i'  = r(num`i')
 		local dname`i' = r(name`i') 
+		local rownames = "`rownames' `dname`i''"
 	}
 	
-	version 5: mlogit dest `varlist'  if orig == `onum'
+	version 5: mlogit dest `varlist'  if orig == `onum', baseoutcome(`dnum1')
 	local eqnames  : coleq e(b), quoted
 	local eqnames  : list uniq eqnames
 	mata: predict_pr()
-	matlist(pr)
-	
-	/*
+	matrix rownames pr = `rownames'
+
 	forvalues i = 1/`k' {
 		Fill_table, destnum(`dnum`i'') destname("`dname`i''") ///
-		            orignum(`onum') origname("`oname'") 
+		            orignum(`onum') origname("`oname'")  row(`i') what(`what')
 	}
-	*/
 	
 end
 
@@ -43,32 +60,23 @@ program define Parse, rclass
 end
 
 program define Fill_table
-	syntax, destnum(integer) destname(string) origname(string) orignum(integer)
+	syntax, destnum(integer) destname(string) origname(string) orignum(integer) row(integer) what(string)
 	if `destnum' == 0 {
 		local mat = "R"
 	}
 	else {
 		local mat = "Q"
 	}
-	
-	mlogit dest i.co##(i.puni i.mig)  if orig == `orignum'
-	qui margins, over(coh puni) at(mig=0) nose predict(pr outcome(`destnum'))
-	forvalues coh = 1/3 {
-		forvalues puni = 0/1 {
-			local Q `mat'_coh`coh'_puni`puni' 
+
+	local col = 1
+	forvalues coh = 1/4 {
+		forvalues val = 0/1 {
+			local Q `mat'_coh`coh'_`what'`val' 
 			matrix `Q'[rownumb(`Q',"`origname'"),colnumb(`Q',"`destname'")]= ///
-			el(r(table),1,colnumb(r(table),"`coh'.coh#`puni'.puni"))
+			el(pr,`row',`col++')
 		}
 	}
-	mlogit dest i.co##(i.female i.mig)  if orig == `orignum'
-	qui margins, over(coh female) at(mig=0) nose predict(pr outcome(`destnum'))
-	forvalues coh = 1/3 {
-		forvalues fem = 0/1 {
-			local Q `mat'_coh`coh'_fem`fem' 
-			matrix `Q'[rownumb(`Q',"`origname'"),colnumb(`Q',"`destname'")]= ///
-			el(r(table),1,colnumb(r(table),"`coh'.coh#`fem'.female"))
-		}
-	}
+
 end
 	
 mata :
@@ -85,7 +93,7 @@ void predict_pr()
 	eq     = tokens(st_local("eqnames"))
 	b      = st_matrix("e(b)")
 	stripe = st_matrixcolstripe("e(b)")
-	x      = st_matrix(st_local("at"))
+	x      = st_matrix("at" + st_local("what"))
 	
 	// split b by equation
 	bsplit = J(0,cols(var),.)

@@ -9,13 +9,13 @@ program define one_probs
 		local mat = "Q"
 	}
 	
-	forvalues coh = 1/3 {
+	forvalues coh = 1/4 {
 		forvalues puni = 0/1 {
 			local Q `mat'_coh`coh'_puni`puni'
 			matrix `Q'[rownumb(`Q',"`oname'"),colnumb(`Q',"`dname'")]= 1
 		}
 	}
-	forvalues coh = 1/3 {
+	forvalues coh = 1/4 {
 		forvalues fem = 0/1 {
 			local Q `mat'_coh`coh'_fem`fem'
 			matrix `Q'[rownumb(`Q',"`oname'"),colnumb(`Q',"`dname'")]= 1
