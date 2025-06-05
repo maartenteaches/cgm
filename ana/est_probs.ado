@@ -40,7 +40,6 @@ program define Main
 		Fill_table, destnum(`dnum`i'') destname("`dname`i''") ///
 		            orignum(`onum') origname("`oname'")  row(`i') what(`what')
 	}
-	
 end
 
 program define Parse, rclass
