@@ -7,6 +7,7 @@ log using cgm_ana02.txt, replace text
 version 18
 clear all
 macro drop _all
+set scheme stmono1
 
 use cgm06.dta
 datasignature confirm, strict
@@ -388,9 +389,9 @@ label define schoolr 8 "Grundschule"                   ///
                      7 "Hauptschule"                   ///
                      6 "Realschule"                    ///
                      5 "Abitur"                        ///
-                     4 `""vocational-" "Hauptschule""' ///
-                     3 `""vocational-" "Realschule""'  ///
-                     2 `""vocational-" "Abitur""'      ///
+                     4 "voc. Haupt" ///
+                     3 "voc. Real"  ///
+                     2 "voc. Abi"      ///
 					 1 "tertiary", replace					
 
 drop _all
@@ -431,19 +432,39 @@ forvalues coh = 1/4 {
 gen byte schoolr:schoolr = abs(school-9) 
 replace direct = direct*100
 replace total = total*100
-gen zero = 0
-gen dirlab = strofreal(direct, "%3.0f")
-gen totlab = strofreal(total, "%3.0f")
 
-*keep if schoolr == 1
+frame copy default tograph
+frame change tograph
+drop if fem == .
 
-gen var:var = fem if !missing(fem)
-replace var = puni+2 if !missing(puni)
-label defin var 0 "male" 1 "female" 2 "parents no tertiary" ///
-                3 "parents tertiary", replace
-				
-gsort -coh schoolr var
+keep coh schoolr total direct fem
+reshape wide total direct, i(coh schoolr) j(fem)
+gen direct = direct1 - direct0
+gen total = total1 - total0
 
+drop if schoolr >= 5
+gsort -coh schoolr
+seqvar yaxis = 1/4 7/10 13/16 19/22
+labmask yaxis, values(schoolr) decode
+label define yaxis 18 "{bf:1944-1955}" /// 
+                   12 "{bf:1956-1965}" ///
+                    6 "{bf:1966-1975}" ///
+				    0 "{bf:1976-1989}", modify
+				   
+gen yaxis2 = yaxis - 0.4
+				   
+twoway scatter total yaxis, ///
+    recast(dropline) horizontal  ///
+	ylab(0 6 12 18 , val noticks labsize(vsmall)) ///
+	ymlab(1/4 7/10 13/16 19/22 , grid val noticks labsize(vsmall)) ///
+	yscale(reverse) ///
+	xtitle("effect of female (percentage points)") || ///
+	scatter direct yaxis, ///
+    recast(dropline) horizontal xline(0)
+	
+	
+
+exit
 seqvar yaxis = 1/4 7/10 13/16
 labmask yaxis , values(var) decode
 
@@ -452,7 +473,7 @@ label define yaxis 12 "{bf:1944-1955}" ///
 				   0 "{bf:1976-1989}", modify
 twoway scatter total yaxis, ///
     recast(dropline) horizontal  ///
-	ylab(0/4 6/10 12/16, val noticks nogrid) yscale(reverse) ///
+	ylab(0/4 6/10 12/16, val noticks) yscale(reverse) ///
 	lcolor("0 154 209") mcolor("0 154 209") || ///
 	scatter direct yaxis, ///
 	recast(dropline) horizontal ///
